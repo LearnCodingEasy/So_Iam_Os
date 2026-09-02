@@ -1,1 +1,14 @@
 Build.md
+CHATGPT.md
+emoji.md
+
+# إعدادات البيئة
+.env
+*.env
+.env.*
+.env.local
+.env.production
+!.env.example
+
+
+node_modules/
