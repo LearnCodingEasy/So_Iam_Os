@@ -1,8 +1,9 @@
 Build.md
 CHATGPT.md
 emoji.md
+PROJECT_STATE.md
 
-# إعدادات البيئة
+# Environment files
 .env
 *.env
 .env.*
@@ -11,4 +12,29 @@ emoji.md
 !.env.example
 
 
+
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Virtual Environment
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+
+
 node_modules/
+
+project_docs/
+
+
