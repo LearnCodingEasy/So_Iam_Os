@@ -1,0 +1,191 @@
+.wrapper_profile {
+  .container {
+    .inner_profile {
+      display: flex;
+      justify-content: flex-start;
+      align-items: start;
+
+      .sidebar_profile {
+        height: calc(100vh - 40px);
+        width: 64px;
+        position: sticky;
+        top: 40px;
+        left: 0;
+        // background-color: #71acd4;
+        background-image: linear-gradient(to bottom, #5b66f6, #e54da4);
+        background-image: linear-gradient(to bottom, #5b66f6, #5b66f6);
+
+        border-radius: 8px;
+        transition: width 0.3s;
+        z-index: 2;
+
+        .aside_toggle {
+          position: absolute;
+          z-index: 2;
+          top: 24px;
+          right: -12px;
+          display: grid;
+          place-items: center;
+          padding: 0;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background-color: #71acd4;
+          color: #fff;
+          transition: width 0.3s;
+          cursor: pointer;
+        }
+
+        .user_image,
+        .user_name,
+        .user_email,
+        .user_Password {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          height: 60px;
+          margin-bottom: 0.5rem;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          border: 1px solid transparent;
+          &.activeView {
+            border: 0.1rem solid rgb(255, 255, 255);
+          }
+          .user_image_icon,
+          .user_name_icon,
+          .user_email_icon,
+          .user_Password_icon {
+            color: #fff;
+            width: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 1rem 0;
+
+            i {
+              font-size: 30px !important;
+            }
+          }
+
+          .user_image_data,
+          .user_name_data,
+          .user_email_data,
+          .user_Password_data {
+            color: #fff;
+            display: none;
+            justify-content: flex-start;
+            align-items: center;
+            transition: display 3s;
+          }
+        }
+
+        &.sidebar_open {
+          width: 200px;
+
+          .aside_toggle {
+            transform: rotate(180deg);
+          }
+
+          .user_image_data,
+          .user_name_data,
+          .user_email_data,
+          .user_Password_data {
+            display: block;
+          }
+        }
+      }
+
+      .data_profile {
+        display: flex;
+        justify-content: space-between;
+        // align-items: center;
+        // border: 0.1rem solid #6f00ff;
+        width: 100%;
+
+        .wrapper_info_data,
+        .wrapper_password_data {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          width: 100%;
+
+          // border: 0.1rem solid #6f00ff;
+          .wrapper_new_data {
+            // border: 0.1rem solid #6f00ff;
+            margin-right: 3rem;
+
+            flex-grow: 1;
+          }
+
+          .wrapper_old_data {
+            // width: 100%;
+            // display: block;
+
+            // border: 0.1rem solid #6f00ff;
+            .inner_old_data {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+html.p-dark {
+  .wrapper_profile {
+    .container {
+      .inner_profile {
+        .sidebar_profile {
+          background-color: #71acd441;
+
+          .aside_toggle {
+            background-color: #71acd4a9;
+          }
+
+          .user_image,
+          .user_name,
+          .user_email,
+          .user_Password {
+            .user_image_icon,
+            .user_name_icon,
+            .user_email_icon,
+            .user_Password_icon {
+              i {
+              }
+            }
+
+            .user_image_data,
+            .user_name_data,
+            .user_email_data,
+            .user_Password_data {
+            }
+          }
+
+          &.sidebar_open {
+            .aside_toggle {
+            }
+
+            .user_image_data,
+            .user_name_data,
+            .user_email_data,
+            .user_Password_data {
+            }
+          }
+        }
+
+        .data_profile {
+          .wrapper_info_data,
+          .wrapper_password_data {
+            .wrapper_new_data {
+            }
+
+            .wrapper_old_data {
+              .inner_old_data {
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

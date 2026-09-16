@@ -1,0 +1,451 @@
+// @import '../Framework/Media_Queries';
+// @use 'Media_Queries';
+// @use 'Media_Queries';
+@use '../Framework/Media_Queries' as *;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.wrapper_page_login {
+  padding: 0;
+  margin: 0;
+  height: 99.99vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background-image: linear-gradient(to right, #5b66f6, #e54da4);
+  .inner_page_login {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .container {
+      height: 100%;
+      .wrapper_content_page_login {
+        height: 100%;
+        display: flex;
+        .inner_content_page_login {
+          .box_content_page_login {
+            margin: 10vh 0;
+            .mobile_body_white,
+            .mobile_body_dark {
+              border-radius: 32px;
+              -webkit-border-radius: 32px;
+              -moz-border-radius: 32px;
+              -ms-border-radius: 32px;
+              -o-border-radius: 32px;
+              height: 100%;
+              margin: auto;
+              position: relative;
+              .mobile_content {
+                position: relative;
+                border-radius: 24px;
+                -webkit-border-radius: 24px;
+                -moz-border-radius: 24px;
+                -ms-border-radius: 24px;
+                -o-border-radius: 24px;
+                height: 100%;
+                background-color: #fff;
+                padding: 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                form {
+                  height: 100%;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  align-items: center;
+                  width: 100%;
+                  .prime_card_form_signup {
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                    box-shadow: none;
+                    height: 100%;
+                    max-height: 100%;
+                    overflow: hidden;
+                    border-radius: 0px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    width: 100%;
+                    div.p-card-header {
+                      height: 15%;
+                      width: 100%;
+                      display: flex;
+                      align-items: center;
+                      width: 100%;
+                      img {
+                        width: 60px;
+                        height: 60px;
+                      }
+                    }
+                    div.p-card-body {
+                      padding: 0;
+                      margin: 0;
+                      height: 85%;
+                      display: flex;
+                      width: 100%;
+                      flex-direction: column;
+                      div.p-card-content {
+                        height: 90%;
+                        overflow-y: auto;
+
+                        .prime_card_form_signup_content {
+                          > div {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            > div {
+                              margin-top: 1rem;
+                            }
+                          }
+                          & .gender {
+                            flex-direction: row;
+                          }
+                        }
+                      }
+                      div.p-card-footer {
+                        height: 20%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        .btn_signup {
+                          background-color: #5b66f6;
+                          color: #fff;
+                        }
+                      }
+                    }
+                  }
+                  .prime_card_form_login {
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                    box-shadow: none;
+                    height: 100%;
+                    max-height: 100%;
+                    overflow: hidden;
+                    border-radius: 0px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    width: 100%;
+                    div.p-card-header {
+                      height: 15%;
+                      width: 100%;
+                      display: flex;
+                      align-items: center;
+                      width: 100%;
+                      img {
+                        width: 60px;
+                        height: 60px;
+                      }
+                    }
+                    div.p-card-body {
+                      padding: 0;
+                      margin: 0;
+                      height: 85%;
+                      display: flex;
+                      width: 100%;
+                      flex-direction: column;
+                      div.p-card-content {
+                        height: 90%;
+                        overflow-y: auto;
+
+                        .prime_card_form_login_content {
+                          > div {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            > div {
+                              margin-top: 1rem;
+                            }
+                          }
+                        }
+                      }
+                      div.p-card-footer {
+                        height: 10%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        .btn_login {
+                          background-color: #e54da4;
+                          color: #fff;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              .voice_up,
+              .voice_down,
+              .power {
+                content: '';
+                position: absolute;
+                height: 70px;
+                width: 13px;
+                background-color: #130e0e;
+                border-radius: 5px;
+                z-index: 7;
+                //rotate: 90deg;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -ms-border-radius: 5px;
+                -o-border-radius: 5px;
+              }
+              .voice_up {
+                top: 10%;
+                left: -13px;
+              }
+              .voice_down {
+                top: 24%;
+                left: -13px;
+              }
+              .power {
+                top: 17%;
+                right: -13px;
+              }
+              .sonser,
+              .voice {
+                position: absolute;
+                z-index: 7;
+              }
+              .sonser {
+                height: 15px;
+                width: 33.33%;
+                left: 33.33%;
+                border-radius: 0 0 15px 15px;
+              }
+              .voice {
+                height: 5px;
+                width: 15%;
+                left: 42.5%;
+                border-radius: 15px;
+                -webkit-border-radius: 15px;
+                -moz-border-radius: 15px;
+                -ms-border-radius: 15px;
+                -o-border-radius: 15px;
+              }
+              .carme {
+                content: '';
+                position: absolute;
+                height: 7px;
+                width: 7px;
+                top: -1px;
+                left: calc(63% - 15px);
+                border-radius: 50%;
+                -webkit-border-radius: 50%;
+                -moz-border-radius: 50%;
+                -ms-border-radius: 50%;
+                -o-border-radius: 50%;
+                z-index: 10;
+                display: none;
+              }
+              // 📱 شبكات الأجهزة الصغيرة
+              // screen and (max-width: 568px)  MediaQueries(Xxs)  MediaQueries(Mobile)
+              @include MediaQueries(Mobile) {
+                &::after {
+                  // content: '📱 Mobile 568';
+                  position: absolute;
+                  top: 0%;
+                  left: 0px;
+                  border-radius: 0.5rem;
+                  z-index: 7;
+                  font-size: 20px;
+                  font-weight: bold;
+                  background-color: #130e0e;
+                  color: #fff;
+                  padding: 10px 15px;
+                }
+                margin: 1rem 1vw;
+                max-width: 98vw;
+                min-width: 97vw;
+                // max-height: 100vh;
+                // min-height: 97vh;
+              }
+              // 📊 شبكات التابلت
+              // screen and (min-width: 569px) and (max-width: 767px) MediaQueries(Xs) MediaQueries(Tablet)
+              @include MediaQueries(Tablet) {
+                &::after {
+                  // content: '📊 Tablet 567 767';
+                  position: absolute;
+                  top: 0%;
+                  left: 0px;
+                  border-radius: 0.5rem;
+                  z-index: 7;
+                  font-size: 20px;
+                  font-weight: bold;
+                  background-color: #130e0e;
+                  color: #fff;
+                  padding: 10px 15px;
+                }
+                max-width: 350px;
+                min-width: 300px;
+                max-height: 700px;
+                min-height: 650px;
+              }
+              // 💻 شبكات اللابتوب
+              // screen and (min-width: 768px) and (max-width: 991px) MediaQueries(Md) MediaQueries(Laptop)
+              @include MediaQueries(Laptop) {
+                &::after {
+                  // content: '💻 Laptop 768 991';
+                  position: absolute;
+                  top: 0%;
+                  left: 0px;
+                  border-radius: 0.5rem;
+                  z-index: 7;
+                  font-size: 20px;
+                  font-weight: bold;
+                  background-color: #130e0e;
+                  color: #fff;
+                  padding: 10px 15px;
+                }
+                max-width: 250px;
+                min-width: 200px;
+                max-height: 91vh;
+                min-height: 90vh;
+              }
+              // 🖥️ شبكات الأجهزة الكبيرة
+              // screen and (min-width: 992px) and (max-width: 1199px) MediaQueries(Lg) MediaQueries(LaptopLg)
+              @include MediaQueries(LaptopLg) {
+                &::after {
+                  // content: '💻 Laptop Lg 992 1199';
+                  position: absolute;
+                  top: 0%;
+                  left: 0px;
+                  border-radius: 0.5rem;
+                  z-index: 7;
+                  font-size: 20px;
+                  font-weight: bold;
+                  background-color: #130e0e;
+                  color: #fff;
+                  padding: 10px 15px;
+                }
+                max-width: 300px;
+                min-width: 250px;
+                max-height: 81vh;
+                min-height: 80vh;
+              }
+              // 🌐 شبكات الديسكتوب
+              // screen and (min-width: 1200px) and (max-width: 1399px) MediaQueries(Xlg) MediaQueries(Desktop)
+              @include MediaQueries(Desktop) {
+                &::after {
+                  // content: '🖥️ Desktop 1200 1399';
+                  position: absolute;
+                  top: 0%;
+                  left: 0px;
+                  border-radius: 0.5rem;
+                  z-index: 7;
+                  font-size: 20px;
+                  font-weight: bold;
+                  background-color: #130e0e;
+                  color: #fff;
+                  padding: 10px 15px;
+                }
+                max-width: 300px;
+                min-width: 250px;
+                max-height: 80vh;
+                min-height: 80vh;
+              }
+              // 🖥️ شبكات الديسكتوب الكبيرة
+              // screen and (min-width: 1400px) MediaQueries(Xxlg) MediaQueries(DesktopLg)
+              @include MediaQueries(DesktopLg) {
+                &::after {
+                  // content: '🖥️ Desktop Lg 1400';
+                  position: absolute;
+                  top: 0%;
+                  left: 0px;
+                  border-radius: 0.5rem;
+                  z-index: 7;
+                  font-size: 12px;
+                  font-weight: bold;
+                  background-color: #130e0e;
+                  color: #fff;
+                  padding: 10px 15px;
+                }
+                max-width: 350px;
+                min-width: 300px;
+                max-height: 81vh;
+                min-height: 80vh;
+              }
+            }
+            .mobile_body_white {
+              border: 0.5rem solid #e9e3e3;
+              .mobile_content {
+                border: 0.2rem solid #e9e3e3;
+              }
+              .voice_up,
+              .voice_down,
+              .power {
+                background-color: #e9e3e3;
+              }
+
+              .sonser {
+                background-color: #e9e3e3;
+              }
+              .voice {
+                background-color: #b3b0b0;
+              }
+              .carme {
+                background-color: #b3b0b0;
+              }
+            }
+            .mobile_body_dark {
+              border: 0.5rem solid #130e0e;
+              .mobile_content {
+                border: 0.2rem solid #130e0e;
+              }
+              .voice_up,
+              .voice_down,
+              .power {
+                background-color: #130e0e;
+              }
+
+              .sonser {
+                background-color: #130e0e;
+              }
+              .voice {
+                background-color: #b3b0b0;
+              }
+              .carme {
+                background-color: #b3b0b0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+html.p-dark {
+  .wrapper_page_login {
+    .inner_page_login {
+      .container {
+        .wrapper_content_page_login {
+          .inner_content_page_login {
+            .box_content_page_login {
+              .mobile_body_white,
+              .mobile_body_dark {
+                .mobile_content {
+                  background-color: #18181b;
+                }
+              }
+              .mobile_body_white {
+                .mobile_content {
+                }
+              }
+              .mobile_body_dark {
+                .mobile_content {
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+@use './vueflow-controls';
+@use './vueflow-minimap';
+@use './useVueFlow';
+@use './vueflow_node';
+@use './vueflow-controls_aside';
+
+/* ===================================
+  🎯 Vue Flow Custom Styles
+=================================== */
+
+.vue-flow {
+  .wrapper_control_panel {
+  }
+
+  /* 🧱 Panels */
+  .vue-flow__panel {
+    &.wrapper_control_panel {
+    }
+
+    &.vue-flow__controls {
+    }
+
+    &.vue-flow__minimap {
+    }
+  }
+}
+/*
+button {
+      padding: 5px 10px;
+      background-color: #ffeaa7;
+      margin: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+*/

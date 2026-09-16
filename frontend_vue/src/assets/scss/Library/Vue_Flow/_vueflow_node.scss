@@ -1,0 +1,165 @@
+// Style For VueFlow
+// Node Style
+.vue-flow__nodes {
+  // Parent Single Node
+  .vue-flow__node {
+    // background: #ffeaa7;
+    // box-shadow: 0 0 0 1px #ffeaa7;
+    // border: 1px solid #ffeaa7;
+    padding: 4px;
+    border-radius: 4px;
+    outline: none;
+
+    // font
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: capitalize;
+    counter-increment: counter;
+
+    &:after {
+      content: counter(counter);
+      position: absolute;
+      color: #fff;
+      font-weight: 700;
+      font-size: 8px;
+      right: -8px;
+      top: -8px;
+      width: 15px;
+      height: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fdcb6e;
+      border-radius: 50%;
+    }
+
+    &.vue-flow__node-custom {
+    }
+    &.vue-flow__node-default {
+    }
+    &.nopan {
+    }
+    &.draggable {
+    }
+    &.selectable {
+    }
+    &:focus-visible,
+    &:focus,
+    &.selected {
+      border: 1px solid #ffeaa7;
+      outline: none;
+    }
+    //
+    .vue-flow__handle {
+      &.vue-flow__handle-top {
+      }
+      &.vue-flow__handle-null {
+      }
+      &.nodrag {
+      }
+      &.nopan {
+      }
+      &.connectable {
+      }
+      &.connectablestart {
+      }
+      &.connectableend {
+      }
+      &.connectionindicator {
+      }
+      &.vue-flow__handle-bottom {
+      }
+      &.target {
+        border-radius: 10px;
+        border: 1px solid #898e93;
+        width: 18px;
+        height: 8px;
+        background-color: #898e93;
+        border-radius: 5%;
+        position: relative;
+        top: -9px;
+        // 🟢 مثلث داخلي يوحي بالدخول
+        &::after {
+          content: '';
+          position: absolute;
+          right: 2px;
+          top: 60%;
+          transform: translateY(-50%);
+          border-top: 8px solid #fdcb6e;
+          border-bottom: 6px solid transparent;
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+        }
+      }
+      &.source {
+        width: 18px;
+        height: 18px;
+        background-color: #898e93;
+        border: 3px solid #898e93;
+        border-radius: 50%;
+        position: relative;
+        top: 9px;
+      }
+    }
+    // Inner Node
+
+    .node {
+      transition: all 0.25s ease;
+      color: #fff;
+      &.open_program {
+        box-shadow: #16a34a 0px 0px 15px;
+        // border: 2px solid #16a34a;
+      }
+      &.close_program {
+        // box-shadow: #dc2626 0px 0px 15px;
+        // border: 2px solid #dc2626;
+      }
+      .node-header {
+        padding: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 0 0 5px 5px;
+        background: #020617;
+      }
+      .node-body {
+        padding: 8px;
+        font-size: 13px;
+
+        .node-details {
+          padding: 8px;
+          border-radius: 8px;
+          margin-bottom: 8px;
+        }
+        .node-action {
+        }
+        select {
+          color: #020617;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+/* */
+.layouting .vue-flow__node {
+  transition: transform 0.4s ease;
+}
+
+/* */
+.isolated-node {
+  border: 1px solid red !important;
+  box-shadow: 0 0 20px red !important;
+  animation: pulse-shadow 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-shadow {
+  from {
+    box-shadow: 0 0 5px red;
+  }
+  to {
+    box-shadow: 0 0 15px red;
+  }
+}
