@@ -34,7 +34,14 @@ urlpatterns = [
     ),
 
 
-
+    path(
+        "api/goals/",
+        include("goals.urls"),
+    ),
+    path(
+        "api/tasks/",
+        include("tasks.urls"),
+    ),
     path(
         "api/social/",
         include(

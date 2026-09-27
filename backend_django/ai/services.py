@@ -1,397 +1,163 @@
+import json
+
 from django.conf import settings
 from django.db import transaction
 
 from .exceptions import AIError
-from .models import (
-    AIConversation,
-    AIMessage,
-)
+from .models import AIConversation, AIMessage, AISettings, AIPromptProfile
 from .providers import get_ai_provider
-from .learning_actions import (
-    looks_like_learning_request,
-    extract_learning_skill,
-    AILearningActionService,
-)
-from .serializers import AILearningPlanSerializer
+from .learning_actions import looks_like_learning_request, AILearningActionService
 from .prompts import build_system_prompt
 
 
 class AIContextBuilder:
-    """
-    Builds the context that will be sent to the AI.
-    """
-
-    def __init__(self, user):
+    def __init__(self, user, max_items=20):
         self.user = user
+        self.max_items = max_items
 
     def build(self):
-        return {
-            "user_id": self.user.pk,
-        }
+        context = {"user_id": self.user.pk,
+                   "user_name": getattr(self.user, "full_name", "")}
+        try:
+            from knowledge.models import KnowledgeItem
+            knowledge = KnowledgeItem.objects.filter(
+                user=self.user, is_archived=False).order_by("-updated_at")[:self.max_items]
+            context["knowledge"] = [
+                {"id": x.id, "title": x.title, "type": x.knowledge_type, "content": x.content[:1500]} for x in knowledge]
+        except Exception:
+            context["knowledge"] = []
+        try:
+            from goals.models import Goal
+            goals = Goal.objects.filter(user=self.user).exclude(status__in=[
+                "completed", "cancelled", "archived"]).order_by("target_date")[:self.max_items]
+            context["goals"] = [{"id": x.id, "title": x.title, "progress": x.progress_percent, "status": x.status,
+                                 "target_date": x.target_date.isoformat() if x.target_date else None} for x in goals]
+        except Exception:
+            context["goals"] = []
+        try:
+            from tasks.models import Task
+            from django.utils import timezone
+            tasks = Task.objects.filter(user=self.user, scheduled_date=timezone.localdate()).exclude(
+                status__in=["completed", "cancelled"]).order_by("sort_order")[:self.max_items]
+            context["today_tasks"] = [{"id": x.id, "title": x.title, "status": x.status,
+                                       "priority": x.priority, "estimated_minutes": x.estimated_minutes} for x in tasks]
+        except Exception:
+            context["today_tasks"] = []
+        try:
+            from learning.models import LearningGoal, LearningPath
+            learning_goals = LearningGoal.objects.filter(user=self.user).exclude(
+                status__in=["completed", "archived"]).select_related("skill")[:self.max_items]
+            context["learning_goals"] = [{"id": x.id, "title": x.title, "skill": x.skill.name if x.skill else None,
+                                          "target_level": x.target_level, "status": x.status} for x in learning_goals]
+            paths = LearningPath.objects.filter(user=self.user).exclude(
+                status="archived").order_by("-updated_at")[:self.max_items]
+            context["learning_paths"] = [
+                {"id": x.id, "title": x.title, "goal_id": x.goal_id, "status": x.status} for x in paths]
+        except Exception:
+            context["learning_goals"] = []
+            context["learning_paths"] = []
+        return context
 
 
 class AIService:
-    """
-    Main service responsible for AI interactions
-    and AI-driven actions.
-    """
-
     def __init__(self, user):
         self.user = user
 
-    # ---------------------------------------------------------
-    # CONVERSATIONS
-    # ---------------------------------------------------------
+    def get_settings(self):
+        obj, _ = AISettings.objects.get_or_create(user=self.user)
+        return obj
 
-    def create_conversation(
-        self,
-        title="",
-        provider=None,
-        model="",
-    ):
-        provider = provider or getattr(
-            settings,
-            "AI_DEFAULT_PROVIDER",
-            "ollama",
-        )
+    def create_conversation(self, title="", provider=None, model=""):
+        config = self.get_settings()
+        provider = provider or config.preferred_provider or getattr(
+            settings, "AI_DEFAULT_PROVIDER", "ollama")
+        model = model or config.preferred_model
+        return AIConversation.objects.create(user=self.user, title=title, provider=provider, model=model)
 
-        return AIConversation.objects.create(
-            user=self.user,
-            title=title,
-            provider=provider,
-            model=model,
-        )
-
-    def get_or_create_conversation(
-        self,
-        conversation_id=None,
-        provider=None,
-        model="",
-    ):
+    def get_or_create_conversation(self, conversation_id=None, provider=None, model=""):
         if conversation_id:
             try:
-                return AIConversation.objects.get(
-                    id=conversation_id,
-                    user=self.user,
-                )
-            except AIConversation.DoesNotExist:
-                raise AIError(
-                    "Conversation does not exist."
-                )
+                return AIConversation.objects.get(id=conversation_id, user=self.user)
+            except AIConversation.DoesNotExist as exc:
+                raise AIError("Conversation does not exist.") from exc
+        return self.create_conversation(provider=provider, model=model)
 
-        return self.create_conversation(
-            provider=provider,
-            model=model,
-        )
-
-    # ---------------------------------------------------------
-    # AI MESSAGE CONTEXT
-    # ---------------------------------------------------------
-
-    def build_messages(self, conversation):
-        context_builder = AIContextBuilder(
-            user=self.user
-        )
-
-        context = context_builder.build()
-
-        system_prompt = build_system_prompt(
-            context=context
-        )
-
-        messages = [
-            {
-                "role": "system",
-                "content": system_prompt,
-            }
-        ]
-
-        history = (
-            conversation.messages
-            .filter(
-                role__in=[
-                    AIMessage.ROLE_USER,
-                    AIMessage.ROLE_ASSISTANT,
-                ]
-            )
-            .order_by("created_at")
-        )
-
-        for message in history:
-            messages.append(
-                {
-                    "role": message.role,
-                    "content": message.content,
-                }
-            )
-
+    def build_messages(self, conversation, current_message=""):
+        config = self.get_settings()
+        context = AIContextBuilder(self.user).build() if config.context_enabled else {
+            "user_id": self.user.pk}
+        profile = config.default_prompt_profile
+        if profile:
+            system_prompt = profile.system_prompt or build_system_prompt(
+                context=context)
+            if profile.context_instructions:
+                system_prompt += "\n\nContext instructions:\n" + profile.context_instructions
+        else:
+            system_prompt = build_system_prompt(context=context)
+        system_prompt += "\n\nRelevant application context:\n" + \
+            json.dumps(context, ensure_ascii=False, default=str)
+        messages = [{"role": "system", "content": system_prompt}]
+        history = list(conversation.messages.filter(role__in=[
+                       AIMessage.ROLE_USER, AIMessage.ROLE_ASSISTANT]).order_by("created_at"))[-30:]
+        for item in history:
+            messages.append({"role": item.role, "content": item.content})
+        if current_message and (not messages or messages[-1].get("content") != current_message):
+            messages.append({"role": "user", "content": current_message})
         return messages
 
-    # ---------------------------------------------------------
-    # LEARNING ACTION
-    # ---------------------------------------------------------
-
-    def execute_learning_action(self, message):
-        """
-        Detect and execute a learning request.
-
-        Example:
-
-            عايز أتعلم Django
-
-        becomes:
-
-            Learning Request
-                    ↓
-                 Django
-                    ↓
-                 Skill
-                    ↓
-              LearningGoal
-                    ↓
-              LearningPath
-                    ↓
-              LearningTopics
-        """
-
+    def execute_learning_action(self, message, provider=None, model=""):
         if not looks_like_learning_request(message):
             return None, None
-
-        skill_name = extract_learning_skill(message)
-
-        if not skill_name:
-            return None, {
-                "type": "create_learning_plan",
-                "status": "failed",
-                "error": "Could not determine the learning skill.",
-            }
-
-        plan_data = {
-            "intent": "create_learning_plan",
-            "skill": skill_name,
-            "level": "beginner",
-            "target_level": "advanced",
-            "goal_title": f"Learn {skill_name}",
-            "goal_description": (
-                f"Learn {skill_name} "
-                "through a structured learning path."
-            ),
-            "reason": "",
-            "path_title": (
-                f"{skill_name} Learning Path"
-            ),
-            "path_description": (
-                f"A structured learning path "
-                f"for learning {skill_name}."
-            ),
-        }
-
-        serializer = AILearningPlanSerializer(
-            data=plan_data
-        )
-
-        serializer.is_valid(
-            raise_exception=True
-        )
-
-        data = serializer.validated_data
-
         try:
-            learning_result = (
-                AILearningActionService(
-                    user=self.user
-                ).create_learning_plan(
-                    skill_name=data["skill"],
-                    level=data["level"],
-                    target_level=data["target_level"],
-                    goal_title=data["goal_title"],
-                    goal_description=data["goal_description"],
-                    reason=data["reason"],
-                    path_title=data["path_title"],
-                    path_description=data["path_description"],
-                    topics=data.get("topics") or None,
-                )
-            )
-
+            plan = AILearningActionService.generate_ai_plan(message=message, provider=provider or getattr(
+                settings, "AI_DEFAULT_PROVIDER", "ollama"), model=model or "", user=self.user)
         except Exception as exc:
-            return None, {
-                "type": "create_learning_plan",
-                "status": "failed",
-                "error": str(exc),
-            }
-
-        learning_action = {
-            "type": "create_learning_plan",
-            "status": (
-                "created"
-                if learning_result["created"]
-                else "already_exists"
-            ),
-        }
-
-        return learning_result, learning_action
-
-    # ---------------------------------------------------------
-    # SERIALIZE LEARNING RESULT
-    # ---------------------------------------------------------
+            return None, {"type": "create_learning_plan", "status": "failed", "error": str(exc)}
+        return None, {"type": "create_learning_plan", "status": "preview_ready", "plan": plan}
 
     def serialize_learning_result(self, result):
         if not result:
             return None
-
-        skill = result["skill"]
-        goal = result["goal"]
-        path = result["path"]
-        topics = result["topics"]
-
         return {
             "created": result["created"],
-
-            "skill": {
-                "id": skill.id,
-                "name": skill.name,
-                "slug": skill.slug,
-            },
-
-            "goal": {
-                "id": goal.id,
-                "title": goal.title,
-                "description": goal.description,
-                "status": goal.status,
-                "target_level": goal.target_level,
-            },
-
-            "path": {
-                "id": path.id,
-                "title": path.title,
-                "description": path.description,
-                "status": path.status,
-            },
-
-            "topics": [
-                {
-                    "id": topic.id,
-                    "title": topic.title,
-                    "description": topic.description,
-                    "order": topic.order,
-                    "status": topic.status,
-                    "estimated_minutes": topic.estimated_minutes,
-                }
-                for topic in topics
-            ],
+            "skill": {"id": result["skill"].id, "name": result["skill"].name, "slug": result["skill"].slug},
+            "goal": {"id": result["goal"].id, "title": result["goal"].title, "description": result["goal"].description, "status": result["goal"].status, "target_level": result["goal"].target_level},
+            "path": {"id": result["path"].id, "title": result["path"].title, "description": result["path"].description, "status": result["path"].status},
+            "topics": [{"id": x.id, "title": x.title, "description": x.description, "order": x.order, "status": x.status, "estimated_minutes": x.estimated_minutes} for x in result["topics"]],
         }
 
-    # ---------------------------------------------------------
-    # CHAT
-    # ---------------------------------------------------------
+    def approve_learning_plan(self, plan):
+        required = {"skill", "topics"}
+        if not required.issubset(plan):
+            raise AIError("A valid learning plan is required.")
+        return AILearningActionService(user=self.user).create_learning_plan(
+            skill_name=plan["skill"], level=plan.get("level", "beginner"), target_level=plan.get("target_level", "advanced"),
+            goal_title=plan.get("goal_title") or None, goal_description=plan.get("goal_description", ""), reason=plan.get("reason", ""),
+            path_title=plan.get("path_title") or None, path_description=plan.get("path_description", ""), topics=plan.get("topics") or [],
+        )
 
-    def chat(
-        self,
-        message,
-        conversation_id=None,
-        provider=None,
-        model="",
-    ):
+    def chat(self, message, conversation_id=None, provider=None, model=""):
         conversation = self.get_or_create_conversation(
-            conversation_id=conversation_id,
-            provider=provider,
-            model=model,
-        )
-
-        selected_provider = (
-            provider or conversation.provider
-        )
-
-        selected_model = (
-            model or conversation.model or ""
-        )
-
-        # -----------------------------------------------------
-        # Save user message
-        # -----------------------------------------------------
-
+            conversation_id=conversation_id, provider=provider, model=model)
+        selected_provider = provider or conversation.provider
+        selected_model = model or conversation.model or ""
+        config = self.get_settings()
+        profile = config.default_prompt_profile
         user_message = AIMessage.objects.create(
-            conversation=conversation,
-            role=AIMessage.ROLE_USER,
-            content=message,
-        )
-
-        # -----------------------------------------------------
-        # Execute Learning action
-        # -----------------------------------------------------
-
-        learning_result, learning_action = (
-            self.execute_learning_action(message)
-        )
-
-        # -----------------------------------------------------
-        # AI response
-        # -----------------------------------------------------
-
-        messages = self.build_messages(
-            conversation
-        )
-
-        ai_provider = get_ai_provider(
-            selected_provider
-        )
-
-        result = ai_provider.generate(
-            messages=messages,
-            model=selected_model or None,
-        )
-
-        # -----------------------------------------------------
-        # Save assistant response
-        # -----------------------------------------------------
-
+            conversation=conversation, role=AIMessage.ROLE_USER, content=message)
+        messages = self.build_messages(conversation, current_message=message)
+        provider_obj = get_ai_provider(selected_provider, user=self.user)
+        result = provider_obj.generate(messages=messages, model=selected_model or None,
+                                       temperature=profile.temperature if profile else None, max_tokens=profile.max_tokens if profile else None)
         with transaction.atomic():
-
-            assistant_message = AIMessage.objects.create(
-                conversation=conversation,
-                role=AIMessage.ROLE_ASSISTANT,
-                content=result["content"],
-                provider=result["provider"],
-                model=result["model"],
-                metadata={
-                    "provider": result["provider"],
-                    "model": result["model"],
-                },
-            )
-
+            assistant_message = AIMessage.objects.create(conversation=conversation, role=AIMessage.ROLE_ASSISTANT, content=result["content"], provider=result["provider"], model=result["model"], metadata={
+                                                         "provider": result["provider"], "model": result["model"]})
             conversation.provider = result["provider"]
             conversation.model = result["model"]
-
             if not conversation.title:
                 conversation.title = message[:255]
-
             conversation.save(
-                update_fields=[
-                    "provider",
-                    "model",
-                    "title",
-                    "updated_at",
-                ]
-            )
-
-        return {
-            "conversation": conversation,
-
-            "user_message": user_message,
-
-            "assistant_message": assistant_message,
-
-            "provider": result["provider"],
-
-            "model": result["model"],
-
-            "learning": (
-                self.serialize_learning_result(
-                    learning_result
-                )
-                if learning_result
-                else None
-            ),
-
-            "learning_action": learning_action,
-        }
+                update_fields=["provider", "model", "title", "updated_at"])
+        _, learning_action = self.execute_learning_action(
+            message, selected_provider, selected_model)
+        return {"conversation": conversation, "user_message": user_message, "assistant_message": assistant_message, "provider": result["provider"], "model": result["model"], "learning": None, "learning_action": learning_action}

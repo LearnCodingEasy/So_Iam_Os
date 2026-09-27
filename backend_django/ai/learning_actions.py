@@ -10,7 +10,13 @@ from learning.models import (
 from learning.services import LearningService
 
 
+import json
 import re
+
+from ai.exceptions import AIResponseError
+from ai.providers import get_ai_provider
+from ai.prompts import build_learning_intent_prompt
+from ai.serializers import AILearningPlanSerializer
 
 
 LEARNING_PATTERNS = [
@@ -141,6 +147,72 @@ class AILearningActionService:
 
     def __init__(self, user):
         self.user = user
+
+    @staticmethod
+    def generate_ai_plan(*, message, provider="ollama", model="", user=None):
+        """Generate and validate a complete learning plan with the configured LLM."""
+        prompt = build_learning_intent_prompt(message)
+        ai_provider = get_ai_provider(provider or "ollama", user=user)
+
+        result = ai_provider.generate(
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You generate structured learning plans for So_Iam_OS. "
+                        "Return ONLY one valid JSON object. No markdown, no explanation. "
+                        "Generate 6 to 15 ordered practical topics. "
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+            ],
+            model=model or None,
+        )
+
+        content = (result.get("content") or "").strip()
+        if not content:
+            raise AIResponseError("AI returned an empty learning plan.")
+
+        # Accept fenced JSON and recover a JSON object if the model added prose.
+        if content.startswith("```"):
+            content = re.sub(r"^```(?:json)?\s*", "", content, flags=re.I)
+            content = re.sub(r"\s*```$", "", content)
+
+        start = content.find("{")
+        end = content.rfind("}")
+        if start < 0 or end <= start:
+            raise AIResponseError("AI did not return a JSON learning plan.")
+
+        try:
+            raw = json.loads(content[start:end + 1])
+        except json.JSONDecodeError as exc:
+            raise AIResponseError(
+                f"AI returned invalid learning-plan JSON: {exc}"
+            ) from exc
+
+        if raw.get("intent") != "create_learning_plan":
+            raise AIResponseError("AI did not return a learning-plan intent.")
+
+        serializer = AILearningPlanSerializer(data=raw)
+        serializer.is_valid(raise_exception=True)
+        data = dict(serializer.validated_data)
+
+        topics = list(data.get("topics") or [])
+        if not topics:
+            raise AIResponseError(
+                "AI returned a learning plan without topics.")
+
+        # Never trust duplicate/invalid ordering from the model.
+        for index, topic in enumerate(topics, start=1):
+            topic["order"] = index
+
+        data["topics"] = topics
+        data["provider"] = result.get("provider")
+        data["model"] = result.get("model")
+        return data
 
     @staticmethod
     def generate_topics(skill_name):
@@ -309,17 +381,17 @@ class AILearningActionService:
             raise ValueError("skill_name is required.")
 
         valid_levels = {
-            Skill.LEVEL_BEGINNER,
-            Skill.LEVEL_INTERMEDIATE,
-            Skill.LEVEL_ADVANCED,
-            Skill.LEVEL_EXPERT,
+            Skill.Level.BEGINNER,
+            Skill.Level.INTERMEDIATE,
+            Skill.Level.ADVANCED,
+            Skill.Level.EXPERT,
         }
 
         if level not in valid_levels:
-            level = Skill.LEVEL_BEGINNER
+            level = Skill.Level.BEGINNER
 
         if target_level not in valid_levels:
-            target_level = Skill.LEVEL_ADVANCED
+            target_level = Skill.Level.ADVANCED
 
         slug = slugify(skill_name)
 
@@ -351,7 +423,7 @@ class AILearningActionService:
             .filter(
                 user=self.user,
                 skill=skill,
-                status=LearningGoal.STATUS_ACTIVE,
+                status=LearningGoal.Status.ACTIVE,
             )
             .order_by("-created_at")
             .first()
@@ -409,6 +481,7 @@ class AILearningActionService:
             ),
             skill=skill,
             reason=reason,
+            current_level=level,
             target_level=target_level,
         )
 
@@ -422,7 +495,9 @@ class AILearningActionService:
             ),
         )
 
-        topics = topics or self.generate_topics(skill.name)
+        topics = list(topics or [])
+        if not topics:
+            raise ValueError("Learning plan must contain at least one topic.")
 
         created_topics = self._create_topics(
             path=path,
@@ -462,7 +537,8 @@ class AILearningActionService:
                     topic.get("description", "")
                 ),
                 skill=skill,
-                order=topic.get("order", index),
+                order=index,
+                difficulty=str(topic.get("difficulty", "")).strip()[:20],
                 estimated_minutes=max(
                     0,
                     int(

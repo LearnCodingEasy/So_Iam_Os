@@ -184,7 +184,7 @@
 
 ### الأتمتة
 
-مستقبلًا يستطيع النظام تنفيذ Actions من خلال Integrations وAutomation، مثل:
+مستقبلًا يستطيع النظام تنفيذ Actions من خلال Integrations و Automation، مثل:
 
 - قراءة البيانات
 - إنشاء المهام

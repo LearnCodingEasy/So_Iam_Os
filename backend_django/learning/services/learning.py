@@ -6,6 +6,7 @@ from learning.models import (
     LearningTopic,
 )
 
+
 class LearningService:
 
     @staticmethod
@@ -39,6 +40,7 @@ class LearningService:
         description="",
         skill=None,
         order=0,
+        difficulty="",
         estimated_minutes=0,
     ):
         if path.user_id != user.id:
@@ -52,6 +54,7 @@ class LearningService:
             title=title,
             description=description,
             order=order,
+            difficulty=difficulty,
             estimated_minutes=estimated_minutes,
         )
 

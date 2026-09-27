@@ -1,4 +1,5 @@
 import api from './api'
+import { endpoints } from './endpoints'
 
 // ============================================================
 // SEND MESSAGE
@@ -26,7 +27,7 @@ export const sendMessage = async ({
     payload.model = model
   }
 
-  const response = await api.post('/ai/chat/', payload)
+  const response = await api.post(endpoints.ai.chat, payload)
 
   return response.data
 }
@@ -36,13 +37,13 @@ export const sendMessage = async ({
 // ============================================================
 
 export const getConversations = async () => {
-  const response = await api.get('/ai/conversations/')
+  const response = await api.get(endpoints.ai.conversations)
 
   return response.data
 }
 
 export const getConversation = async (conversationId) => {
-  const response = await api.get(`/ai/conversations/${conversationId}/`)
+  const response = await api.get(endpoints.ai.conversation(conversationId))
 
   return response.data
 }
@@ -60,13 +61,13 @@ export const createConversation = async ({ title = '', provider = null, model = 
     payload.model = model
   }
 
-  const response = await api.post('/ai/conversations/', payload)
+  const response = await api.post(endpoints.ai.conversations, payload)
 
   return response.data
 }
 
 export const deleteConversation = async (conversationId) => {
-  await api.delete(`/ai/conversations/${conversationId}/`)
+  await api.delete(endpoints.ai.conversation(conversationId))
 
   return true
 }

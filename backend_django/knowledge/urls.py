@@ -1,18 +1,28 @@
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    KnowledgeFileViewSet,
     KnowledgeItemViewSet,
+    KnowledgeFileViewSet,
 )
 
 
 router = DefaultRouter()
+
+
+# ====================================================
+# 🧠 Knowledge
+# ====================================================
 
 router.register(
     r"items",
     KnowledgeItemViewSet,
     basename="knowledge-item",
 )
+
+
+# ====================================================
+# 📎 Knowledge Files
+# ====================================================
 
 router.register(
     r"files",

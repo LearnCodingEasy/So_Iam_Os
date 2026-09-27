@@ -1,22 +1,32 @@
-
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
+
+# ============================================================
+# 🧠 Knowledge Item
+# ============================================================
 
 class KnowledgeItem(models.Model):
     """
     Represents a piece of knowledge owned by a user.
 
-    Knowledge can be:
-    - note
-    - document
-    - article
-    - documentation
-    - idea
-    - project documentation
-    - learning material
-    - reference
+    Knowledge can be connected to the Learning system through
+    LearningTopic. The relationship is intentionally owned by
+    LearningTopic:
+
+        KnowledgeItem
+            ↑
+            │
+        LearningTopic
+
+    This allows the same knowledge item to be reused by
+    multiple learning topics when needed.
     """
+
+    # ========================================================
+    # 📚 Knowledge Types
+    # ========================================================
 
     class KnowledgeType(models.TextChoices):
         NOTE = "note", "Note"
@@ -29,22 +39,27 @@ class KnowledgeItem(models.Model):
         REFERENCE = "reference", "Reference"
         OTHER = "other", "Other"
 
+    # ========================================================
+    # 👁️ Visibility
+    # ========================================================
+
     class Visibility(models.TextChoices):
         PRIVATE = "private", "Private"
         SHARED = "shared", "Shared"
+
+    # ========================================================
+    # 👤 Owner
+    # ========================================================
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="knowledge_items",
     )
-    learning_topic = models.ForeignKey(
-        "learning.LearningTopic",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="knowledge_items",
-    )
+
+    # ========================================================
+    # 📝 Basic Information
+    # ========================================================
 
     title = models.CharField(
         max_length=255,
@@ -58,11 +73,19 @@ class KnowledgeItem(models.Model):
         blank=True,
     )
 
+    # ========================================================
+    # 🏷️ Classification
+    # ========================================================
+
     knowledge_type = models.CharField(
         max_length=30,
         choices=KnowledgeType.choices,
         default=KnowledgeType.NOTE,
     )
+
+    # ========================================================
+    # 🔗 Source
+    # ========================================================
 
     source_url = models.URLField(
         blank=True,
@@ -73,15 +96,27 @@ class KnowledgeItem(models.Model):
         blank=True,
     )
 
+    # ========================================================
+    # 🏷️ Tags
+    # ========================================================
+
     tags = models.JSONField(
         default=list,
         blank=True,
     )
 
+    # ========================================================
+    # ⚙️ Metadata
+    # ========================================================
+
     metadata = models.JSONField(
         default=dict,
         blank=True,
     )
+
+    # ========================================================
+    # 👁️ Visibility
+    # ========================================================
 
     visibility = models.CharField(
         max_length=20,
@@ -89,9 +124,17 @@ class KnowledgeItem(models.Model):
         default=Visibility.PRIVATE,
     )
 
+    # ========================================================
+    # 📦 Archive
+    # ========================================================
+
     is_archived = models.BooleanField(
         default=False,
     )
+
+    # ========================================================
+    # 🕒 Timestamps
+    # ========================================================
 
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -101,24 +144,89 @@ class KnowledgeItem(models.Model):
         auto_now=True,
     )
 
+    # ========================================================
+    # 🗂️ Meta
+    # ========================================================
+
     class Meta:
-        ordering = ["-updated_at"]
+        ordering = [
+            "-updated_at",
+        ]
 
         indexes = [
             models.Index(
-                fields=["user", "knowledge_type"],
+                fields=[
+                    "user",
+                    "knowledge_type",
+                ],
+                name="knowledge_user_type_idx",
             ),
+
             models.Index(
-                fields=["user", "is_archived"],
+                fields=[
+                    "user",
+                    "is_archived",
+                ],
+                name="knowledge_user_archived_idx",
             ),
+
             models.Index(
-                fields=["user", "created_at"],
+                fields=[
+                    "user",
+                    "created_at",
+                ],
+                name="knowledge_user_created_idx",
+            ),
+
+            models.Index(
+                fields=[
+                    "user",
+                    "updated_at",
+                ],
+                name="knowledge_user_updated_idx",
             ),
         ]
+
+    # ================================================
+    # 🔤 String
+    # ================================================
 
     def __str__(self):
         return self.title
 
+    # ================================================
+    # 🧠 Learning Integration
+    # ================================================
+
+    @property
+    def learning_topics_count(self):
+        """
+        Number of learning topics using this knowledge item.
+        """
+
+        return self.learning_topics.count()
+
+    @property
+    def learning_notes_count(self):
+        """
+        Number of learning notes connected to this knowledge item.
+        """
+
+        return self.learning_notes.count()
+
+    @property
+    def learning_applications_count(self):
+        """
+        Number of practical learning applications connected
+        to this knowledge item.
+        """
+
+        return self.learning_applications.count()
+
+
+# ====================================================
+# 📎 Knowledge File
+# ====================================================
 
 class KnowledgeFile(models.Model):
     """
@@ -126,6 +234,10 @@ class KnowledgeFile(models.Model):
 
     A single KnowledgeItem can contain multiple files.
     """
+
+    # ========================================================
+    # 📄 File Types
+    # ========================================================
 
     class FileType(models.TextChoices):
         PDF = "pdf", "PDF"
@@ -140,11 +252,19 @@ class KnowledgeFile(models.Model):
         CODE = "code", "Code"
         OTHER = "other", "Other"
 
+    # ========================================================
+    # 🧠 Parent Knowledge
+    # ========================================================
+
     knowledge = models.ForeignKey(
         KnowledgeItem,
         on_delete=models.CASCADE,
         related_name="files",
     )
+
+    # ========================================================
+    # 📁 Physical File
+    # ========================================================
 
     file = models.FileField(
         upload_to="knowledge/files/%Y/%m/",
@@ -153,6 +273,10 @@ class KnowledgeFile(models.Model):
     original_name = models.CharField(
         max_length=255,
     )
+
+    # ========================================================
+    # 🏷️ File Classification
+    # ========================================================
 
     file_type = models.CharField(
         max_length=30,
@@ -169,14 +293,40 @@ class KnowledgeFile(models.Model):
         default=0,
     )
 
+    # ========================================================
+    # 📝 Description
+    # ========================================================
+
     description = models.TextField(
         blank=True,
     )
+
+    # ========================================================
+    # ⚙️ Metadata
+    # ========================================================
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
     )
+
+    class ProcessingStatus(models.TextChoices):
+        PENDING = "pending", "Pending"
+        PROCESSING = "processing", "Processing"
+        COMPLETED = "completed", "Completed"
+        FAILED = "failed", "Failed"
+
+    processing_status = models.CharField(
+        max_length=20,
+        choices=ProcessingStatus.choices,
+        default=ProcessingStatus.COMPLETED,
+    )
+    processed_at = models.DateTimeField(null=True, blank=True)
+    processing_error = models.TextField(blank=True)
+
+    # ========================================================
+    # 🕒 Timestamps
+    # ========================================================
 
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -186,17 +336,54 @@ class KnowledgeFile(models.Model):
         auto_now=True,
     )
 
+    # ========================================================
+    # 🗂️ Meta
+    # ========================================================
+
     class Meta:
-        ordering = ["-created_at"]
+        ordering = [
+            "-created_at",
+        ]
 
         indexes = [
             models.Index(
-                fields=["knowledge", "file_type"],
+                fields=[
+                    "knowledge",
+                    "file_type",
+                ],
+                name="knowledge_file_type_idx",
             ),
+
             models.Index(
-                fields=["knowledge", "created_at"],
+                fields=[
+                    "knowledge",
+                    "created_at",
+                ],
+                name="knowledge_file_created_idx",
             ),
         ]
 
+    # ========================================================
+    # 🔤 String
+    # ========================================================
+
     def __str__(self):
         return self.original_name
+
+    # ========================================================
+    # 🧹 Delete physical file
+    # ========================================================
+
+    def delete(self, *args, **kwargs):
+        """
+        Delete the database record and the physical file.
+        """
+
+        file = self.file
+
+        super().delete(*args, **kwargs)
+
+        if file:
+            file.delete(
+                save=False,
+            )

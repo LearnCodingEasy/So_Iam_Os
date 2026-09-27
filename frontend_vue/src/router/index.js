@@ -14,6 +14,10 @@ import LearningView from '@/views/learning/LearningView.vue'
 import Dashboard from '../views/Dashboard/DashboardView.vue'
 
 import AIChat from '@/views/AI/AIChat.vue'
+import AIControl from '@/views/AI/AI.vue'
+import SettingsView from '@/views/Settings/Settings.vue'
+import GoalsView from '@/views/Goals/Goals.vue'
+import TodayTasksView from '@/views/Tasks/TodayTasks.vue'
 
 // 404 catchall Page Not Found
 import NotFound from '../views/Page_Not_Found/Page_Not_Found.vue'
@@ -106,15 +110,45 @@ const router = createRouter({
       },
     },
     // ==============================
-    // AI Core
+    // Planning / Execution
+    // ==============================
+    {
+      path: '/goals',
+      name: 'goals',
+      component: GoalsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/tasks/today',
+      name: 'today-tasks',
+      component: TodayTasksView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      redirect: { name: 'today-tasks' },
+      meta: { requiresAuth: true },
+    },
+
+    // ==============================
+    // Settings
+    // ==============================
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView,
+      meta: { requiresAuth: true },
+    },
+
+    // ==============================
+    // AI Chat
     // ==============================
     {
       path: '/ai',
-      name: 'ai',
+      name: 'ai-chat',
       component: AIChat,
-      meta: {
-        requiresAuth: true,
-      },
+      meta: { requiresAuth: true },
     },
 
     // ==============================

@@ -1,15 +1,26 @@
+
+
+
+
+
 import axios from 'axios'
 
-// ====================================================
+// ===================================================
 // 🌐 API Configuration
-// ====================================================
+// ===================================================
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  'http://127.0.0.1:8000/api'
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: API_BASE_URL,
 
   headers: {
     'Content-Type': 'application/json',
   },
+
+  timeout: 30000,
 })
 
 // ====================================================
@@ -18,46 +29,50 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    // -----------------------------------------------
-    // 🔑 Get Access Token
-    // -----------------------------------------------
-
     const accessToken = localStorage.getItem('user.access')
-
-    // -----------------------------------------------
-    // 🪪 Attach Authorization Header
-    // -----------------------------------------------
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`
     }
 
-    // -----------------------------------------------
-    // 🧪 Development Debug
-    // -----------------------------------------------
+    if (import.meta.env.DEV) {
+      console.group('🔐 API REQUEST')
 
-    console.group('🔐 API REQUEST')
+      console.log(
+        '➡️ Method:',
+        config.method?.toUpperCase(),
+      )
 
-    console.log('➡️ Method:', config.method?.toUpperCase())
+      console.log(
+        '🌐 URL:',
+        `${config.baseURL}${config.url}`,
+      )
 
-    console.log('🌐 URL:', `${config.baseURL}${config.url}`)
+      console.log(
+        '🔑 Has Access Token:',
+        Boolean(accessToken),
+      )
 
-    console.log('🔑 Has Access Token:', Boolean(accessToken))
+      console.log(
+        '🪪 Authorization:',
+        config.headers.Authorization
+          ? 'Bearer ********'
+          : '❌ Missing',
+      )
 
-    console.log(
-      '🪪 Authorization:',
-      config.headers.Authorization ? 'Bearer ********' : '❌ Missing',
-    )
-
-    console.log('📦 Request Headers:', config.headers)
-
-    console.groupEnd()
+      console.groupEnd()
+    }
 
     return config
   },
 
   (error) => {
-    console.error('❌ Request Interceptor Error:', error)
+    if (import.meta.env.DEV) {
+      console.error(
+        '❌ Request Interceptor Error:',
+        error,
+      )
+    }
 
     return Promise.reject(error)
   },
@@ -69,61 +84,68 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    // -----------------------------------------------
-    // 🟢 Successful Response
-    // -----------------------------------------------
+    if (import.meta.env.DEV) {
+      console.group('📥 API RESPONSE')
 
-    console.group('📥 API RESPONSE')
+      console.log(
+        '✅ Status:',
+        response.status,
+      )
 
-    console.log('✅ Status:', response.status)
+      console.log(
+        '🌐 URL:',
+        response.config.url,
+      )
 
-    console.log('🌐 URL:', response.config.url)
+      console.log(
+        '📦 Data:',
+        response.data,
+      )
 
-    console.log('📦 Data:', response.data)
-
-    console.groupEnd()
+      console.groupEnd()
+    }
 
     return response
   },
 
   (error) => {
-    // -----------------------------------------------
-    // ❌ Error Response
-    // -----------------------------------------------
+    if (import.meta.env.DEV) {
+      console.group('🚨 API ERROR')
 
-    console.group('🚨 API ERROR')
+      console.log(
+        '❌ Status:',
+        error.response?.status,
+      )
 
-    console.log('❌ Status:', error.response?.status)
+      console.log(
+        '🌐 URL:',
+        error.config?.url,
+      )
 
-    console.log('🌐 URL:', error.config?.url)
+      console.error(
+        '📦 Response:',
+        error.response?.data,
+      )
 
-    console.error('📦 Response:', JSON.stringify(error.response?.data, null, 2))
-
-    console.log('📋 Headers:', error.response?.headers)
-
-    console.groupEnd()
-
-    // -----------------------------------------------
-    // 🔐 Unauthorized
-    // -----------------------------------------------
-
-    if (error.response?.status === 401) {
-      console.warn('🔐 Access Token Unauthorized')
-
-      // ⚠️ مهم:
-      // لا تمسح user.access هنا حاليًا
-      // لأننا سنعمل Refresh Token mechanism
-      // بعد التأكد من المشكلة الأساسية.
+      console.groupEnd()
     }
 
-    // -----------------------------------------------
-    // 🚫 Forbidden
-    // -----------------------------------------------
+    if (error.response?.status === 401) {
+      console.warn(
+        '🔐 Access Token Unauthorized',
+      )
+    }
 
     if (error.response?.status === 403) {
-      console.warn('🚫 Forbidden')
+      console.warn(
+        '🚫 Forbidden request',
+      )
+    }
 
-      console.warn('⚠️ Django رفض الطلب. افحص Authorization + JWT Authentication.')
+    if (error.code === 'ECONNABORTED') {
+      console.warn(
+        '⏱️ API request timed out',
+      )
     }
 
     return Promise.reject(error)

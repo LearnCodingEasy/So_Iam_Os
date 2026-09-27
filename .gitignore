@@ -33,9 +33,15 @@ venv/
 .idea/
 
 
-
+# Frontend environment files
+frontend_vue/.env
+frontend_vue/.env.local
+frontend_vue/.env.development
+frontend_vue/.env.production
 node_modules/
 
+
+# 
 project_docs/
 
 

@@ -37,6 +37,9 @@ const progressForm = ref({
   notes: '',
 })
 
+const applications = ref([])
+const revisions = ref([])
+
 // ============================================================
 // HELPERS
 // ============================================================
@@ -140,6 +143,8 @@ const loadLearningDashboard = async (silent = false) => {
     progress.value = normalizeList(data.progress)
     assessments.value = normalizeList(data.assessments)
     attempts.value = normalizeList(data.attempts)
+    applications.value = normalizeList(data.applications)
+    revisions.value = normalizeList(data.revisions)
   } catch (err) {
     console.error('Learning dashboard error:', err)
 
@@ -154,9 +159,9 @@ const refreshDashboard = async () => {
   await loadLearningDashboard(true)
 }
 
-// ============================================================
+// ==================================================
 // GLOBAL METRICS
-// ============================================================
+// ==================================================
 
 const totalTopics = computed(() => topics.value.length)
 
@@ -186,9 +191,9 @@ const averageProgress = computed(() => {
   return Math.round(total / topics.value.length)
 })
 
-// ============================================================
+// ==================================================
 // CURRENT LEARNING
-// ============================================================
+// ==================================================
 
 const currentTopic = computed(() => {
   const inProgress = topics.value
@@ -230,9 +235,9 @@ const currentTopicProgress = computed(() => {
   return getTopicProgress(currentTopic.value.id)
 })
 
-// ============================================================
+// ==================================================
 // GOAL PROGRESS
-// ============================================================
+// ==================================================
 
 const getGoalProgress = (goalId) => {
   const goalPaths = paths.value.filter((path) => Number(path.goal) === Number(goalId))
@@ -250,9 +255,9 @@ const getGoalProgress = (goalId) => {
   return Math.round(total / goalTopics.length)
 }
 
-// ============================================================
+// ==================================================
 // ROADMAP
-// ============================================================
+// ==================================================
 
 const pathTopics = (pathId) => {
   return topics.value
@@ -260,9 +265,9 @@ const pathTopics = (pathId) => {
     .sort((a, b) => Number(a.order || 0) - Number(b.order || 0))
 }
 
-// ============================================================
+// ==================================================
 // FILTERS
-// ============================================================
+// ==================================================
 
 const filteredTopics = computed(() => {
   let result = [...topics.value]
@@ -274,9 +279,9 @@ const filteredTopics = computed(() => {
   return result.sort((a, b) => Number(a.order || 0) - Number(b.order || 0))
 })
 
-// ============================================================
+// ==================================================
 // RECENT ACTIVITY
-// ============================================================
+// ==================================================
 
 const recentTopics = computed(() => {
   return [...topics.value]
@@ -290,9 +295,9 @@ const recentTopics = computed(() => {
     .slice(0, 5)
 })
 
-// ============================================================
+// ==================================================
 // PROGRESS MODAL
-// ============================================================
+// ==================================================
 
 const openProgressModal = (topic) => {
   selectedTopic.value = topic
@@ -327,14 +332,16 @@ const saveProgress = async () => {
   updatingProgress.value = true
 
   try {
+    const percentage = Number(progressForm.value.progress_percent)
+
     const payload = {
       topic: selectedTopic.value.id,
-
-      progress_percent: Number(progressForm.value.progress_percent),
-
+      progress_percent: percentage,
       practice_completed: progressForm.value.practice_completed,
-
       notes: progressForm.value.notes,
+      lesson_completed: percentage >= 100 ? true : undefined,
+      quick_check_completed: percentage >= 100 ? true : undefined,
+      assessment_completed: percentage >= 100 ? true : undefined,
     }
 
     const result = await updateLearningProgress(payload)
@@ -354,11 +361,8 @@ const saveProgress = async () => {
     )
 
     if (topicIndex !== -1) {
-      const percentage = Number(progressForm.value.progress_percent)
-
       topics.value[topicIndex] = {
         ...topics.value[topicIndex],
-
         status: percentage >= 100 ? 'completed' : percentage > 0 ? 'in_progress' : 'pending',
       }
     }
@@ -367,15 +371,15 @@ const saveProgress = async () => {
   } catch (err) {
     console.error('Progress update error:', err)
 
-    error.value = err?.response?.data?.detail || 'Unable to update progress.'
+    error.value =
+      err?.response?.data?.detail || err?.response?.data?.message || 'Unable to update progress.'
   } finally {
     updatingProgress.value = false
   }
 }
-
-// ============================================================
+// ==================================================
 // LIFECYCLE
-// ============================================================
+// ==================================================
 
 onMounted(() => {
   loadLearningDashboard()

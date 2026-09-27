@@ -1,178 +1,56 @@
+from django.core.cache import cache
 from django.db import transaction
 from django.utils import timezone
-
 from knowledge.models import KnowledgeFile, KnowledgeItem
-
+from goals.models import Goal
+from tasks.models import Task
+from learning.models import LearningGoal, LearningPath, LearningProgress, Skill
+from jobs_opportunity.models import JobOpportunity, JobMatch, JobApplication
 
 class BaseService:
-    """
-    Base service for shared application logic.
-    """
-
     @staticmethod
     @transaction.atomic
-    def save(instance):
-        """
-        Save an instance inside an atomic transaction.
-        """
-        instance.save()
-        return instance
-
+    def save(instance): instance.save(); return instance
     @staticmethod
     @transaction.atomic
-    def delete(instance):
-        """
-        Delete an instance inside an atomic transaction.
-        """
-        instance.delete()
-
+    def delete(instance): instance.delete()
 
 class DashboardService:
-    """
-    Service responsible for aggregating data
-    from different So_Iam_OS applications.
-
-    Dashboard does not own application data.
-    It only reads and aggregates it.
-    """
-
     @staticmethod
     def get_data(*, user):
-        """
-        Build dashboard data for the authenticated user.
-        """
-
-        # -------------------------------------------------
-        # KNOWLEDGE
-        # -------------------------------------------------
-
-        knowledge_items = (
-            KnowledgeItem.objects
-            .filter(
-                user=user,
-                is_archived=False,
-            )
-            .order_by("-updated_at")
-        )
-
-        knowledge_count = knowledge_items.count()
-
-        knowledge_files_count = (
-            KnowledgeFile.objects
-            .filter(
-                knowledge__user=user,
-                knowledge__is_archived=False,
-            )
-            .count()
-        )
-
-        recent_knowledge = knowledge_items[:5]
-
-        recent_knowledge_data = [
-            {
-                "id": item.id,
-                "title": item.title,
-                "type": item.knowledge_type,
-                "updated_at": item.updated_at,
-                "files_count": item.files.count(),
-            }
-            for item in recent_knowledge
-        ]
-
-        # -------------------------------------------------
-        # USER
-        # -------------------------------------------------
-
-        user_name = (
-            getattr(user, "first_name", "")
-            or getattr(user, "username", "")
-            or "User"
-        )
-
-        user_email = (
-            getattr(user, "email", "")
-            or ""
-        )
-
-        # -------------------------------------------------
-        # CURRENT TIME
-        # -------------------------------------------------
-
-        now = timezone.now()
-
-        # -------------------------------------------------
-        # DASHBOARD RESPONSE
-        # -------------------------------------------------
-
-        return {
-            "user": {
-                "id": user.id,
-                "name": user_name,
-                "email": user_email,
+        key=f"dashboard:{user.pk}"
+        try:
+            cached=cache.get(key)
+            if cached: return cached
+        except Exception:
+            cached=None
+        today=timezone.localdate()
+        goals=Goal.objects.filter(user=user)
+        tasks=Task.objects.filter(user=user)
+        learning_goals=LearningGoal.objects.filter(user=user)
+        paths=LearningPath.objects.filter(user=user)
+        knowledge=KnowledgeItem.objects.filter(user=user,is_archived=False)
+        jobs=JobOpportunity.objects.filter(user=user,is_active=True)
+        matches=JobMatch.objects.filter(user=user)
+        applications=JobApplication.objects.filter(user=user)
+        recent_tasks=list(tasks.filter(scheduled_date=today).order_by("sort_order","-priority")[:8].values("id","title","status","priority","scheduled_date","due_at"))
+        data={
+            "user":{"id":str(user.id),"name":user.full_name,"email":user.email},
+            "date":{"now":timezone.now(),"local_date":today},
+            "stats":{
+                "tasks":{"total":tasks.count(),"today":tasks.filter(scheduled_date=today).count(),"pending":tasks.filter(status__in=["pending","in_progress"]).count(),"completed":tasks.filter(status="completed").count()},
+                "goals":{"total":goals.count(),"in_progress":goals.filter(status="active").count(),"completed":goals.filter(status="completed").count()},
+                "learning":{"goals":learning_goals.count(),"paths":paths.count(),"active_paths":paths.filter(status="active").count()},
+                "knowledge":{"total":knowledge.count(),"files":KnowledgeFile.objects.filter(knowledge__user=user,knowledge__is_archived=False).count()},
+                "jobs":{"total":jobs.count(),"matches":matches.filter(score__gte=70).count(),"applications":applications.count()},
+                "skills":{"total":Skill.objects.filter(learning_goals__user=user).distinct().count()},
             },
-
-            "date": {
-                "now": now,
-            },
-
-            "stats": {
-                # Future application
-                "projects": {
-                    "total": 0,
-                    "active": 0,
-                    "completed": 0,
-                },
-
-                # Future application
-                "tasks": {
-                    "total": 0,
-                    "pending": 0,
-                    "completed": 0,
-                },
-
-                # Future application
-                "goals": {
-                    "total": 0,
-                    "in_progress": 0,
-                    "completed": 0,
-                },
-
-                # Future application
-                "learning": {
-                    "total": 0,
-                    "in_progress": 0,
-                    "completed": 0,
-                },
-
-                # Real data from Knowledge application
-                "knowledge": {
-                    "total": knowledge_count,
-                    "files": knowledge_files_count,
-                },
-
-                # Future application
-                "memory": {
-                    "total": 0,
-                    "important": 0,
-                },
-            },
-
-            "recent": {
-                "knowledge": recent_knowledge_data,
-            },
-
-            # Will become dynamic when Tasks app exists
-            "tasks": [],
-
-            # Will become dynamic when the related apps exist
-            "progress": {
-                "projects": [],
-                "tasks": [],
-                "learning": [],
-            },
-
-            "system": {
-                "online": True,
-                "generated_at": now,
-            },
+            "tasks":recent_tasks,
+            "recent":{"knowledge":list(knowledge.order_by("-updated_at")[:5].values("id","title","knowledge_type","updated_at")),"jobs":list(jobs.order_by("-published_at","-discovered_at")[:5].values("id","title","company","is_remote","url"))},
+            "system":{"online":True,"generated_at":timezone.now()},
         }
+        try:
+            cache.set(key,data,60)
+        except Exception:
+            pass
+        return data
