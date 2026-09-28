@@ -1,0 +1,22 @@
+@use 'abstracts/tokens';
+@use 'base/base';
+@use 'components/states';
+
+.app-surface {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+}
+
+.app-page {
+  width: min(100% - 2rem, 1400px);
+  margin-inline: auto;
+  padding-block: 1.5rem 3rem;
+}
+
+@media (max-width: 640px) {
+  .app-page {
+    width: min(100% - 1rem, 1400px);
+  }
+}

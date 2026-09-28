@@ -16,6 +16,8 @@
 <script>
 import { updatePreset, updateSurfacePalette } from '@primevue/themes'
 
+const THEME_KEY = 'so_iam_os.theme'
+
 export default {
   data() {
     return {
@@ -24,11 +26,23 @@ export default {
       selectedSurfaceColor: null,
     }
   },
+  mounted() {
+    const saved = localStorage.getItem(THEME_KEY)
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    const isDark = saved ? saved === 'dark' : prefersDark
+    const root = document.documentElement
+    root.classList.toggle('p-dark', isDark)
+    root.dataset.theme = isDark ? 'dark' : 'light'
+    this.iconClass = isDark ? 'pi-sun' : 'pi-moon'
+  },
   methods: {
     onThemeToggler() {
       const root = document.getElementsByTagName('html')[0]
-      root.classList.toggle('p-dark')
-      this.iconClass = this.iconClass === 'pi-moon' ? 'pi-sun' : 'pi-moon'
+      const isDark = !root.classList.contains('p-dark')
+      root.classList.toggle('p-dark', isDark)
+      root.dataset.theme = isDark ? 'dark' : 'light'
+      localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light')
+      this.iconClass = isDark ? 'pi-sun' : 'pi-moon'
     },
 
     updateColors(type, color) {

@@ -1,15 +1,17 @@
 from django.urls import path
 
 from .views import (
+    AITopicChatView,
     AIChatView, AIConversationDetailView, AIConversationListCreateView,
     AISettingsView, AIProviderCredentialListCreateView, AIProviderCredentialDetailView,
     AIProviderModelsView, AIPromptProfileListCreateView, AIPromptProfileDetailView,
-    AILearningPlanPreviewView, AILearningPlanApproveView,
+    AILearningPlanPreviewView, AILearningPlanApproveView, AILearningPlanAsyncView, AITaskStatusView,
 )
 
 app_name = "ai"
 
 urlpatterns = [
+    path("topic-chat/", AITopicChatView.as_view(), name="ai-topic-chat"),
     path("chat/", AIChatView.as_view(), name="chat"),
     path("conversations/", AIConversationListCreateView.as_view(),
          name="conversation-list-create"),
@@ -30,6 +32,6 @@ urlpatterns = [
          name="learning-preview"),
     path("learning/approve/", AILearningPlanApproveView.as_view(),
          name="learning-approve"),
-    # path("learning/async/", AILearningPlanAsyncView.as_view(), name="learning-async"),
-    # path("tasks/<str:task_id>/", AITaskStatusView.as_view(), name="task-status"),
+    path("learning/async/", AILearningPlanAsyncView.as_view(), name="learning-async"),
+    path("tasks/<str:task_id>/", AITaskStatusView.as_view(), name="task-status"),
 ]

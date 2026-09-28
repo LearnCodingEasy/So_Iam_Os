@@ -70,6 +70,16 @@ const menuItems = [
     route: '/social',
   },
   {
+    name: 'Jobs',
+    icon: '✦',
+    route: '/jobs',
+  },
+  {
+    name: 'progress',
+    icon: '✦',
+    route: '/progress',
+  },
+  {
     name: 'AI Assistant',
     icon: '✦',
     route: '/ai',

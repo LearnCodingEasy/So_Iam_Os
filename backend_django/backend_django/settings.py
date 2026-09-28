@@ -145,6 +145,7 @@ CORS_ALLOW_HEADERS = [
 ]
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
+
 # 🧪 Development Debugging
 print(f"✅ Settings loaded Django")
 # print(f"✅ AUTH_USER_MODEL: {AUTH_USER_MODEL}")
@@ -162,6 +163,12 @@ FRONTEND_URL = config(
     "FRONTEND_URL",
     default="http://localhost:5173",
 )
+
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in config("CORS_ALLOWED_ORIGINS", default=FRONTEND_URL).split(",")
+    if origin.strip()
+]
 AUTH_USER_MODEL = "users_accounts.User"
 ALLOWED_HOSTS = [
     "localhost",
@@ -186,8 +193,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-# CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 
@@ -329,11 +335,11 @@ INSTALLED_APPS = [
     "core",   # ✅
     "projects",
     "challenges",
-    "tasks",
-    "goals",
+    "tasks", # ✅
+    "goals", # ✅
     "learning",  # ✅
     "knowledge",   # ✅
-    "jobs_opportunity",
+    "jobs_opportunity", # ✅
     "memory",
     "ai",   # ✅
 ]
@@ -433,4 +439,29 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+
+# ====================================================
+# Redis / Celery / Cache
+# ====================================================
+REDIS_URL = config("REDIS_URL", default="redis://127.0.0.1:6379/0")
+CELERY_BROKER_URL = config("CELERY_BROKER_URL", default=REDIS_URL)
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default=REDIS_URL)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULE = {
+    "generate-daily-learning-tasks": {
+        "task": "tasks.tasks.generate_daily_learning_tasks_for_all_users",
+        "schedule": 86400.0,
+    },
+}
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
+        "TIMEOUT": 300,
+    }
 }

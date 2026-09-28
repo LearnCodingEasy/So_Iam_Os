@@ -11,5 +11,6 @@ export const updateTask = async (id, payload) => (await api.patch(endpoints.task
 export const deleteTask = async (id) => { await api.delete(endpoints.tasks.detail(id)); return true }
 export const completeTask = async (id, actual_minutes) => (await api.post(endpoints.tasks.complete(id), { actual_minutes })).data
 export const postponeTask = async (id, until) => (await api.post(endpoints.tasks.postpone(id), { until })).data
+export const generateTodayTasks = async (payload={}) => (await api.post(endpoints.tasks.generate, payload)).data
 
 export default { listTasks, listTodayTasks, getTask, createTask, updateTask, deleteTask, completeTask, postponeTask }

@@ -16,6 +16,8 @@ import {
   getAssessmentQuestions,
   getAssessmentChoices,
   generateLearningTopicContent,
+  completeLearningTopic,
+  topicChat,
 } from '@/services/learning'
 
 import ApplicationComposer from '@/components/learning/ApplicationComposer.vue'
@@ -46,6 +48,10 @@ const noteSaved = ref(false)
 
 const showCompletePanel = ref(false)
 const showKnowledgePreview = ref(false)
+const showTopicChat = ref(false)
+const chatMessage = ref('')
+const chatMessages = ref([])
+const chatLoading = ref(false)
 
 const imagePrompt = ref('')
 const imagePromptCopied = ref(false)
@@ -97,6 +103,7 @@ const loadTopic = async () => {
 
     await loadPersonalNote()
     await loadAssessment()
+    await loadTopicChat()
   } catch (err) {
     console.error('Topic load error:', err)
 
@@ -206,6 +213,7 @@ const review = computed(() => {
 const images = computed(() => topic.value?.images ?? [])
 
 const references = computed(() => topic.value?.references ?? [])
+const sourceLessonContent = computed(() => lesson.value?.content || knowledgeItem.value?.content || '')
 
 // ==================================================
 // APPLICATION
@@ -706,25 +714,26 @@ const completeTopic = async () => {
   }
 
   try {
-    const result = await updateLearningProgress({
-      topic: topic.value.id,
-      progress_percent: 100,
-      practice_completed: true,
-      lesson_completed: true,
-      quick_check_completed: true,
-      assessment_completed: true,
-    })
-
-    topic.value.progress = result
-
+    const result = await completeLearningTopic(topic.value.id)
+    topic.value = result
     showCompletePanel.value = false
-
     await loadTopic()
   } catch (err) {
     console.error('Complete topic error:', err)
 
     error.value = err?.response?.data?.detail || 'Unable to complete this topic.'
   }
+}
+
+const loadTopicChat = async () => { try { const stored=localStorage.getItem(`topic_chat_${topic.value?.id}`); if(!stored)return; const data=(await (await import('@/services/api')).default.get(`/ai/conversations/${stored}/`)).data; chatMessages.value=(data.messages||[]).filter(m=>['user','assistant'].includes(m.role)).map(m=>({role:m.role,content:m.content})) } catch {} }
+
+const sendTopicChat = async () => {
+  const message = chatMessage.value.trim()
+  if (!message || !topic.value || chatLoading.value) return
+  chatMessages.value.push({role:'user',content:message}); chatMessage.value=''; chatLoading.value=true
+  try { const result=await topicChat({topic_id:topic.value.id,message,conversation_id:localStorage.getItem(`topic_chat_${topic.value.id}`)||undefined}); if(result.conversation_id)localStorage.setItem(`topic_chat_${topic.value.id}`,result.conversation_id); chatMessages.value.push({role:'assistant',content:result.message?.content||''}) }
+  catch(err){ error.value=err?.response?.data?.error||'Unable to answer this topic question.' }
+  finally { chatLoading.value=false }
 }
 
 // ==================================================
@@ -940,7 +949,7 @@ onMounted(loadTopic)
             </div>
 
             <!-- No content -->
-            <div v-if="!lesson" class="content-placeholder">
+            <div v-if="!lesson && knowledgeItem" class="content-placeholder source-ready"><span class="placeholder-number">K</span><div><h3>Knowledge source is ready</h3><p>{{ knowledgeItem.title }} is the primary source for this topic. Use it directly or ask AI to explain it.</p><pre class="source-content">{{ knowledgeItem.content }}</pre></div></div><div v-else-if="!lesson" class="content-placeholder">
               <span class="placeholder-number"> L </span>
 
               <div>
@@ -1663,7 +1672,7 @@ onMounted(loadTopic)
 
             <p>Ask questions about this lesson without leaving the learning workspace.</p>
 
-            <button type="button" class="secondary-button full-width">Ask about this topic</button>
+            <button type="button" class="secondary-button full-width" @click="showTopicChat=true">Ask about this topic</button>
           </div>
 
           <!-- ===============================================
@@ -1693,6 +1702,8 @@ onMounted(loadTopic)
         </aside>
       </section>
     </template>
+
+    <div v-if="showTopicChat" class="modal-backdrop" @click.self="showTopicChat=false"><div class="modal-card chat-modal"><button type="button" class="modal-close" @click="showTopicChat=false">×</button><span class="section-kicker">TOPIC CHAT</span><h2>{{ topic?.title }}</h2><div class="chat-messages"><div v-for="(m,i) in chatMessages" :key="i" :class="['chat-message',m.role]"><b>{{m.role==='user'?'You':'AI'}}</b><p>{{m.content}}</p></div><div v-if="chatLoading" class="chat-message assistant"><p>Thinking...</p></div></div><form @submit.prevent="sendTopicChat" class="chat-form"><input v-model="chatMessage" placeholder="Ask about this topic..."/><button class="primary-button">Send</button></form></div></div>
 
     <!-- ============================================
     REFERENCE MODAL
@@ -2641,7 +2652,7 @@ onMounted(loadTopic)
 ========================================================= */
 
 .ai-card h3,
-.finish-card h3 {
+.source-content{white-space:pre-wrap;text-align:left;max-height:500px;overflow:auto;background:#0b1220;padding:15px;border-radius:10px;color:#cbd5e1}.source-ready{display:block}.chat-modal{max-width:760px}.chat-messages{max-height:360px;overflow:auto;display:grid;gap:10px;margin:15px 0}.chat-message{padding:10px 12px;border-radius:10px;background:#111827}.chat-message.user{background:#172554}.chat-message p{white-space:pre-wrap;margin:5px 0}.chat-form{display:flex;gap:8px}.chat-form input{flex:1;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:8px;padding:10px}.finish-card h3 {
   margin: 7px 0;
 }
 

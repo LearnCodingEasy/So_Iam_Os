@@ -1,0 +1,14 @@
+<template><div class="progress-page"><header><div><span>LEARNING</span><h1>My Progress</h1><p>التقدم محسوب من بيانات Learning وTasks المحفوظة في Django.</p></div><button @click="load">↻ تحديث</button></header><div v-if="loading" class="state">جاري تحميل التقدم...</div><div v-else-if="error" class="state error">{{error}} <button @click="load">Retry</button></div><template v-else><section class="cards"><article><strong>{{summary.overall_progress}}%</strong><span>Overall Learning</span></article><article><strong>{{summary.topics_completed}}</strong><span>Topics Completed</span></article><article><strong>{{summary.topics_total}}</strong><span>Total Topics</span></article></section><section class="panel"><h2>Learning Goals</h2><div v-if="!summary.goals?.length" class="empty">لا توجد أهداف تعلم بعد.</div><div v-for="goal in summary.goals" :key="goal.id" class="goal"><div><strong>{{goal.title}}</strong><small>{{goal.status}}</small></div><div class="bar"><i :style="{width:`${goal.progress}%`}"></i></div><b>{{goal.progress}}%</b></div></section></template></div></template>
+<script setup>
+import { onMounted, ref } from 'vue'
+import { useAppToast } from '@/composables/useAppToast'
+import { getApiErrorMessage } from '@/utils/apiError'
+import api from '@/services/api'
+
+const toast = useAppToast()
+const summary=ref({overall_progress:0,topics_total:0,topics_completed:0,goals:[]}),loading=ref(true),error=ref('')
+async function load(){loading.value=true;error.value='';try{summary.value=(await api.get('/learning/progress/summary/')).data}catch(e){error.value = getApiErrorMessage(e, 'تعذر تحميل التقدم.')}finally { loading.value = false }}
+onMounted(load)
+</script>
+<style scoped>.progress-page{max-width:1200px;margin:auto;padding:32px;color:#e5e7eb}.progress-page header{display:flex;justify-content:space-between;margin-bottom:24px}.progress-page header span{font-size:12px;color:#60a5fa;letter-spacing:.14em}.progress-page h1{margin:5px 0}.progress-page header p,small{color:#94a3b8}.progress-page header button{background:#2563eb;color:#fff;border:0;border-radius:9px;padding:10px 14px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}.cards article,.panel{background:#111827;border:1px solid #253044;border-radius:15px;padding:20px}.cards strong{display:block;font-size:34px}.cards span{color:#94a3b8}.panel h2{margin-top:0}.goal{display:grid;grid-template-columns:220px 1fr 60px;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #1f2937}.goal div:first-child{display:grid;gap:4px}.bar{height:9px;background:#1f2937;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#3b82f6}.state,.empty{text-align:center;padding:50px;color:#94a3b8}.error{color:#fecaca}@media(max-width:700px){.progress-page{padding:18px}.cards{grid-template-columns:1fr}.goal{grid-template-columns:1fr}}
+</style>

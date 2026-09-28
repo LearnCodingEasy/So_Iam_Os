@@ -8,6 +8,7 @@ from .models import Task
 from core.cache_utils import invalidate_dashboard
 from .serializers import TaskSerializer
 from .services import TaskService
+from .daily_generation import DailyTaskGenerationService
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -33,6 +34,20 @@ class TaskViewSet(viewsets.ModelViewSet):
     def today(self, request):
         tasks = self.get_queryset().filter(scheduled_date=timezone.localdate())
         return Response(self.get_serializer(tasks, many=True).data)
+
+    @action(detail=False, methods=["post"], url_path="generate")
+    def generate(self, request):
+        count = request.data.get("count")
+        use_celery = request.data.get("async", True)
+        if use_celery:
+            try:
+                from .tasks import generate_daily_learning_tasks
+                job = generate_daily_learning_tasks.delay(request.user.id, count=count, provider=request.data.get("provider"), model=request.data.get("model"))
+                return Response({"status": "queued", "task_id": job.id}, status=202)
+            except Exception:
+                pass
+        created = DailyTaskGenerationService(request.user).generate(count=count, provider=request.data.get("provider"), model=request.data.get("model"))
+        return Response(self.get_serializer(created, many=True).data, status=201)
 
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):

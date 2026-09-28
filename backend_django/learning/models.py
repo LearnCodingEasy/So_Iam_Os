@@ -390,6 +390,7 @@ class LearningNote(models.Model):
         EXAMPLE = "example", "Example"
         CONFUSION = "confusion", "Confusion"
         REVISION = "revision", "Revision"
+        REFLECTION = "reflection", "Reflection"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

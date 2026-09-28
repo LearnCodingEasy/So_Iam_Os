@@ -1,0 +1,10 @@
+.app-state {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  padding: 2rem;
+  border: 1px dashed var(--app-border);
+  border-radius: var(--app-radius);
+  color: var(--app-text-muted);
+  background: var(--app-surface);
+}

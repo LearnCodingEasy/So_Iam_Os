@@ -7,9 +7,9 @@ import LoginView from '../views/Authentication/LoginView.vue'
 import ProfileView from '../views/Account/ProfileView.vue'
 import AuthCallback from '../views/Authentication/AuthCallback.vue'
 
-import KnowledgeView from '@/views/knowledge/KnowledgeView.vue'
+import KnowledgeView from '../views/knowledge/KnowledgeView.vue'
 
-import LearningView from '@/views/learning/LearningView.vue'
+import LearningView from '../views/learning/LearningView.vue'
 
 import Dashboard from '../views/Dashboard/DashboardView.vue'
 
@@ -18,6 +18,8 @@ import AIControl from '@/views/AI/AI.vue'
 import SettingsView from '@/views/Settings/Settings.vue'
 import GoalsView from '@/views/Goals/Goals.vue'
 import TodayTasksView from '@/views/Tasks/TodayTasks.vue'
+import MyProgressView from '@/views/Progress/MyProgress.vue'
+import JobsView from '@/views/jobs/JobsView.vue'
 
 // 404 catchall Page Not Found
 import NotFound from '../views/Page_Not_Found/Page_Not_Found.vue'
@@ -122,6 +124,18 @@ const router = createRouter({
       path: '/tasks/today',
       name: 'today-tasks',
       component: TodayTasksView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/progress',
+      name: 'progress',
+      component: MyProgressView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/jobs',
+      name: 'jobs',
+      component: JobsView,
       meta: { requiresAuth: true },
     },
     {

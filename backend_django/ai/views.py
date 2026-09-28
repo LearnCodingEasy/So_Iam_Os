@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from .exceptions import AIError
 from .models import AIConversation, AIProviderCredential, AISettings, AIPromptProfile
+from learning.models import LearningTopic, LearningProgress
 from .permissions import AIAuthenticatedPermission
 from .providers import get_ai_provider
 from .serializers import (
@@ -248,3 +249,52 @@ class AITaskStatusView(APIView):
         if result.successful(): payload["result"] = result.result
         if result.failed(): payload["error"] = str(result.result)
         return Response(payload)
+
+
+class AITopicChatView(APIView):
+    permission_classes = [AIAuthenticatedPermission]
+
+    def post(self, request):
+        topic_id = request.data.get("topic_id")
+        message = (request.data.get("message") or "").strip()
+        if not topic_id or not message:
+            return Response({"detail": "topic_id and message are required."}, status=400)
+        topic = LearningTopic.objects.select_related("path__goal", "path__goal__skill", "skill", "knowledge_item").filter(id=topic_id, path__user=request.user).first()
+        if not topic:
+            return Response({"detail": "Topic not found."}, status=404)
+        progress = LearningProgress.objects.filter(user=request.user, topic=topic).first()
+        knowledge = topic.knowledge_item
+        context = {
+            "topic": {"id": topic.id, "title": topic.title, "description": topic.description, "difficulty": topic.difficulty},
+            "goal": {"title": topic.path.goal.title, "current_level": topic.path.goal.current_level, "target_level": topic.path.goal.target_level},
+            "skill": topic.skill.name if topic.skill else None,
+            "progress": {"progress_percent": progress.progress_percent, "mastery_level": progress.mastery_level} if progress else None,
+            "knowledge": {"title": knowledge.title, "content": (knowledge.content or "")[:16000]} if knowledge else None,
+        }
+        conversation_id = request.data.get("conversation_id")
+        if conversation_id:
+            conversation = AIConversation.objects.filter(id=conversation_id, user=request.user, is_active=True).first()
+        else:
+            conversation = None
+        service = AIService(request.user)
+        if not conversation:
+            conversation = service.create_conversation(title=f"Topic: {topic.title}", provider=request.data.get("provider"), model=request.data.get("model", ""))
+        conversation.metadata = {**(conversation.metadata or {}), "topic_id": topic.id, "topic_title": topic.title}
+        conversation.save(update_fields=["metadata", "updated_at"])
+        from .providers import get_ai_provider
+        provider_name = request.data.get("provider") or conversation.provider
+        model = request.data.get("model") or conversation.model
+        provider = get_ai_provider(provider_name, user=request.user)
+        history = list(conversation.messages.filter(role__in=["user", "assistant"]).order_by("created_at"))[-12:]
+        prompt = (
+            "You are a topic tutor. Use the supplied topic knowledge as the primary source. "
+            "If the source does not contain an answer, say that clearly and distinguish general explanation from source-backed facts.\n\n"
+            "Context:\n" + __import__("json").dumps(context, ensure_ascii=False, default=str)
+        )
+        messages = [{"role":"system","content":prompt}] + [{"role":m.role,"content":m.content} for m in history] + [{"role":"user","content":message}]
+        from .models import AIMessage
+        user_message = AIMessage.objects.create(conversation=conversation, role="user", content=message, metadata={"topic_id": topic.id})
+        result = provider.generate(messages=messages, model=model or None)
+        assistant = AIMessage.objects.create(conversation=conversation, role="assistant", content=result["content"], provider=result["provider"], model=result["model"], metadata={"topic_id": topic.id})
+        conversation.provider=result["provider"]; conversation.model=result["model"]; conversation.save(update_fields=["provider","model","updated_at"])
+        return Response({"success": True, "conversation_id": conversation.id, "message": {"id": assistant.id, "role": "assistant", "content": assistant.content, "provider": assistant.provider, "model": assistant.model}})

@@ -59,6 +59,7 @@ from .services import (
     ProgressService,
     AssessmentService,
 )
+from .services.completion import LearningCompletionService
 
 from .services.services import (
     ApplicationService,
@@ -822,18 +823,14 @@ class LearningTopicViewSet(
     def complete(self, request, pk=None):
         topic = self.get_object()
 
-        topic.status = LearningTopic.Status.COMPLETED
-
-        topic.save(
-            update_fields=[
-                "status",
-                "updated_at",
-            ]
+        result = LearningCompletionService.complete_topic(user=request.user, topic=topic)
+        topic = result["topic"]
+        payload = self.get_serializer(topic).data
+        payload["next_topic"] = (
+            {"id": result["next_topic"].id, "title": result["next_topic"].title, "order": result["next_topic"].order}
+            if result["next_topic"] else None
         )
-
-        return Response(
-            self.get_serializer(topic).data
-        )
+        return Response(payload)
 
     @action(
         detail=True,
@@ -1151,12 +1148,11 @@ class LearningProgressViewSet(
                     user=request.user,
                     topic=topic,
                     progress_percent=progress_percent,
-                    practice_completed=request.data.get(
-                        "practice_completed"
-                    ),
-                    notes=request.data.get(
-                        "notes"
-                    ),
+                    practice_completed=request.data.get("practice_completed"),
+                    notes=request.data.get("notes"),
+                    lesson_completed=request.data.get("lesson_completed"),
+                    quick_check_completed=request.data.get("quick_check_completed"),
+                    assessment_completed=request.data.get("assessment_completed"),
                 )
             )
 
@@ -1176,6 +1172,11 @@ class LearningProgressViewSet(
                 },
             ).data
         )
+
+    @action(detail=False, methods=["get"], url_path="summary")
+    def summary(self, request):
+        from .services.completion import LearningCompletionService
+        return Response(LearningCompletionService.progress_summary(request.user))
 
 # ===================================================
 # Learning Sessions

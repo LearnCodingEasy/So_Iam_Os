@@ -43,6 +43,10 @@ urlpatterns = [
         include("tasks.urls"),
     ),
     path(
+        "api/jobs/",
+        include("jobs_opportunity.urls"),
+    ),
+    path(
         "api/social/",
         include(
             "social.urls"

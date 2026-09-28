@@ -9,18 +9,7 @@ import 'animate.css'
 
 // My Style
 import './assets/scss/style.scss'
-
-// Axios
-import axios from 'axios'
-// axios.defaults.baseURL = 'http://127.0.0.1:8000'
-axios.defaults.baseURL = import.meta.env.VITE_API_URL
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('user.access')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+import './assets/scss/main.scss'
 
 // Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -30,6 +19,9 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 // Add Free Icons Styles To SVG Core
 library.add(fas, far, fab)
+
+import axios from 'axios'
+axios.defaults.baseURL = 'http://192.168.1.3:8000'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

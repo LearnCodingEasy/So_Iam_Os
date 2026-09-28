@@ -47,6 +47,16 @@ class LearningTopicAIContentService:
 
         context = self._build_context(topic)
 
+        # Knowledge linked to a topic is the authoritative lesson source.
+        # AI generation is only used when no usable source content exists.
+        source_content = (topic.knowledge_item.content or "").strip() if topic.knowledge_item else ""
+        if source_content:
+            lesson = self._save_source_lesson(topic=topic, knowledge=topic.knowledge_item)
+            return {
+                "topic": topic, "lesson": lesson, "assessment": None,
+                "provider": "knowledge", "model": "source", "generated_at": timezone.now(),
+            }
+
         prompt = build_learning_topic_content_prompt(
             context=context,
         )
@@ -231,6 +241,21 @@ class LearningTopicAIContentService:
 
             "previous_reviews": previous_reviews[-5:],
         }
+
+    def _save_source_lesson(self, *, topic, knowledge):
+        lesson = topic.lessons.filter(is_active=True).order_by("order", "id").first()
+        if lesson is None:
+            lesson = Lesson(topic=topic, order=1)
+        lesson.title = topic.title
+        lesson.description = knowledge.description or f"Source lesson from {knowledge.title}."
+        lesson.content = knowledge.content
+        lesson.content_format = Lesson.ContentFormat.MARKDOWN
+        lesson.estimated_minutes = topic.estimated_minutes or 30
+        lesson.learning_objectives = []
+        lesson.key_concepts = []
+        lesson.is_active = True
+        lesson.save()
+        return lesson
 
     # =========================================================
     # Save Lesson

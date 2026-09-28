@@ -564,3 +564,5 @@ export async function uploadKnowledgeFile(knowledgeId, file, extra = {}) {
 // ===================================================
 
 export { normalizeList, getErrorMessage }
+
+export async function topicChat(payload) { return (await api.post('/ai/topic-chat/', payload)).data }

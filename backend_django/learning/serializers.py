@@ -1812,6 +1812,7 @@ class LearningTopicDetailSerializer(
     # -----------------------------------------------
 
     ai = serializers.SerializerMethodField()
+    next_topic = serializers.SerializerMethodField()
 
     class Meta:
         model = LearningTopic
@@ -1858,6 +1859,7 @@ class LearningTopicDetailSerializer(
 
             # AI
             "ai",
+            "next_topic",
 
             "created_at",
             "updated_at",
@@ -2038,6 +2040,12 @@ class LearningTopicDetailSerializer(
             "is_mastered": is_mastered,
             "can_advance": is_mastered,
         }
+
+    def get_next_topic(self, obj):
+        topic = obj.path.topics.filter(order__gt=obj.order).exclude(status=LearningTopic.Status.SKIPPED).order_by("order", "id").first()
+        if not topic:
+            return None
+        return {"id": topic.id, "title": topic.title, "order": topic.order, "status": topic.status}
 
     # =========================================================
     # AI

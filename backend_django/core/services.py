@@ -4,7 +4,7 @@ from django.utils import timezone
 from knowledge.models import KnowledgeFile, KnowledgeItem
 from goals.models import Goal
 from tasks.models import Task
-from learning.models import LearningGoal, LearningPath, LearningProgress, Skill
+from learning.models import LearningGoal, LearningPath, LearningProgress, LearningTopic, Skill
 from jobs_opportunity.models import JobOpportunity, JobMatch, JobApplication
 
 class BaseService:
@@ -33,6 +33,10 @@ class DashboardService:
         jobs=JobOpportunity.objects.filter(user=user,is_active=True)
         matches=JobMatch.objects.filter(user=user)
         applications=JobApplication.objects.filter(user=user)
+        learning_topics = LearningTopic.objects.filter(path__user=user)
+        completed_topics = learning_topics.filter(status=LearningTopic.Status.COMPLETED)
+        progress_rows = LearningProgress.objects.filter(user=user)
+        progress_avg = (sum(row.progress_percent for row in progress_rows) / progress_rows.count()) if progress_rows.exists() else (completed_topics.count() / learning_topics.count() * 100 if learning_topics.exists() else 0)
         recent_tasks=list(tasks.filter(scheduled_date=today).order_by("sort_order","-priority")[:8].values("id","title","status","priority","scheduled_date","due_at"))
         data={
             "user":{"id":str(user.id),"name":user.full_name,"email":user.email},
@@ -40,7 +44,7 @@ class DashboardService:
             "stats":{
                 "tasks":{"total":tasks.count(),"today":tasks.filter(scheduled_date=today).count(),"pending":tasks.filter(status__in=["pending","in_progress"]).count(),"completed":tasks.filter(status="completed").count()},
                 "goals":{"total":goals.count(),"in_progress":goals.filter(status="active").count(),"completed":goals.filter(status="completed").count()},
-                "learning":{"goals":learning_goals.count(),"paths":paths.count(),"active_paths":paths.filter(status="active").count()},
+                "learning":{"goals":learning_goals.count(),"paths":paths.count(),"active_paths":paths.filter(status="active").count(),"topics_total":learning_topics.count(),"topics_completed":completed_topics.count(),"progress":round(progress_avg)},
                 "knowledge":{"total":knowledge.count(),"files":KnowledgeFile.objects.filter(knowledge__user=user,knowledge__is_archived=False).count()},
                 "jobs":{"total":jobs.count(),"matches":matches.filter(score__gte=70).count(),"applications":applications.count()},
                 "skills":{"total":Skill.objects.filter(learning_goals__user=user).distinct().count()},
