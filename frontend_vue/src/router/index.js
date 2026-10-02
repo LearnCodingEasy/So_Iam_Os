@@ -192,7 +192,7 @@ const router = createRouter({
     // ==============================
     {
       path: '/dashboard',
-      name: 'Dashboard',
+      name: 'dashboard',
       component: Dashboard,
 
       meta: {

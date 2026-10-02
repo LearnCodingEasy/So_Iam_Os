@@ -165,3 +165,185 @@ class OpenAICodexView(APIView):
                 "type": "text",
                 "content": value,
             }
+# ---------------------------------------------------------------------------
+# Codex V2 — project brain / safe agent / developer tools
+# ---------------------------------------------------------------------------
+from django.utils import timezone
+from .models import ArchitectureNode, ArchitectureEdge, CodexPolicy, CodexTool, CodexAuditEvent, CodexFinding, CodexAgentRun, CodexExecutionRequest
+from .services.intelligence import build_graph, search as project_search, impact as impact_analysis, security_scan, duplicate_scan, code_review, test_plan, agent_plan, ensure_policy, ensure_tools
+from .services.execution import ALLOWED, run_safe
+
+class IntelligenceBootstrapView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get_or_create(key='so_iam_os',defaults={'name':'SO_IAM_OS'})[0]
+        ensure_tools(project); ensure_policy(project, request.user)
+        graph=build_graph(project)
+        findings=security_scan(project, request.user)
+        return Response({'graph':graph,'security_findings':len(findings),'tools':CodexTool.objects.filter(project=project,enabled=True).count()})
+
+class SearchView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response({'query':request.query_params.get('q',''),'results':project_search(project,request.query_params.get('q',''),int(request.query_params.get('limit',50)))})
+
+class GraphView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        nodes=list(ArchitectureNode.objects.filter(project=project).values('id','key','kind','label','path','metadata'))
+        edges=list(ArchitectureEdge.objects.filter(project=project).values('source_id','target_id','relation','metadata'))
+        return Response({'nodes':nodes,'edges':edges})
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(build_graph(project))
+
+class ImpactView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(impact_analysis(project,request.data.get('query','')))
+
+class SecurityScanView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response({'findings':security_scan(project,request.user)})
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response({'findings':list(CodexFinding.objects.filter(project=project,category='security',resolved=False).values())})
+
+class DuplicateScanView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response({'duplicates':duplicate_scan(project,request.user)})
+
+class CodeReviewView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response({'path':request.data.get('path',''),'findings':code_review(project,request.data.get('path',''),request.user)})
+
+class TestPlanView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(test_plan(project,request.data.get('target',''),request.user))
+
+class AgentPlanView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        result=agent_plan(project,request.data.get('request',''),request.user)
+        run=CodexAgentRun.objects.create(project=project,user=request.user,request=request.data.get('request',''),plan=result)
+        result['run_id']=run.id
+        return Response(result,status=201)
+
+class PolicyView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response({'permissions':ensure_policy(project,request.user).permissions})
+    def patch(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        policy=ensure_policy(project,request.user)
+        permissions=dict(policy.permissions); permissions.update(request.data.get('permissions',{})); policy.permissions=permissions; policy.save(update_fields=['permissions','updated_at'])
+        CodexAuditEvent.objects.create(project=project,user=request.user,event_type='policy',action='policy.update',payload={'permissions':permissions})
+        return Response({'permissions':permissions})
+
+class ToolsView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os'); ensure_tools(project)
+        return Response(list(CodexTool.objects.filter(project=project).values()))
+
+class AuditView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(list(CodexAuditEvent.objects.filter(project=project).order_by('-created_at')[:200].values()))
+
+class SafeCommandsView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os'); policy=ensure_policy(project,request.user)
+        return Response({'commands':[{'key':k,'command':v,'policy':policy.permissions.get('RUN_COMMANDS','DENY')} for k,v in ALLOWED.items()]})
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os'); key=request.data.get('key','')
+        if request.data.get('confirm') is not True:
+            return Response({'detail':'Explicit confirmation is required.','key':key},status=400)
+        try:
+            result=run_safe(request.user,project,key)
+        except PermissionError as exc:
+            CodexAuditEvent.objects.create(project=project,user=request.user,event_type='command',action=key,status='denied',payload={'reason':str(exc)})
+            return Response({'detail':str(exc)},status=403)
+        except Exception as exc:
+            return Response({'detail':str(exc)},status=400)
+        return Response(result)
+
+class AgentRunView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def get(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(list(CodexAgentRun.objects.filter(project=project).order_by('-created_at')[:100].values()))
+
+class AutomationIntentView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        policy=ensure_policy(project,request.user)
+        intent=request.data.get('intent','').strip()
+        if not intent:
+            return Response({'detail':'intent is required'},status=400)
+        allowed=policy.permissions.get('AUTOMATION','DENY')
+        plan={'intent':intent,'status':'planned','requires_approval':allowed!='ALLOW','policy':allowed,
+              'actions':[{'action':'analyze_intent'},{'action':'resolve_automation_tool'},{'action':'request_approval' if allowed!='ALLOW' else 'execute'}],
+              'guardrails':['Codex never executes arbitrary automation from natural language','Destructive actions require approval','All actions are audited']}
+        CodexAuditEvent.objects.create(project=project,user=request.user,event_type='automation',action='automation.plan',payload=plan)
+        return Response(plan,status=201)
+
+from .services.intelligence import explain_feature, debug_error, generate_docs
+
+class ExplainFeatureView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(explain_feature(project, request.data.get('query',''), request.user))
+
+class DebugView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(debug_error(project, request.data.get('error',''), request.user))
+
+class DocumentationView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        return Response(generate_docs(project, request.data.get('target',''), request.user))
+
+from .services.execution import apply_changes, rollback_changes
+
+class ApplyChangesView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        try:
+            return Response(apply_changes(request.user,project,request.data.get('title','Codex change'),request.data.get('objective',''),request.data.get('changes',[]),request.data.get('confirm') is True),status=201)
+        except PermissionError as exc:
+            return Response({'detail':str(exc)},status=403)
+        except Exception as exc:
+            return Response({'detail':str(exc)},status=400)
+
+class RollbackView(APIView):
+    permission_classes=[CodexAuthenticated]
+    def post(self, request, changeset_id):
+        project=ProjectRegistry.objects.get(key='so_iam_os')
+        try:
+            return Response(rollback_changes(request.user,project,changeset_id,request.data.get('confirm') is True))
+        except PermissionError as exc:
+            return Response({'detail':str(exc)},status=403)
+        except Exception as exc:
+            return Response({'detail':str(exc)},status=400)

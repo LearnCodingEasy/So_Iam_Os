@@ -163,3 +163,99 @@ class CodexAnalysis(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
+class ArchitectureNode(models.Model):
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='architecture_nodes')
+    key = models.CharField(max_length=500)
+    kind = models.CharField(max_length=80)
+    label = models.CharField(max_length=300)
+    path = models.CharField(max_length=700, blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['project', 'key'], name='codex_arch_node_unique')]
+
+
+class ArchitectureEdge(models.Model):
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='architecture_edges')
+    source = models.ForeignKey(ArchitectureNode, on_delete=models.CASCADE, related_name='out_edges')
+    target = models.ForeignKey(ArchitectureNode, on_delete=models.CASCADE, related_name='in_edges')
+    relation = models.CharField(max_length=120)
+    metadata = models.JSONField(default=dict, blank=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['project', 'source', 'target', 'relation'], name='codex_arch_edge_unique')]
+
+
+class CodexPolicy(models.Model):
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='policies')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    permissions = models.JSONField(default=dict, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['project', 'user'], name='codex_policy_project_user_unique')]
+
+
+class CodexTool(models.Model):
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='tools')
+    key = models.CharField(max_length=160)
+    name = models.CharField(max_length=220)
+    capability = models.CharField(max_length=60, default='read')
+    enabled = models.BooleanField(default=True)
+    metadata = models.JSONField(default=dict, blank=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['project', 'key'], name='codex_tool_project_key_unique')]
+
+
+class CodexAuditEvent(models.Model):
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='audit_events')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    event_type = models.CharField(max_length=100)
+    action = models.CharField(max_length=180)
+    status = models.CharField(max_length=40, default='success')
+    payload = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CodexFinding(models.Model):
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='findings')
+    category = models.CharField(max_length=80)
+    severity = models.CharField(max_length=30, default='medium')
+    title = models.CharField(max_length=220)
+    path = models.CharField(max_length=700, blank=True)
+    line = models.PositiveIntegerField(null=True, blank=True)
+    message = models.TextField()
+    metadata = models.JSONField(default=dict, blank=True)
+    resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CodexAgentRun(models.Model):
+    STATUS = [('planned', 'Planned'), ('approved', 'Approved'), ('running', 'Running'), ('completed', 'Completed'), ('failed', 'Failed'), ('cancelled', 'Cancelled')]
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='agent_runs')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    request = models.TextField()
+    mode = models.CharField(max_length=60, default='safe-agent')
+    status = models.CharField(max_length=30, choices=STATUS, default='planned')
+    plan = models.JSONField(default=dict, blank=True)
+    result = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CodexExecutionRequest(models.Model):
+    STATUS = [('pending', 'Pending'), ('approved', 'Approved'), ('running', 'Running'), ('completed', 'Completed'), ('failed', 'Failed'), ('denied', 'Denied')]
+    project = models.ForeignKey(ProjectRegistry, on_delete=models.CASCADE, related_name='execution_requests')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    tool_key = models.CharField(max_length=160)
+    status = models.CharField(max_length=30, choices=STATUS, default='pending')
+    approval_note = models.TextField(blank=True)
+    result = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+class CodexChangeFile(models.Model):
+    changeset = models.ForeignKey(ChangeSet, on_delete=models.CASCADE, related_name='file_changes')
+    path = models.CharField(max_length=700)
+    before_content = models.TextField(blank=True)
+    after_content = models.TextField(blank=True)
+    before_sha256 = models.CharField(max_length=64, blank=True)
+    after_sha256 = models.CharField(max_length=64, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

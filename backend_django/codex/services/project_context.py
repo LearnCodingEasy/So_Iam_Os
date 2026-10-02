@@ -7,6 +7,11 @@ from ..models import (
     FileRegistry,
     APIEndpoint,
     ProtectedFeature,
+    ArchitectureNode,
+    ArchitectureEdge,
+    CodexPolicy,
+    CodexTool,
+    CodexFinding,
 )
 
 
@@ -73,6 +78,12 @@ class ProjectContextService:
             "backend_files": backend_files,
             "apis": apis,
             "protected": protected,
+            "architecture": {
+                "nodes": ArchitectureNode.objects.filter(project=self.project).count(),
+                "edges": ArchitectureEdge.objects.filter(project=self.project).count(),
+            },
+            "tools": list(CodexTool.objects.filter(project=self.project, enabled=True).values("key", "name", "capability")),
+            "security_findings": list(CodexFinding.objects.filter(project=self.project, resolved=False).values("category", "severity", "title", "path", "line", "message")[:100]),
         }
 
     def _features(self, query):
