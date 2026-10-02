@@ -18,8 +18,21 @@ import AIControl from '@/views/AI/AI.vue'
 import SettingsView from '@/views/Settings/Settings.vue'
 import GoalsView from '@/views/Goals/Goals.vue'
 import TodayTasksView from '@/views/Tasks/TodayTasks.vue'
+import TasksCalendar from '@/views/Tasks/TasksCalendar.vue'
+import SocialView from '@/views/Social/SocialView.vue'
+import NotificationsView from '@/views/Notifications/NotificationsView.vue'
 import MyProgressView from '@/views/Progress/MyProgress.vue'
 import JobsView from '@/views/jobs/JobsView.vue'
+import CodexView from '@/views/Codex/CodexView.vue'
+
+// Automation
+import Automation from '../views/Automation/AutomationView.vue'
+import automation_Dashboard from '../views/Automation/DashboardAutomationView.vue'
+import ProgramList from '../views/Automation/ProgramList.vue'
+import ProgramCreate from '../views/Automation/ProgramCreate.vue'
+import ProgramEdit from '../views/Automation/ProgramEdit.vue'
+import TaskCreate from '../views/Automation/TaskCreate.vue'
+import TaskEditor from '../views/Automation/TaskEditor.vue'
 
 // 404 catchall Page Not Found
 import NotFound from '../views/Page_Not_Found/Page_Not_Found.vue'
@@ -141,7 +154,16 @@ const router = createRouter({
     {
       path: '/tasks',
       name: 'tasks',
-      redirect: { name: 'today-tasks' },
+      component: TasksCalendar,
+      meta: { requiresAuth: true },
+    },
+
+    { path: '/codex', name: 'codex', component: CodexView, meta: { requiresAuth: true } },
+    { path: '/social', name: 'social', component: SocialView, meta: { requiresAuth: true } },
+    {
+      path: '/notifications',
+      name: 'notifications',
+      component: NotificationsView,
       meta: { requiresAuth: true },
     },
 
@@ -169,15 +191,57 @@ const router = createRouter({
     // Dashboard
     // ==============================
     {
-      path: '/dashboard/',
-      name: 'dashboard',
+      path: '/dashboard',
+      name: 'Dashboard',
       component: Dashboard,
 
       meta: {
         requiresAuth: true,
       },
     },
-
+    // Automation
+    {
+      path: '/automation',
+      name: 'automation',
+      component: Automation,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/automation_Dashboard',
+      name: 'automation_Dashboard',
+      component: automation_Dashboard,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/automation_ProgramList',
+      name: 'automation_ProgramList',
+      component: ProgramList,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/automation_programs_create',
+      name: 'automation_programs_create',
+      component: ProgramCreate,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/automation/:id',
+      name: 'automation_programs_edit',
+      component: ProgramEdit,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/automation_TaskCreate',
+      name: 'automation_TaskCreate',
+      component: TaskCreate,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/automation_TaskEditor',
+      name: 'automation_TaskEditor',
+      component: TaskEditor,
+      meta: { requiresAuth: true },
+    },
     //////////////////////////////////////////////////
     ////////////////////// 404 ///////////////////////
     //////////////////////////////////////////////////

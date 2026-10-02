@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path("api/codex/", include("codex.urls")),
     # 3️⃣ django-allauth [Allauth]
     path("accounts/", include("allauth.urls")),
     path('admin/', admin.site.urls),
@@ -51,5 +52,13 @@ urlpatterns = [
         include(
             "social.urls"
         ),
+    ),
+    path(
+        "api/automation/",
+        include("automation.urls"),
+    ),
+    path(
+        "api/notifications/",
+        include("notification.urls"),
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

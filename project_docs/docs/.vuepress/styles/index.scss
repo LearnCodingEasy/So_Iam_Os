@@ -1,0 +1,93 @@
+body {
+  #app {
+    .vp-theme-container {
+      header {
+        overflow: hidden;
+        transition: all 0.5s linear;
+
+        > span {
+          display: inline-block;
+          padding: 0.3rem 0.5rem;
+          border-radius: 5px;
+          margin-top: -0.2rem;
+          transition: all 0.5s linear;
+          box-shadow: 0px 0px 3px 1px #29976479;
+
+          > .route-link {
+            display: flex;
+            align-items: center;
+            .vp-site-logo {
+              width: 50px;
+              height: 35px;
+              border-radius: 5px;
+            }
+            .vp-site-name {
+              text-transform: capitalize;
+            }
+          }
+        }
+        > .vp-navbar-items-wrapper {
+          nav {
+            .vp-navbar-item {
+              a {
+                padding: 0.1rem 0.5rem;
+                &.route-link-active {
+                  border-bottom: 0.1rem solid #299764;
+                  box-shadow: 0px 0px 3px 1px #2997649c;
+                  border-radius: 5px;
+                }
+              }
+            }
+          }
+          button {
+            // border: 0.1rem solid #c0bfbf52;
+            box-shadow: 0px 0px 3px 1px #299764a6;
+
+            padding: 5px;
+            border-radius: 5px;
+          }
+        }
+      }
+      aside {
+        .vp-sidebar-items {
+          > li {
+            p {
+              text-transform: capitalize;
+            }
+            > ul {
+              > li {
+                > a.active {
+                  border-right: 0.4rem solid #299764;
+                }
+                > ul {
+                  > li {
+                    > a.active {
+                      border-bottom: 0.4rem solid #299764;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      main.vp-page {
+        > div {
+          > div {
+            h1 {
+              text-align: center;
+              font-size: 3vw;
+              font-weight: bold;
+              text-transform: capitalize;
+            }
+            h2 {
+              font-size: 2vw;
+              font-weight: bold;
+              text-transform: capitalize;
+            }
+          }
+        }
+      }
+    }
+  }
+}

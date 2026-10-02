@@ -1,47 +1,13 @@
-Build.md
-Build/
-CHATGPT.md
-emoji.md
-PROJECT_STATE.md
-
-# Environment files
 .env
-*.env
-.env.*
 .env.local
 .env.production
-!.env.example
-
-
-
-
-# Python
 __pycache__/
 *.py[cod]
-
-# Django
-db.sqlite3
-media/
-staticfiles/
-
-# Virtual Environment
-venv/
-.venv/
-
-# IDE
+*.sqlite3-journal
+frontend_vue/node_modules/
+frontend_vue/dist/
+frontend_vue/coverage/
+backend_django/media/runs/
+*.log
 .vscode/
 .idea/
-
-
-# Frontend environment files
-frontend_vue/.env
-frontend_vue/.env.local
-frontend_vue/.env.development
-frontend_vue/.env.production
-node_modules/
-
-
-# 
-project_docs/
-
-

@@ -1,0 +1,21 @@
+# SO_IAM_OS Final Release Checklist
+
+- [x] Preserve existing applications and migrations
+- [x] Preserve existing Codex and Automation foundations
+- [x] Environment-based frontend API configuration
+- [x] Environment-based Django hosts/CORS/CSRF/security settings
+- [x] PostgreSQL production configuration path
+- [x] Redis/Celery configuration path
+- [x] Local `.env.example`
+- [x] Backend dependency manifest
+- [x] Local setup and verification instructions
+- [x] Python syntax compilation
+- [x] Source tree cleaned from `__pycache__`/`.pyc`
+- [ ] Local Django dependency installation + `manage.py check`
+- [ ] Local Django migrations + full test suite
+- [ ] Local npm dependency installation
+- [ ] Local production frontend build
+- [ ] Browser E2E smoke test against running backend
+- [ ] Redis/Celery runtime smoke test
+- [ ] Production PostgreSQL migration rehearsal
+- [ ] Final deployment smoke test on target server

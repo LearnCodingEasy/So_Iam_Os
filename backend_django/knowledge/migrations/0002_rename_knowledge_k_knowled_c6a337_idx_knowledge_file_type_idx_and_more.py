@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('knowledge', '0001_initial'),
+        ('knowledge', '0002_knowledgefile'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

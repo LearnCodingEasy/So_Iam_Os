@@ -21,7 +21,7 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 library.add(fas, far, fab)
 
 import axios from 'axios'
-axios.defaults.baseURL = 'http://192.168.1.3:8000'
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -164,7 +164,7 @@ const app = createApp(App)
 app.use(createPinia())
 
 // Axios تفعيل التوجيه و
-app.use(router, axios)
+app.use(router)
 
 // eslint-disable-next-line vue/multi-word-component-names
 app.component('fa', FontAwesomeIcon)
@@ -245,7 +245,8 @@ app.component('prime_toast', Toast)
 
 app.component('prime_message', Message)
 
-app.component('prime_confirm_dialog', ConfirmPopup)
+app.component('prime_confirm_dialog', ConfirmDialog)
+app.component('prime_confirm_popup', ConfirmPopup)
 // Icon Components
 app.component('prime_icon_field', IconField)
 app.component('prime_input_icon', InputIcon)

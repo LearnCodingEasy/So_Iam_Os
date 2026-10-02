@@ -6,6 +6,9 @@ from . import api
 
 
 urlpatterns = [
+    path("recommendations/", api.recommendations, name="recommendations"),
+    path("profile/", api.my_profile, name="my-social-profile"),
+
 
     # 💡 Suggestions
     path(

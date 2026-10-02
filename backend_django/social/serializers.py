@@ -81,3 +81,18 @@ class FollowSerializer(
             "following",
             "created_at",
         ]
+
+from .models import SocialProfile, SocialRecommendation
+
+class SocialProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialProfile
+        fields = ["id", "learning_interests", "professional_interests", "topics", "looking_for", "bio", "discoverable", "updated_at"]
+        read_only_fields = ["id", "updated_at"]
+
+class SocialRecommendationSerializer(serializers.ModelSerializer):
+    candidate = PublicUserSerializer(read_only=True)
+    class Meta:
+        model = SocialRecommendation
+        fields = ["id", "candidate", "score", "reasons", "breakdown", "status", "created_at", "updated_at"]
+        read_only_fields = fields

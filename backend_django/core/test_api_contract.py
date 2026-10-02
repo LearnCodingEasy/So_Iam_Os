@@ -47,3 +47,19 @@ class ApiContractRoutingTests(SimpleTestCase):
         self.assert_route("/api/knowledge/items/1/disconnect-topic/")
         self.assert_route("/api/knowledge/items/1/files/")
         self.assert_route("/api/knowledge/items/1/upload-file/")
+
+    def test_notification_routes(self):
+        self.assert_route("/api/notifications/")
+        self.assert_route("/api/notifications/unread-count/")
+        self.assert_route("/api/notifications/read-all/")
+        self.assert_route("/api/notifications/1/read/")
+        self.assert_route("/api/notifications/1/archive/")
+
+    def test_social_routes(self):
+        self.assert_route("/api/social/profile/")
+        self.assert_route("/api/social/recommendations/")
+        self.assert_route("/api/social/friends/00000000-0000-0000-0000-000000000001/request/")
+
+    def test_jobs_routes(self):
+        self.assert_route("/api/jobs/opportunities/1/readiness/")
+        self.assert_route("/api/jobs/opportunities/1/apply/")

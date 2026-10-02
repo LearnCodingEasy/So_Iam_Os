@@ -1,0 +1,16 @@
+import comp from "D:/So_Iam_Os/project_docs/docs/.vuepress/.temp/pages/Learn_Django/index.html.vue"
+const data = JSON.parse("{\"path\":\"/Learn_Django/\",\"title\":\"Learn Django\",\"lang\":\"en-US\",\"frontmatter\":{},\"headers\":[{\"level\":2,\"title\":\"Virtual Environment\",\"slug\":\"virtual-environment\",\"link\":\"#virtual-environment\",\"children\":[]},{\"level\":2,\"title\":\"Install Django\",\"slug\":\"install-django\",\"link\":\"#install-django\",\"children\":[{\"level\":3,\"title\":\"Django Libraries\",\"slug\":\"django-libraries\",\"link\":\"#django-libraries\",\"children\":[]}]},{\"level\":2,\"title\":\"💡 Start Project\",\"slug\":\"💡-start-project\",\"link\":\"#💡-start-project\",\"children\":[]},{\"level\":2,\"title\":\"📲 Start App\",\"slug\":\"📲-start-app\",\"link\":\"#📲-start-app\",\"children\":[]},{\"level\":2,\"title\":\"📲 Setting\",\"slug\":\"📲-setting\",\"link\":\"#📲-setting\",\"children\":[]},{\"level\":2,\"title\":\"📦 Models (النماذج)\",\"slug\":\"📦-models-النماذج\",\"link\":\"#📦-models-النماذج\",\"children\":[]},{\"level\":2,\"title\":\"👨‍💼 Admin (لوحة الإدارة)\",\"slug\":\"👨‍💼-admin-لوحة-الإدارة\",\"link\":\"#👨‍💼-admin-لوحة-الإدارة\",\"children\":[]},{\"level\":2,\"title\":\"📨 Serializers (المسلسلات)\",\"slug\":\"📨-serializers-المسلسلات\",\"link\":\"#📨-serializers-المسلسلات\",\"children\":[]},{\"level\":2,\"title\":\"📝 Forms (النماذج)\",\"slug\":\"📝-forms-النماذج\",\"link\":\"#📝-forms-النماذج\",\"children\":[]},{\"level\":2,\"title\":\"🌐 API (واجهة برمجة التطبيقات)\",\"slug\":\"🌐-api-واجهة-برمجة-التطبيقات\",\"link\":\"#🌐-api-واجهة-برمجة-التطبيقات\",\"children\":[]},{\"level\":2,\"title\":\"🔗 Urls (الروابط)\",\"slug\":\"🔗-urls-الروابط\",\"link\":\"#🔗-urls-الروابط\",\"children\":[]},{\"level\":2,\"title\":\"🧱 Makemigrations\",\"slug\":\"🧱-makemigrations\",\"link\":\"#🧱-makemigrations\",\"children\":[]},{\"level\":2,\"title\":\"📄 Migrate\",\"slug\":\"📄-migrate\",\"link\":\"#📄-migrate\",\"children\":[]},{\"level\":2,\"title\":\"📸 Media\",\"slug\":\"📸-media\",\"link\":\"#📸-media\",\"children\":[]},{\"level\":2,\"title\":\"👥 Create Superuser\",\"slug\":\"👥-create-superuser\",\"link\":\"#👥-create-superuser\",\"children\":[]},{\"level\":2,\"title\":\"🚀 Runserver\",\"slug\":\"🚀-runserver\",\"link\":\"#🚀-runserver\",\"children\":[]},{\"level\":2,\"title\":\"👥 User Accounts\",\"slug\":\"👥-user-accounts\",\"link\":\"#👥-user-accounts\",\"children\":[]},{\"level\":2,\"title\":\"📦 Marketplace\",\"slug\":\"📦-marketplace\",\"link\":\"#📦-marketplace\",\"children\":[]},{\"level\":2,\"title\":\"📦 Automation\",\"slug\":\"📦-automation\",\"link\":\"#📦-automation\",\"children\":[]},{\"level\":2,\"title\":\"📦 AI\",\"slug\":\"📦-ai\",\"link\":\"#📦-ai\",\"children\":[]},{\"level\":2,\"title\":\"🔍 Search\",\"slug\":\"🔍-search\",\"link\":\"#🔍-search\",\"children\":[]},{\"level\":2,\"title\":\"🌐 Deploying\",\"slug\":\"🌐-deploying\",\"link\":\"#🌐-deploying\",\"children\":[]}],\"git\":{},\"filePathRelative\":\"Learn_Django/index.md\"}")
+export { comp, data }
+
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept()
+  if (__VUE_HMR_RUNTIME__.updatePageData) {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  }
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(({ data }) => {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  })
+}

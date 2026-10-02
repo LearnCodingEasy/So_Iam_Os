@@ -50,12 +50,12 @@ load_dotenv(ENV_FILE)
 # DJANGO SETTINGS
 # ====================================================
 
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default="dev-only-change-me")
 
 DEBUG = config(
     "DEBUG",
-    default=False,
-    cast=bool
+    default=(ENVIRONMENT != "production"),
+    cast=bool,
 )
 
 
@@ -170,32 +170,29 @@ CORS_ALLOWED_ORIGINS = [
     if origin.strip()
 ]
 AUTH_USER_MODEL = "users_accounts.User"
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "192.168.1.5",
-    "172.23.232.133",
-    "localhost:5173",
-    "localhost:5174",
-    "global-style-for-video.pages.dev"
-]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://192.168.1.5:5173",
-    "http://192.168.1.5:5174",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174",
-    'https://global-style-for-video.pages.dev'
-]
+ALLOWED_HOSTS = [h.strip() for h in config(
+    "ALLOWED_HOSTS",
+    default="localhost,127.0.0.1,192.168.1.5,172.23.232.133",
+).split(",") if h.strip()]
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in config(
+    "CSRF_TRUSTED_ORIGINS",
+    default=FRONTEND_URL,
+).split(",") if o.strip()]
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-CORS_ALLOW_ALL_ORIGINS = False
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=False, cast=bool)
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=(ENVIRONMENT == "production"), cast=bool)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=(ENVIRONMENT == "production"), cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=(31536000 if ENVIRONMENT == "production" else 0), cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config("SECURE_HSTS_INCLUDE_SUBDOMAINS", default=(ENVIRONMENT == "production"), cast=bool)
+SECURE_HSTS_PRELOAD = config("SECURE_HSTS_PRELOAD", default=(ENVIRONMENT == "production"), cast=bool)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
 
 # 0️⃣ channels
 
@@ -315,33 +312,31 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-
     # 4️⃣ corsheaders
     "corsheaders",
-
     # 0️⃣ channels
     "channels",
     "django_celery_results",
     "django_celery_beat",
-
-
     # ================================================
     # 📚 Apps
     # ================================================
 
-    "users_accounts",  # ✅
-    "social",
-    "notification",
-    "core",   # ✅
-    "projects",
-    "challenges",
-    "tasks", # ✅
-    "goals", # ✅
-    "learning",  # ✅
-    "knowledge",   # ✅
-    "jobs_opportunity", # ✅
+    "ai",
+    "automation",
+    "core",
+    "codex",
+    "goals",
+    "jobs_opportunity",
+    "knowledge",
+    "learning",
     "memory",
-    "ai",   # ✅
+    "notification",
+    "projects",
+    "social",
+    "tasks",
+    "users_accounts",
+    "challenges",
 ]
 
 
@@ -383,12 +378,26 @@ WSGI_APPLICATION = 'backend_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASE_ENGINE = config("DATABASE_ENGINE", default="sqlite3")
+if DATABASE_ENGINE == "postgresql":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("POSTGRES_DB"),
+            "USER": config("POSTGRES_USER"),
+            "PASSWORD": config("POSTGRES_PASSWORD"),
+            "HOST": config("POSTGRES_HOST", default="127.0.0.1"),
+            "PORT": config("POSTGRES_PORT", default=5432, cast=int),
+            "CONN_MAX_AGE": config("POSTGRES_CONN_MAX_AGE", default=60, cast=int),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -435,11 +444,16 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_BACKEND = config(
+    "EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
+)
+EMAIL_HOST = config("EMAIL_HOST", default="")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+
 
 
 # ====================================================

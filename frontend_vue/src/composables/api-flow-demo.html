@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Flow Tracker — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090d;--s0:#0d1018;--s1:#131720;--s2:#1a2030;
+  --bd:#232b3e;--bd2:#2e3a52;--tx:#c8d4f0;--mu:#4e5e80;--mu2:#6b7aa0;
+  --ok:#4ade80;--er:#ff6b6b;--wa:#fbbf24;--in:#38bdf8;--acc:#5b8af5;
+  --pu:#a78bfa;--vue:#42d392;--dj:#44b78b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--tx);
+  font-family:'Cairo',sans-serif;min-height:100vh;
+  padding:0;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(91,138,245,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(91,138,245,.025) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0;
+}
+
+.page{max-width:900px;margin:0 auto;padding:32px 20px;position:relative;z-index:1}
+
+/* ── Top ── */
+.top-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--s1);border:1px solid var(--bd2);
+  border-radius:100px;padding:5px 14px;
+  font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--mu2);
+  margin-bottom:18px;
+}
+.live{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+h1{font-size:clamp(22px,4vw,38px);font-weight:900;letter-spacing:-.5px;margin-bottom:8px;line-height:1.15}
+h1 .c-vue{color:var(--vue)}
+h1 .c-dj{color:var(--dj)}
+h1 .c-acc{color:var(--acc)}
+.sub{font-size:14px;color:var(--mu2);margin-bottom:28px;line-height:1.7}
+.sub code{
+  background:var(--s2);border:1px solid var(--bd2);border-radius:5px;
+  padding:2px 8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acc)
+}
+
+/* ── Demo Controls ── */
+.demo-card{
+  background:var(--s0);border:1px solid var(--bd);border-radius:14px;
+  padding:20px;margin-bottom:20px;
+}
+.demo-title{
+  font-size:13px;font-weight:700;color:var(--mu2);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;
+  font-family:'JetBrains Mono',monospace;
+}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.sim-btn{
+  padding:10px 18px;border-radius:9px;border:1px solid var(--bd2);
+  background:var(--s1);color:var(--tx);font-family:'Cairo',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:7px;
+}
+.sim-btn:hover{transform:translateY(-1px)}
+.sim-btn.btn-ok:hover   {border-color:var(--ok);color:var(--ok);box-shadow:0 4px 16px rgba(74,222,128,.2)}
+.sim-btn.btn-er:hover   {border-color:var(--er);color:var(--er);box-shadow:0 4px 16px rgba(255,107,107,.2)}
+.sim-btn.btn-acc:hover  {border-color:var(--acc);color:var(--acc);box-shadow:0 4px 16px rgba(91,138,245,.2)}
+
+/* ── Pipeline ── */
+.pipeline-wrap{
+  background:var(--s0);border:1px solid var(--bd);border-radius:14px;
+  padding:18px 20px;margin-bottom:18px;
+}
+.pip-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd);
+}
+.pip-left{display:flex;align-items:center;gap:10px}
+.pip-logo{
+  width:30px;height:30px;border-radius:7px;
+  background:linear-gradient(135deg,var(--acc),#8b5cf6);
+  display:grid;place-items:center;font-size:14px;
+}
+.pip-title{font-size:14px;font-weight:800}
+.pip-sub{font-size:11px;color:var(--mu);display:flex;gap:6px;align-items:center;margin-top:2px}
+.pip-method{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  padding:1px 6px;border-radius:3px;
+}
+.m-post   {background:rgba(91,138,245,.15);color:var(--acc)}
+.m-get    {background:rgba(56,189,248,.15);color:var(--in)}
+.m-put    {background:rgba(251,191,36,.15);color:var(--wa)}
+.m-delete {background:rgba(255,107,107,.15);color:var(--er)}
+.m-patch  {background:rgba(167,139,250,.15);color:var(--pu)}
+.pip-url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu)}
+
+.pip-status{font-size:12px;font-weight:700;padding:3px 12px;border-radius:100px}
+.ps-idle   {background:rgba(78,90,120,.2);color:var(--mu)}
+.ps-running{background:rgba(91,138,245,.12);color:var(--acc)}
+.ps-ok     {background:rgba(74,222,128,.1);color:var(--ok)}
+.ps-fail   {background:rgba(255,107,107,.1);color:var(--er)}
+.pip-timing{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu)}
+
+/* ── Stage Nodes ── */
+.stages-row{
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;padding-bottom:8px;
+  scrollbar-width:thin;scrollbar-color:var(--bd2) transparent;
+}
+.stage-node{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 8px;border-radius:8px;cursor:pointer;
+  transition:background .15s;flex-shrink:0;min-width:76px;
+}
+.stage-node:hover{background:rgba(255,255,255,.04)}
+.node-ring{
+  width:44px;height:44px;border-radius:50%;
+  border:2px solid var(--bd2);display:grid;place-items:center;
+  transition:all .35s;font-size:16px;font-weight:700;
+}
+.node-label{font-size:10.5px;font-weight:700;text-align:center;white-space:nowrap}
+.node-layer{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.node-time {font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--mu);height:12px}
+
+/* stage states */
+.n-idle   .node-ring{border-color:var(--bd2);opacity:.45}
+.n-idle   .node-label{color:var(--mu)}
+.n-active .node-ring{
+  border-color:var(--acc);background:rgba(91,138,245,.08);
+  box-shadow:0 0 0 4px rgba(91,138,245,.18);
+  animation:ring-p 1s ease infinite;
+}
+@keyframes ring-p{0%,100%{box-shadow:0 0 0 3px rgba(91,138,245,.2)}50%{box-shadow:0 0 0 8px rgba(91,138,245,.05)}}
+.n-active .node-label{color:var(--acc)}
+.n-pass   .node-ring{border-color:var(--ok);background:rgba(74,222,128,.07)}
+.n-pass   .node-label{color:var(--tx)}
+.n-fail   .node-ring{border-color:var(--er);background:rgba(255,107,107,.08)}
+.n-fail   .node-label{color:var(--er)}
+.n-skip   .node-ring{border-color:var(--bd2);opacity:.35}
+.n-skip   .node-label{color:var(--mu);opacity:.5}
+
+.spinner-s{
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid rgba(91,138,245,.3);border-top-color:var(--acc);
+  animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* connector */
+.connector{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:0 2px;flex-shrink:0;transition:opacity .3s;
+}
+.c-idle {opacity:.3}
+.c-pass {opacity:1}
+.c-active{opacity:1}
+.c-fail {opacity:.2}
+.conn-line{
+  width:22px;height:2px;border-radius:1px;background:var(--bd2);
+  transition:background .3s;
+}
+.c-pass  .conn-line{background:var(--ok)}
+.c-active .conn-line{background:var(--acc);animation:flow 1s linear infinite}
+@keyframes flow{0%,100%{opacity:1}50%{opacity:.35}}
+.conn-arrow{font-size:11px;color:var(--mu);line-height:1}
+.c-pass  .conn-arrow{color:var(--ok)}
+.c-active .conn-arrow{color:var(--acc)}
+
+/* ── Detail Panel ── */
+.detail-panel{
+  background:var(--s2);border:1px solid var(--bd2);border-radius:8px;
+  padding:10px 14px;margin-top:10px;
+  animation:slideIn .2s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.detail-hdr{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;font-weight:700;margin-bottom:6px;
+}
+.detail-badge{
+  font-size:10px;padding:1px 7px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;
+}
+.db-pass{background:rgba(74,222,128,.1);color:var(--ok)}
+.db-fail{background:rgba(255,107,107,.1);color:var(--er)}
+.db-skip{background:rgba(78,90,120,.15);color:var(--mu)}
+.db-active{background:rgba(91,138,245,.1);color:var(--acc)}
+.detail-body{font-size:11.5px;color:var(--tx);line-height:1.8;font-family:'JetBrains Mono',monospace;white-space:pre-wrap}
+
+/* ── Data panels ── */
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:600px){.data-row{grid-template-columns:1fr}}
+.data-panel{
+  background:var(--s2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;
+}
+.data-panel.dp-ok  {border-color:rgba(74,222,128,.2)}
+.data-panel.dp-err {border-color:rgba(255,107,107,.2)}
+.data-lbl{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;padding:7px 10px;
+  background:rgba(255,255,255,.03);border-bottom:1px solid var(--bd);
+}
+.data-pre{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  color:#8ba0c8;padding:8px 10px;max-height:130px;overflow-y:auto;
+  white-space:pre-wrap;word-break:break-all;
+  scrollbar-width:thin;scrollbar-color:var(--bd2) transparent;
+}
+.status-chip{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  font-weight:700;padding:1px 6px;border-radius:3px;
+}
+.sc-ok  {background:rgba(74,222,128,.12);color:var(--ok)}
+.sc-warn{background:rgba(251,191,36,.12);color:var(--wa)}
+.sc-err {background:rgba(255,107,107,.12);color:var(--er)}
+.sc-in  {background:rgba(56,189,248,.12);color:var(--in)}
+
+/* ── Error box ── */
+.error-box{
+  background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.2);
+  border-radius:8px;padding:12px 14px;margin-top:12px;
+  animation:slideIn .25s ease;
+}
+.error-title{font-size:13px;font-weight:800;color:var(--er);margin-bottom:6px}
+.error-fix{font-size:12px;color:var(--tx);line-height:1.85;white-space:pre-wrap}
+
+/* ── Code snippet ── */
+.code-section{
+  background:var(--s0);border:1px solid var(--bd);border-radius:12px;
+  overflow:hidden;margin-bottom:20px;
+}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:var(--s1);border-bottom:1px solid var(--bd);
+}
+.code-header-title{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--mu2)}
+.copy-btn{
+  background:none;border:1px solid var(--bd2);border-radius:5px;
+  padding:3px 10px;color:var(--mu);font-size:11px;cursor:pointer;
+  font-family:'Cairo',sans-serif;transition:all .15s;
+}
+.copy-btn:hover{border-color:var(--acc);color:var(--acc)}
+pre.code-body{
+  font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;
+  color:#abb2bf;padding:16px;overflow-x:auto;
+  scrollbar-width:thin;scrollbar-color:var(--bd2) transparent;
+}
+.kw{color:#c678dd}.fn{color:#61afef}.str{color:#98c379}
+.cm{color:#5c6370;font-style:italic}.key{color:#e06c75}.nu{color:#d19a66}
+.vc{color:var(--vue)}.dc{color:var(--dj)}
+
+.divider{border:none;border-top:1px solid var(--bd);margin:28px 0}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="top-badge"><div class="live"></div> Vue 3 Composable + Component — جاهز للنسخ</div>
+  <h1>
+    <span class="c-acc">API Flow Tracker</span><br>
+    <span class="c-vue">Vue</span> <span style="color:var(--mu2)">↔</span> <span class="c-dj">Django</span>
+  </h1>
+  <p class="sub">
+    أداة بصرية حية — حطها في <code>أي مشروع</code> وهي تعرضلك كل مرحلة من مراحل الـ API بشكل تلقائي
+  </p>
+
+  <!-- Demo Buttons -->
+  <div class="demo-card">
+    <div class="demo-title">جرب الأداة — محاكاة مباشرة</div>
+    <div class="btn-row">
+      <button class="sim-btn btn-ok" onclick="simulate('post-ok')">
+        ✅ POST ناجح — إضافة منتج
+      </button>
+      <button class="sim-btn btn-ok" onclick="simulate('get-ok')">
+        ✅ GET ناجح — جلب بيانات
+      </button>
+      <button class="sim-btn btn-er" onclick="simulate('400')">
+        ❌ 400 — Validation Error
+      </button>
+      <button class="sim-btn btn-er" onclick="simulate('401')">
+        🔐 401 — Unauthorized
+      </button>
+      <button class="sim-btn btn-er" onclick="simulate('404')">
+        🔍 404 — Not Found
+      </button>
+      <button class="sim-btn btn-er" onclick="simulate('500')">
+        💥 500 — Server Error
+      </button>
+      <button class="sim-btn" onclick="simulate('network')">
+        🌐 Network Error
+      </button>
+    </div>
+  </div>
+
+  <!-- Pipeline Visualizer -->
+  <div class="pipeline-wrap" id="pipelineWrap">
+    <div class="pip-header">
+      <div class="pip-left">
+        <div class="pip-logo">⚡</div>
+        <div>
+          <div class="pip-title">API Flow Tracker</div>
+          <div class="pip-sub" id="pipSub">
+            <span>في انتظار الـ request…</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="pip-timing" id="pipTiming"></span>
+        <span class="pip-status ps-idle" id="pipStatus">في الانتظار</span>
+      </div>
+    </div>
+
+    <div class="stages-row" id="stagesRow"></div>
+    <div id="detailPanel"></div>
+    <div id="dataPanels"></div>
+    <div id="errorBox"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Code: How to use -->
+  <div class="demo-title" style="margin-bottom:14px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu2);font-family:'JetBrains Mono',monospace">
+    كيفية الاستخدام في مشروعك
+  </div>
+
+  <div class="code-section">
+    <div class="code-header">
+      <span class="code-header-title">في أي Vue Component</span>
+      <button class="copy-btn" onclick="copyCode('usage-code')">نسخ</button>
+    </div>
+    <pre class="code-body" id="usage-code"><span class="cm">// ① استورد الـ composable والـ component</span>
+<span class="kw">import</span> { <span class="fn">useApiTracker</span> } <span class="kw">from</span> <span class="str">'@/composables/useApiTracker'</span>
+<span class="kw">import</span> <span class="fn">ApiFlowPanel</span>     <span class="kw">from</span> <span class="str">'@/components/ApiFlowPanel.vue'</span>
+
+<span class="cm">// ② في setup()</span>
+<span class="kw">const</span> { <span class="fn">execute</span>, stages, result, error, meta } = <span class="fn">useApiTracker</span>()
+
+<span class="cm">// ③ استخدم execute() بدل axios مباشرة</span>
+<span class="kw">async function</span> <span class="fn">createProduct</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">execute</span>({
+      url:    <span class="str">'/api/products/'</span>,
+      method: <span class="str">'POST'</span>,
+      data:   { <span class="key">name</span>: productName.value, <span class="key">price</span>: price.value }
+    })
+    products.value.<span class="fn">push</span>(data)   <span class="cm">// ✅ استخدم البيانات عادي</span>
+  } <span class="kw">catch</span>(e) {
+    <span class="cm">// الـ ApiFlowPanel بيعرض الخطأ تلقائياً</span>
+  }
+}
+</pre>
+  </div>
+
+  <div class="code-section">
+    <div class="code-header">
+      <span class="code-header-title">في الـ Template</span>
+      <button class="copy-btn" onclick="copyCode('template-code')">نسخ</button>
+    </div>
+    <pre class="code-body" id="template-code"><span class="cm">&lt;!-- ④ ضيف الـ component في أي مكان في الـ template --&gt;</span>
+&lt;<span class="vc">ApiFlowPanel</span>
+  :<span class="key">stages</span>=<span class="str">"stages"</span>
+  :<span class="key">meta</span>=<span class="str">"meta"</span>
+  :<span class="key">error</span>=<span class="str">"error"</span>
+  :<span class="key">show-data</span>=<span class="str">"true"</span>
+/&gt;
+
+<span class="cm">&lt;!-- لو عايزها compact بدون header --&gt;</span>
+&lt;<span class="vc">ApiFlowPanel</span>
+  :<span class="key">stages</span>=<span class="str">"stages"</span>
+  :<span class="key">meta</span>=<span class="str">"meta"</span>
+  :<span class="key">error</span>=<span class="str">"error"</span>
+  <span class="key">compact</span>
+/&gt;
+</pre>
+  </div>
+
+  <div class="code-section">
+    <div class="code-header">
+      <span class="code-header-title">ملف الـ Files — أين تحط الملفات</span>
+    </div>
+    <pre class="code-body">src/
+├── composables/
+│   └── <span class="vc">useApiTracker.js</span>     <span class="cm"># الـ engine — بيتابع كل مرحلة</span>
+├── components/
+│   └── <span class="dc">ApiFlowPanel.vue</span>     <span class="cm"># الـ visual component</span>
+└── views/
+    └── <span class="cm">ProductsView.vue      # مثال لأي page تستخدمهم فيها</span>
+</pre>
+  </div>
+
+</div>
+
+<script>
+// ── Stages definition ────────────────────────────────────────
+const STAGES = [
+  { id:'init',     icon:'🔧', label:'تجهيز الطلب',       layer:'Vue'     },
+  { id:'auth',     icon:'🔐', label:'التحقق من الهوية',  layer:'Vue'     },
+  { id:'send',     icon:'📡', label:'إرسال الـ Request', layer:'Network' },
+  { id:'server',   icon:'⚙️', label:'السيرفر يعالج',     layer:'Django'  },
+  { id:'response', icon:'📥', label:'استقبال الرد',      layer:'Network' },
+  { id:'parse',    icon:'📦', label:'قراءة البيانات',    layer:'Vue'     },
+  { id:'done',     icon:'✅', label:'اكتمل',             layer:'Vue'     },
+]
+
+let currentStages = []
+let openIdx = null
+
+function freshStages() {
+  return STAGES.map(s => ({ ...s, status:'idle', detail:null, timing:null }))
+}
+
+function renderStages() {
+  const row = document.getElementById('stagesRow')
+  row.innerHTML = currentStages.map((s, i) => {
+    const isLast = i === currentStages.length - 1
+    const connCls = i < currentStages.length - 1
+      ? (s.status==='pass' ? 'c-pass' : s.status==='active' ? 'c-active' : s.status==='fail' ? 'c-fail' : 'c-idle')
+      : ''
+
+    let inner = s.icon
+    if (s.status === 'active') inner = `<div class="spinner-s"></div>`
+    else if (s.status === 'pass') inner = `<span style="color:var(--ok);font-size:18px">✓</span>`
+    else if (s.status === 'fail') inner = `<span style="color:var(--er);font-size:18px">✗</span>`
+    else if (s.status === 'skip') inner = `<span style="color:var(--mu)">–</span>`
+
+    const timingStr = (typeof s.timing === 'number') ? `${s.timing}ms` : ''
+
+    let html = `
+      <div class="stage-node n-${s.status}" onclick="toggleStage(${i})">
+        <div class="node-ring">${inner}</div>
+        <div class="node-label">${s.label}</div>
+        <div class="node-layer">${s.layer}</div>
+        <div class="node-time">${timingStr}</div>
+      </div>`
+
+    if (!isLast) {
+      html += `<div class="connector ${connCls}">
+        <div class="conn-line"></div>
+        <div class="conn-arrow">›</div>
+      </div>`
+    }
+
+    return html
+  }).join('')
+}
+
+function toggleStage(i) {
+  if (openIdx === i) { openIdx = null }
+  else { openIdx = i }
+  renderDetail()
+}
+
+function renderDetail() {
+  const panel = document.getElementById('detailPanel')
+  const s = currentStages[openIdx]
+  if (openIdx === null || !s?.detail) { panel.innerHTML = ''; return }
+  panel.innerHTML = `<div class="detail-panel">
+    <div class="detail-hdr">
+      <span>${s.icon} ${s.label}</span>
+      <span class="detail-badge db-${s.status}">${s.status}</span>
+    </div>
+    <div class="detail-body">${s.detail}</div>
+  </div>`
+}
+
+function setStage(id, status, detail) {
+  const s = currentStages.find(x => x.id === id)
+  if (!s) return
+  if (status === 'active') s.timing = Date.now()
+  if ((status === 'pass' || status === 'fail') && s.timing && typeof s.timing === 'number') {
+    s.timing = Date.now() - s.timing
+  }
+  s.status = status
+  if (detail) s.detail = detail
+  renderStages()
+  if (openIdx !== null) renderDetail()
+}
+
+function tick(ms=120) { return new Promise(r=>setTimeout(r,ms)) }
+
+function setPipHeader(method, url) {
+  const mCls = 'm-'+(method||'get').toLowerCase()
+  document.getElementById('pipSub').innerHTML =
+    `<span class="pip-method ${mCls}">${method}</span><span class="pip-url">${url}</span>`
+}
+function setPipStatus(cls, label) {
+  const el = document.getElementById('pipStatus')
+  el.className = 'pip-status ' + cls
+  el.textContent = label
+}
+function setPipTiming(ms) {
+  document.getElementById('pipTiming').textContent = ms ? ms+'ms' : ''
+}
+
+// ── Simulate scenarios ───────────────────────────────────────
+const scenarios = {
+  'post-ok': {
+    method:'POST', url:'/api/products/',
+    reqBody: '{\n  "name": "Laptop Pro",\n  "price": 1299,\n  "category": 3\n}',
+    status: 200,
+    resBody: '{\n  "id": 47,\n  "name": "Laptop Pro",\n  "price": "1299.00",\n  "category": {"id":3,"name":"Electronics"},\n  "created_at": "2025-03-10T14:22:00Z"\n}',
+    stages: [
+      { id:'init',     detail:'Method: POST | URL: /api/products/\nBody: {"name":"Laptop Pro","price":1299,"category":3}' },
+      { id:'auth',     detail:'Token موجود ✓\nAuthorization: Token abc123...xyz' },
+      { id:'send',     detail:'Request أُرسل | Content-Type: application/json' },
+      { id:'server',   detail:'Django استجاب\nURL matched: ProductViewSet.create()' },
+      { id:'response', detail:'Status: 201 | Size: 180B' },
+      { id:'parse',    detail:'شكل البيانات: Object { id, name, price, category, created_at }' },
+      { id:'done',     detail:'اكتمل ✓' },
+    ],
+    allPass: true
+  },
+  'get-ok': {
+    method:'GET', url:'/api/products/?page=1&category=3',
+    reqBody: null,
+    status: 200,
+    resBody: '{\n  "count": 47,\n  "next": "/api/products/?page=2",\n  "previous": null,\n  "results": [\n    {"id":1,"name":"Laptop","price":"999.00"},\n    {"id":2,"name":"Phone","price":"599.00"}\n  ]\n}',
+    stages: [
+      { id:'init',     detail:'Method: GET | URL: /api/products/\nParams: {page:1, category:3}' },
+      { id:'auth',     detail:'Token موجود ✓' },
+      { id:'send',     detail:'Request أُرسل' },
+      { id:'server',   detail:'Django استجاب\nProductViewSet.list() → queryset: 47 item' },
+      { id:'response', detail:'Status: 200 | Size: 420B' },
+      { id:'parse',    detail:'شكل البيانات: Paginated { count: 47, results: 2 }' },
+      { id:'done',     detail:'اكتمل ✓' },
+    ],
+    allPass: true
+  },
+  '400': {
+    method:'POST', url:'/api/products/',
+    reqBody: '{\n  "name": "",\n  "price": -50\n}',
+    status: 400,
+    resBody: '{\n  "name": ["This field may not be blank."],\n  "price": ["Ensure this value is greater than or equal to 0."],\n  "category": ["This field is required."]\n}',
+    error: {
+      short: 'Validation Error — البيانات غلط',
+      fix: `• الحقل name فارغ — مينفعش يتبعت blank\n• الـ price سالب — الـ Serializer بيرفض أي قيمة < 0\n• الحقل category مش بيتبعت أصلاً\n\nالحل: شوف error.response.data وعرض الـ errors جنب كل field في الـ form`
+    },
+    stages: [
+      { id:'init',     s:'pass', detail:'Method: POST | URL: /api/products/' },
+      { id:'auth',     s:'pass', detail:'Token موجود ✓' },
+      { id:'send',     s:'pass', detail:'Request وصل' },
+      { id:'server',   s:'fail', detail:'Django رجع 400\nProductSerializer.validate() فشل' },
+      { id:'response', s:'fail', detail:'Status: 400 | Validation Error' },
+      { id:'parse',    s:'skip', detail:'لم يتم — الـ request فشل' },
+      { id:'done',     s:'fail', detail:'Validation Error — البيانات غلط' },
+    ],
+  },
+  '401': {
+    method:'GET', url:'/api/orders/',
+    reqBody: null,
+    status: 401,
+    resBody: '{\n  "detail": "Authentication credentials were not provided."\n}',
+    error: {
+      short: 'Unauthorized — مفيش Token أو منتهي',
+      fix: `• تأكد إن الـ Token موجود في localStorage\n• تأكد إنه بيتبعت في Authorization header\n• لو JWT: افحص الـ expiry في الـ token\n\nالحل: إضافة axios interceptor يضيف التوكن تلقائياً`
+    },
+    stages: [
+      { id:'init',   s:'pass', detail:'Method: GET | URL: /api/orders/' },
+      { id:'auth',   s:'skip', detail:'مفيش token في localStorage!' },
+      { id:'send',   s:'pass', detail:'Request أُرسل بدون Authorization header' },
+      { id:'server', s:'fail', detail:'Django رجع 401\nAuthenticationMiddleware: credentials not provided' },
+      { id:'response', s:'fail', detail:'Status: 401 | Authentication required' },
+      { id:'parse',  s:'skip', detail:'لم يتم' },
+      { id:'done',   s:'fail', detail:'Unauthorized' },
+    ],
+  },
+  '404': {
+    method:'GET', url:'/api/products/9999/',
+    reqBody: null,
+    status: 404,
+    resBody: '{\n  "detail": "Not found."\n}',
+    error: {
+      short: 'Not Found — الـ ID مش موجود',
+      fix: `• الـ ID 9999 مش موجود في الـ Database\n• أو الـ URL pattern غلط في urls.py\n\nالحل: تأكد إن الـ ID صحيح قبل الإرسال، أو handle الـ 404 في Vue بـ router.push('/not-found')`
+    },
+    stages: [
+      { id:'init',   s:'pass', detail:'Method: GET | URL: /api/products/9999/' },
+      { id:'auth',   s:'pass', detail:'Token موجود ✓' },
+      { id:'send',   s:'pass', detail:'Request أُرسل' },
+      { id:'server', s:'fail', detail:'Django: Product.objects.get(pk=9999) → DoesNotExist' },
+      { id:'response', s:'fail', detail:'Status: 404 | Not found' },
+      { id:'parse',  s:'skip', detail:'لم يتم' },
+      { id:'done',   s:'fail', detail:'Not Found' },
+    ],
+  },
+  '500': {
+    method:'POST', url:'/api/orders/',
+    reqBody: '{\n  "product_id": 5,\n  "quantity": 2\n}',
+    status: 500,
+    resBody: '{\n  "detail": "Internal Server Error"\n}',
+    error: {
+      short: 'Server Error — Django وقع في Exception',
+      fix: `• افتح Django terminal — هتلاقي الـ Traceback كامل\n• الغالب: خطأ في الـ View logic أو ORM query\n• أو migration ناقصة — جرب: python manage.py migrate\n\nالحل المؤقت: فعّل DEBUG=True في settings.py وشوف الـ error في الـ response`
+    },
+    stages: [
+      { id:'init',   s:'pass', detail:'Method: POST | URL: /api/orders/' },
+      { id:'auth',   s:'pass', detail:'Token موجود ✓' },
+      { id:'send',   s:'pass', detail:'Request أُرسل' },
+      { id:'server', s:'fail', detail:'Django Exception!\nUnhandledError في OrderViewSet.create()' },
+      { id:'response', s:'fail', detail:'Status: 500 | Internal Server Error' },
+      { id:'parse',  s:'skip', detail:'لم يتم' },
+      { id:'done',   s:'fail', detail:'Server Error' },
+    ],
+  },
+  'network': {
+    method:'GET', url:'http://localhost:8000/api/products/',
+    reqBody: null,
+    status: null,
+    resBody: null,
+    error: {
+      short: 'Network Error — مش قادر يوصل للسيرفر',
+      fix: `• Django server مش شغال — شغّل: python manage.py runserver\n• الـ baseURL غلط — لازم: http://localhost:8000\n• ممكن يكون firewall أو proxy يمنع الاتصال\n\nفي Vue: error.response بيبقى undefined في الـ Network Error`
+    },
+    stages: [
+      { id:'init',   s:'pass', detail:'Method: GET | URL: http://localhost:8000/api/products/' },
+      { id:'auth',   s:'pass', detail:'Token موجود ✓' },
+      { id:'send',   s:'fail', detail:'Network Error — Connection refused\nالسيرفر مش بيرد على port 8000' },
+      { id:'server', s:'skip', detail:'لم يصل' },
+      { id:'response', s:'skip', detail:'لم يصل' },
+      { id:'parse',  s:'skip', detail:'لم يصل' },
+      { id:'done',   s:'fail', detail:'Network Error' },
+    ],
+  },
+}
+
+async function simulate(key) {
+  const sc = scenarios[key]
+  if (!sc) return
+
+  // reset
+  currentStages = freshStages()
+  openIdx = null
+  renderStages()
+  document.getElementById('detailPanel').innerHTML = ''
+  document.getElementById('dataPanels').innerHTML = ''
+  document.getElementById('errorBox').innerHTML = ''
+  setPipStatus('ps-running', 'جاري…')
+  setPipTiming('')
+  setPipHeader(sc.method, sc.url)
+
+  const startTime = Date.now()
+  const isSuccess = sc.allPass
+
+  // Animate through stages
+  const stagesData = sc.stages
+
+  for (let i = 0; i < stagesData.length; i++) {
+    const sd = stagesData[i]
+    setStage(sd.id, 'active', null)
+    await tick(350 + Math.random()*200)
+    const finalStatus = sd.s || (isSuccess ? 'pass' : (i >= 3 ? 'fail' : 'pass'))
+    setStage(sd.id, finalStatus, sd.detail)
+    if (finalStatus === 'fail') {
+      // skip remaining
+      for (let j = i+1; j < stagesData.length; j++) {
+        const nsd = stagesData[j]
+        setStage(nsd.id, nsd.s || 'skip', nsd.detail)
+      }
+      break
+    }
+    await tick(80)
+  }
+
+  const duration = Date.now() - startTime
+
+  // Update pip header status
+  const hasFail = currentStages.some(s => s.status === 'fail')
+  if (hasFail) {
+    setPipStatus('ps-fail', `فشل — ${sc.status || 'Network Error'}`)
+  } else {
+    setPipStatus('ps-ok', `نجح ✓ ${sc.status}`)
+  }
+  setPipTiming(duration)
+
+  // Data panels
+  if (sc.reqBody || sc.resBody) {
+    let dpHtml = '<div class="data-row">'
+    if (sc.reqBody) {
+      dpHtml += `<div class="data-panel">
+        <div class="data-lbl">📤 ما اتبعت</div>
+        <pre class="data-pre">${sc.reqBody}</pre>
+      </div>`
+    }
+    if (sc.resBody) {
+      const statusCls = !sc.status ? '' : sc.status < 300 ? 'dp-ok' : 'dp-err'
+      const chipCls   = !sc.status ? '' : sc.status < 300 ? 'sc-ok' : sc.status < 500 ? 'sc-warn' : 'sc-err'
+      dpHtml += `<div class="data-panel ${statusCls}">
+        <div class="data-lbl">
+          📥 ما رجع
+          ${sc.status ? `<span class="status-chip ${chipCls}">${sc.status}</span>` : ''}
+        </div>
+        <pre class="data-pre">${sc.resBody}</pre>
+      </div>`
+    }
+    dpHtml += '</div>'
+    document.getElementById('dataPanels').innerHTML = dpHtml
+  }
+
+  // Error box
+  if (sc.error) {
+    document.getElementById('errorBox').innerHTML = `
+      <div class="error-box">
+        <div class="error-title">🚨 ${sc.error.short}</div>
+        <div class="error-fix">💡 ${sc.error.fix}</div>
+      </div>`
+  }
+}
+
+// Copy code
+function copyCode(id) {
+  const el = document.getElementById(id)
+  const text = el.innerText
+  navigator.clipboard.writeText(text).then(() => {
+    const btns = document.querySelectorAll('.copy-btn')
+    btns.forEach(b => { if(b.getAttribute('onclick')?.includes(id)) b.textContent = '✓ تم النسخ' })
+    setTimeout(() => btns.forEach(b => b.textContent = 'نسخ'), 2000)
+  })
+}
+
+// Init
+currentStages = freshStages()
+renderStages()
+</script>
+</body>
+</html>

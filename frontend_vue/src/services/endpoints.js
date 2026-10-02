@@ -127,8 +127,9 @@ export const endpoints = {
     opportunity: (id) => `/jobs/opportunities/${id}/`,
     refreshMatch: (id) => `/jobs/opportunities/${id}/refresh_match/`,
     analyze: (id) => `/jobs/opportunities/${id}/analyze/`,
-    readiness: (id) => `/jobs/opportunities/${id}/readiness/`,
+    opportunityReadiness: (id) => `/jobs/opportunities/${id}/readiness/`,
     similar: (id) => `/jobs/opportunities/${id}/similar/`,
+    apply: (id) => `/jobs/opportunities/${id}/apply/`,
     compare: '/jobs/opportunities/compare/',
     matches: '/jobs/matches/',
     refreshMatches: '/jobs/matches/refresh/',
@@ -166,6 +167,40 @@ export const endpoints = {
     features: '/jobs/workspace/features/',
     refreshAll: '/jobs/workspace/refresh_all/',
     workspaceCompare: '/jobs/workspace/compare/',
+  },
+
+  social: {
+    profile: '/social/profile/',
+    recommendations: '/social/recommendations/',
+    request: (id) => `/social/friends/${id}/request/`,
+    friends: (id) => `/social/friends/${id}/`,
+    suggestions: '/social/friends/suggested/',
+    friendAction: (id, action) => `/social/friends/${id}/${action}/`,
+    unfriend: (id) => `/social/friends/${id}/unfriend/`,
+  },
+
+  notifications: {
+    list: '/notifications/',
+    unreadCount: '/notifications/unread-count/',
+    read: (id) => `/notifications/${id}/read/`,
+    readAll: '/notifications/read-all/',
+    archive: (id) => `/notifications/${id}/archive/`,
+    detail: (id) => `/notifications/${id}/`,
+  },
+
+  codex: {
+    overview: '/codex/overview/',
+    scan: '/codex/scan/',
+    context: '/codex/context/',
+    projects: '/codex/projects/',
+    features: '/codex/features/',
+    files: '/codex/files/',
+    apis: '/codex/apis/',
+    protected: '/codex/protected/',
+    changes: '/codex/changes/',
+    planChange: '/codex/changes/plan/',
+    snapshots: '/codex/snapshots/',
+    createSnapshot: '/codex/snapshots/create/',
   },
 
   ai: {

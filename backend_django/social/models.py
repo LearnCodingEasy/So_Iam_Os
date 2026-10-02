@@ -183,3 +183,32 @@ class UserBlock(models.Model):
 
     def __str__(self):
         return f"{self.blocker} blocks {self.blocked}"
+
+
+class SocialProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="social_profile")
+    learning_interests = models.JSONField(default=list, blank=True)
+    professional_interests = models.JSONField(default=list, blank=True)
+    topics = models.JSONField(default=list, blank=True)
+    looking_for = models.JSONField(default=list, blank=True)
+    bio = models.TextField(blank=True)
+    discoverable = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["discoverable", "updated_at"])]
+
+
+class SocialRecommendation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="social_recommendations")
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name="social_recommended_to")
+    score = models.PositiveSmallIntegerField(default=0)
+    reasons = models.JSONField(default=list, blank=True)
+    breakdown = models.JSONField(default=dict, blank=True)
+    status = models.CharField(max_length=20, default="active")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["user", "candidate"], name="unique_social_recommendation")]
+        indexes = [models.Index(fields=["user", "score"])]

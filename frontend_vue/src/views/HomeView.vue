@@ -85,6 +85,11 @@ const menuItems = [
     route: '/ai',
   },
   {
+    name: 'Codex',
+    icon: '✦',
+    route: '/codex',
+  },
+  {
     name: 'Settings',
     icon: '⚙',
     route: '/settings',
@@ -370,92 +375,6 @@ onBeforeUnmount(() => {
     <!-- =============================================
     SIDEBAR OVERLAY - MOBILE
     ============================================== -->
-
-    <div v-if="sidebarOpen" class="sidebar-overlay" @click="toggleSidebar"></div>
-
-    <!-- ===========================================
-    SIDEBAR
-    ============================================ -->
-
-    <aside
-      class="sidebar"
-      :class="{
-        open: sidebarOpen,
-        collapsed: !sidebarOpen,
-      }"
-    >
-      <!-- BRAND -->
-
-      <div class="brand">
-        <div class="brand-logo">✦</div>
-
-        <div class="brand-info">
-          <h1>So Iam OS</h1>
-
-          <span> Your Personal AI Operating System </span>
-        </div>
-      </div>
-
-      <!-- SIDEBAR TOGGLE -->
-
-      <button
-        class="sidebar-toggle"
-        type="button"
-        @click="toggleSidebar"
-        :aria-label="sidebarOpen ? 'Close sidebar' : 'Open sidebar'"
-      >
-        <span v-if="sidebarOpen"> ‹ </span>
-
-        <span v-else> › </span>
-      </button>
-
-      <!-- NAVIGATION -->
-
-      <nav class="navigation">
-        <RouterLink
-          v-for="item in menuItems"
-          :key="item.name"
-          :to="item.route"
-          class="nav-item"
-          active-class="active"
-          @click="closeSidebarOnMobile"
-        >
-          <span class="nav-icon">
-            {{ item.icon }}
-          </span>
-
-          <span class="nav-name">
-            {{ item.name }}
-          </span>
-
-          <span v-if="item.badge" class="badge">
-            {{ item.badge }}
-          </span>
-        </RouterLink>
-      </nav>
-
-      <!-- PROFILE -->
-
-      <div class="sidebar-bottom">
-        <div class="profile">
-          <div class="avatar">
-            {{ userInitials }}
-          </div>
-
-          <div class="profile-info">
-            <strong>
-              {{ userName }}
-            </strong>
-
-            <span>
-              {{ userEmail }}
-            </span>
-          </div>
-
-          <span class="profile-arrow"> ⌄ </span>
-        </div>
-      </div>
-    </aside>
 
     <!-- =============================================
     MAIN

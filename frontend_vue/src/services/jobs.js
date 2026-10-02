@@ -11,7 +11,7 @@ export const updateJob = async (id, payload) => dataOf(api.patch(endpoints.jobs.
 export const deleteJob = async (id) => { await api.delete(endpoints.jobs.opportunity(id)); return true }
 export const refreshJobMatch = async (id) => dataOf(api.post(endpoints.jobs.refreshMatch(id)))
 export const analyzeJob = async (id) => dataOf(api.post(endpoints.jobs.analyze(id)))
-export const getReadiness = async (id) => dataOf(api.get(endpoints.jobs.readiness(id)))
+export const getReadiness = async (id) => dataOf(api.get(endpoints.jobs.opportunityReadiness(id)))
 export const listSimilarJobs = async (id) => list(await dataOf(api.get(endpoints.jobs.similar(id))))
 export const compareJobs = async (ids) => list(await dataOf(api.get(endpoints.jobs.workspaceCompare, { params: { ids: ids.join(',') } })))
 export const listMatches = async (params = {}) => list(await dataOf(api.get(endpoints.jobs.matches, { params })))

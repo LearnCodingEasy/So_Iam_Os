@@ -166,6 +166,12 @@ def send_friendship_request(request, pk):
             status=FriendshipRequest.Status.PENDING,
         )
 
+    try:
+        from notification.models import NotificationService, Notification
+        NotificationService.create(target_user, type=Notification.Type.SOCIAL, title="New connection request", message=f"{current_user.full_name} sent you a connection request.", action_url="/social", obj=friendship_request)
+    except Exception:
+        pass
+
     return Response(
         {
             "message": "Friendship request sent successfully.",
@@ -372,3 +378,25 @@ def my_friendship_suggestions(request):
             many=True,
         ).data
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def recommendations(request):
+    from .matching import recommendations_for
+    limit = min(int(request.query_params.get("limit", 30)), 100)
+    rows = recommendations_for(request.user, limit=limit)
+    return Response(__import__("social.serializers", fromlist=["SocialRecommendationSerializer"]).SocialRecommendationSerializer(rows, many=True).data)
+
+
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def my_profile(request):
+    from .models import SocialProfile
+    from .serializers import SocialProfileSerializer
+    obj, _ = SocialProfile.objects.get_or_create(user=request.user)
+    if request.method == "PATCH":
+        serializer = SocialProfileSerializer(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+    return Response(SocialProfileSerializer(obj).data)
