@@ -68,10 +68,8 @@ const taskStore = useTaskStore()
 // ==================================================
 function useAsyncAction() {
   const loading = ref(false)
-
   const run = async (apiFn, options = {}) => {
     if (loading.value) return // guard ضد double-click
-
     const {
       validate = null,
       successSummary = null,
@@ -915,10 +913,12 @@ onUnmounted(() => {
 
 <template>
   <main class="automation-view">
+    <!--
     <div style="background-color: #aaa">
       <AIPrompt />
       <AIAsk />
     </div>
+    -->
 
     <div class="automation-layout grid grid-cols-12 gap-4 h-full">
       <!-- ══════════════════════════════════════════════════

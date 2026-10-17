@@ -73,6 +73,7 @@ def get_open_windows(request):
 
 
 class ProgramViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return Program.objects.filter(created_by=self.request.user)
     queryset = Program.objects.all()
     serializer_class = ProgramSerializer
     parser_classes = [JSONParser, FormParser, MultiPartParser]
@@ -154,6 +155,7 @@ class ProgramViewSet(viewsets.ModelViewSet):
 
 
 class ProgramElementViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return ProgramElement.objects.filter(created_by=self.request.user)
     queryset = ProgramElement.objects.all()
     serializer_class = ProgramElementSerializer
     parser_classes = [JSONParser, FormParser, MultiPartParser]
@@ -169,6 +171,7 @@ class ProgramElementViewSet(viewsets.ModelViewSet):
 
 
 class WorkflowViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return Workflow.objects.filter(created_by=self.request.user)
     queryset = Workflow.objects.all()
     serializer_class = WorkflowSerializer
     # ✨ Permissions
@@ -181,27 +184,16 @@ class WorkflowViewSet(viewsets.ModelViewSet):
     def run(self, request, pk=None):
         workflow = self.get_object()
         if workflow.status != "active":
-            return Response(
-                {"error": "Workflow is not active"},
-                status=400
-            )
+            return Response({"error": "Workflow is not active"}, status=400)
+        from .permission_policy import validate_permissions
+        permission_result = validate_permissions(workflow, approved=bool(request.data.get("approve")))
+        if not permission_result["allowed"]:
+            return Response(permission_result, status=403 if permission_result["status"] == "denied" else 409)
 
-        task_run = TaskRun.objects.create(
-            workflow=workflow,
-            status="running",
-            created_by=request.user
-        )
-
-        execute_workflow(workflow.id, request.user)
-        # task_run.status = "success"
-        task_run.refresh_from_db()
-        task_run.finished_at = timezone.now()
-        task_run.save()
-
-        return Response({
-            "status": "workflow_executed",
-            "task_run_id": task_run.id
-        })
+        task_run = TaskRun.objects.create(workflow=workflow, status="running", created_by=request.user)
+        from .tasks import execute_workflow_task
+        async_result = execute_workflow_task.delay(str(workflow.id), str(request.user.id), str(task_run.id))
+        return Response({"status": "workflow_queued", "task_run_id": str(task_run.id), "task_id": async_result.id}, status=202)
 
     """
     🔗 جلب كل الأحداث المرتبطة بـ 
@@ -392,6 +384,7 @@ class WorkflowViewSet(viewsets.ModelViewSet):
 
 
 class WorkflowNodeViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return WorkflowNode.objects.filter(created_by=self.request.user)
     queryset = WorkflowNode.objects.all()
     serializer_class = WorkflowNodeSerializer
 
@@ -456,6 +449,7 @@ class WorkflowNodeViewSet(viewsets.ModelViewSet):
 
 
 class WorkflowEdgeViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return WorkflowEdge.objects.filter(created_by=self.request.user)
     queryset = WorkflowEdge.objects.all()
     serializer_class = WorkflowEdgeSerializer
 
@@ -474,6 +468,7 @@ class WorkflowEdgeViewSet(viewsets.ModelViewSet):
 # ==================================================
 
 class ActionViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return Action.objects.filter(created_by=self.request.user)
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
 
@@ -532,6 +527,7 @@ class ActionViewSet(viewsets.ModelViewSet):
 
 
 class TaskViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return Task.objects.filter(created_by=self.request.user)
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
@@ -549,6 +545,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 # ==================================================
 
 class TaskRunViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return TaskRun.objects.filter(created_by=self.request.user)
     queryset = TaskRun.objects.all().order_by("-started_at")
     serializer_class = TaskRunSerializer
     parser_classes = [JSONParser, FormParser, MultiPartParser]
@@ -564,6 +561,7 @@ class TaskRunViewSet(viewsets.ModelViewSet):
 # 9️⃣ ScreenState
 # ==================================================
 class ScreenStateViewSet(viewsets.ModelViewSet):
+    def get_queryset(self): return ScreenState.objects.filter(created_by=self.request.user)
     """
     🎥 ScreenState API
     ------------------
@@ -624,6 +622,7 @@ class ScreenStateViewSet(viewsets.ModelViewSet):
 
 
 class DelayViewSet(viewsets.ReadOnlyModelViewSet):
+    def get_queryset(self): return Delay.objects.filter(created_by=self.request.user)
     queryset = Delay.objects.all()
     serializer_class = DelaySerializer
     parser_classes = [JSONParser, FormParser, MultiPartParser]

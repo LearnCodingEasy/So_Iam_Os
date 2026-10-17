@@ -29,19 +29,31 @@ class JobSourceViewSet(UserOwnedViewSet):
     def perform_create(self, serializer): serializer.save(user=self.request.user)
 
     @action(detail=True, methods=["post"])
-    def test(self, request, pk=None):
-        source = self.get_object()
-        return Response({"ok": bool(source.feed_url or source.base_url), "source_id": source.id, "message": "Source configuration is ready for the sync worker."})
-
-    @action(detail=True, methods=["post"])
     def sync(self, request, pk=None):
         from .tasks import sync_job_source
         source_id = self.get_object().id
-        if request.data.get("background") is True:
+        if request.data.get("background", True) is True:
             task = sync_job_source.delay(source_id)
-            return Response({"queued": True, "task_id": task.id})
-        result = sync_job_source(source_id)
-        return Response(result)
+            return Response({"queued": True, "task_id": task.id}, status=status.HTTP_202_ACCEPTED)
+        return Response(sync_job_source.apply(args=[source_id]).get())
+
+    @action(detail=True, methods=["post"])
+    def test(self, request, pk=None):
+        source = self.get_object()
+        if source.source_type == JobSource.SourceType.SCRAPER:
+            from .scraper import check_robots
+            allowed = check_robots(source.base_url)
+            return Response({"ok": allowed, "robots_allowed": allowed, "source_id": source.id})
+        return Response({"ok": bool(source.feed_url or source.base_url), "source_id": source.id, "message": "Source configuration is ready for the sync worker."})
+
+    @action(detail=True, methods=["post"])
+    def preview(self, request, pk=None):
+        source = self.get_object()
+        if source.source_type != JobSource.SourceType.SCRAPER:
+            return Response({"detail": "Preview is only available for HTML scraper sources."}, status=400)
+        from .scraper import fetch_and_extract
+        items, meta = fetch_and_extract(source.base_url, {**(source.config or {}), "terms_confirmed": True}, user_agent="So-IAM-OS-JobScraper/1.0", rate_limit_seconds=0.25)
+        return Response({"items": items[:25], "meta": meta})
 
 
 class JobOpportunityViewSet(UserOwnedViewSet):
@@ -101,6 +113,53 @@ class JobOpportunityViewSet(UserOwnedViewSet):
     def compare(self, request):
         ids = [x for x in request.query_params.get("ids", "").split(",") if x]
         return Response(self.get_serializer(self.get_queryset().filter(id__in=ids), many=True).data)
+
+    @action(detail=True, methods=["post"], url_path="generate_cover_letter")
+    def generate_cover_letter(self, request, pk=None):
+        """Generate and persist a cover letter using the user's configured AI provider."""
+        job = self.get_object()
+        from .models import JobResume, JobCoverLetter
+        from ai.models import AISettings
+        from ai.providers import get_ai_provider
+
+        resume_id = request.data.get("resume_id")
+        resume = None
+        if resume_id:
+            resume = JobResume.objects.filter(pk=resume_id, user=request.user).first()
+            if not resume:
+                return Response({"detail": "Resume not found for this user."}, status=400)
+        else:
+            resume = JobResume.objects.filter(user=request.user, is_default=True).first()
+
+        settings_obj, _ = AISettings.objects.get_or_create(user=request.user)
+        provider = get_ai_provider(settings_obj.preferred_provider or "ollama", user=request.user)
+        resume_text = (resume.content if resume else "")[:10000]
+        prompt = (
+            "Write a tailored, truthful professional cover letter. Do not invent qualifications. "
+            "Use the candidate resume and job details below. Return only the letter text.\n\n"
+            f"JOB TITLE: {job.title}\nCOMPANY: {job.company}\nLOCATION: {job.location}\n"
+            f"JOB DESCRIPTION: {job.description[:12000]}\n"
+            f"CANDIDATE RESUME: {resume_text or 'No resume content supplied; avoid asserting specific experience.'}\n"
+            f"ADDITIONAL USER CONTEXT: {str(request.data.get('context', ''))[:3000]}"
+        )
+        try:
+            result = provider.generate(
+                messages=[
+                    {"role": "system", "content": "You are a careful career-writing assistant. Be specific, professional, concise, and truthful."},
+                    {"role": "user", "content": prompt},
+                ],
+                model=settings_obj.preferred_model or None,
+            )
+        except Exception as exc:
+            return Response({"detail": f"AI provider failed to generate the letter: {str(exc)[:300]}"}, status=502)
+        content = (result.get("content") or "").strip()
+        if not content:
+            return Response({"detail": "The configured AI provider returned an empty response."}, status=502)
+        letter = JobCoverLetter.objects.create(
+            user=request.user, job=job, resume=resume,
+            title=f"Cover Letter — {job.title}", content=content, generated=True,
+        )
+        return Response(JobCoverLetterSerializer(letter, context={"request": request}).data, status=201)
 
     @action(detail=True, methods=["post"])
     def apply(self, request, pk=None):
@@ -266,7 +325,7 @@ class JobsWorkspaceViewSet(viewsets.ViewSet):
     def refresh_all(self, request):
         matches = JobMatchingService.refresh_for_user(request.user)
         recommendations = JobRecommendationService.refresh(request.user)
-        analytics = JobAnalyticsService.dashboard(request.user)
+        analytics = JobAnalyticsService.dashboard(request.user, persist_snapshot=True)
         return Response({"matches": len(matches), "recommendations": len(recommendations), "analytics": analytics})
 
     @action(detail=False, methods=["get"])

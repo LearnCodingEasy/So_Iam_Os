@@ -5,7 +5,7 @@
 <hr>
 <h3 id="_1-🎯-purpose" tabindex="-1"><a class="header-anchor" href="#_1-🎯-purpose"><span>1. 🎯 Purpose</span></a></h3>
 <div dir="rtl" style="font-size: 1.3rem; font-weight: bold;">
-<p>الـVirtual Environment بتعمل بيئة مستقلة للمشروع، بحيث مكتبات وإصدارات المشروع ما تتعارضش مع مشاريع Python تانية على الجهاز.</p>
+<p>الـ Virtual Environment بتعمل بيئة مستقلة للمشروع، بحيث مكتبات وإصدارات المشروع ما تتعارضش مع مشاريع Python تانية على الجهاز.</p>
 <p>مثال:</p>
 </div>
 <div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code><span class="line">Project A</span>

@@ -13,7 +13,17 @@
 <p><RouteLink to="/Learn_Vue/animate_css.html">Animate Css </RouteLink></p>
 <p><RouteLink to="/Learn_Vue/Drag_And_Drop.html">Drag Drop </RouteLink></p>
 <p><RouteLink to="/Learn_Vue/Gsap_css.html">Gsap </RouteLink></p>
-<h2 id="🚀-run-vue-project" tabindex="-1"><a class="header-anchor" href="#🚀-run-vue-project"><span>🚀 Run Vue Project</span></a></h2>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code><span class="line">npm install vue3-markdown-it github-markdown-css</span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code><span class="line">// استيراد مكتبة الـ Markdown</span>
+<span class="line">import VueMarkdownIt from 'vue3-markdown-it';</span>
+<span class="line"></span>
+<span class="line">// استيراد تنسيق الـ CSS الخاص بـ GitHub لكي يظهر المحتوى منسقاً</span>
+<span class="line">import 'github-markdown-css/github-markdown.css';</span>
+<span class="line"></span>
+<span class="line">app.use(VueMarkdownIt);</span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h2 id="🚀-run-vue-project" tabindex="-1"><a class="header-anchor" href="#🚀-run-vue-project"><span>🚀 Run Vue Project</span></a></h2>
 <p><RouteLink to="/Learn_Vue/runserver.html">Run Vue Project </RouteLink></p>
 <h2 id="📋-vue-django" tabindex="-1"><a class="header-anchor" href="#📋-vue-django"><span>📋 Vue Django</span></a></h2>
 <p><RouteLink to="/Learn_Vue/VueDjangoSndData.html"> Data </RouteLink></p>

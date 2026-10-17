@@ -22,11 +22,12 @@ from .serializers import (
     KnowledgeFileSerializer,
 )
 from .services import KnowledgeService
+from .metadata import extract_metadata
 
 
-# ============================================================
+# ====================================================
 # 🧠 Knowledge Item ViewSet
-# ============================================================
+# ====================================================
 
 class KnowledgeItemViewSet(viewsets.ModelViewSet):
     """
@@ -47,9 +48,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
 
     serializer_class = KnowledgeItemSerializer
 
-    # ========================================================
+    # ================================================
     # 📚 Queryset
-    # ========================================================
+    # ================================================
 
     def get_queryset(self):
         include_archived = (
@@ -70,9 +71,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             )
         )
 
-        # ----------------------------------------------------
+        # --------------------------------------------
         # Search
-        # ----------------------------------------------------
+        # --------------------------------------------
 
         search = self.request.query_params.get(
             "search"
@@ -96,9 +97,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
                 user=self.request.user,
             ).distinct()
 
-        # ----------------------------------------------------
+        # --------------------------------------------
         # Knowledge type
-        # ----------------------------------------------------
+        # --------------------------------------------
 
         knowledge_type = (
             self.request.query_params
@@ -110,9 +111,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
                 knowledge_type=knowledge_type
             )
 
-        # ----------------------------------------------------
+        # --------------------------------------------
         # Learning topic relation
-        # ----------------------------------------------------
+        # --------------------------------------------
 
         learning_topic = self.request.query_params.get(
             "learning_topic"
@@ -123,9 +124,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
                 learning_topics__id=learning_topic
             )
 
-        # ----------------------------------------------------
+        # --------------------------------------------
         # Visibility
-        # ----------------------------------------------------
+        # --------------------------------------------
 
         visibility = (
             self.request.query_params
@@ -139,9 +140,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    # ========================================================
+    # ================================================
     # 🎨 Serializer
-    # ========================================================
+    # ================================================
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -149,18 +150,18 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
 
         return KnowledgeItemSerializer
 
-    # ========================================================
+    # ================================================
     # ➕ Create
-    # ========================================================
+    # ================================================
 
     def perform_create(self, serializer):
         serializer.save(
             user=self.request.user
         )
 
-    # ========================================================
+    # ================================================
     # ✏️ Update
-    # ========================================================
+    # ================================================
 
     def perform_update(self, serializer):
         instance = self.get_object()
@@ -172,9 +173,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
 
         serializer.save()
 
-    # ========================================================
+    # ================================================
     # 🗑️ Delete
-    # ========================================================
+    # ================================================
 
     def perform_destroy(self, instance):
         if instance.user_id != self.request.user.id:
@@ -184,9 +185,39 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
 
         instance.delete()
 
-    # ========================================================
+    # ================================================
+    # 🧠 Extract metadata (offline, deterministic)
+    # ================================================
+
+    @action(detail=True, methods=["post"], url_path="extract-metadata")
+    def extract_metadata_action(self, request, pk=None):
+        knowledge = self.get_object()
+        extracted = extract_metadata(
+            title=knowledge.title,
+            description=knowledge.description,
+            content=knowledge.content,
+        )
+        metadata = dict(knowledge.metadata or {})
+        metadata["extracted"] = extracted
+        knowledge.metadata = metadata
+        update_fields = ["metadata", "updated_at"]
+
+        # Preserve authored values; only fill empty fields.
+        if not knowledge.description and extracted["summary"]:
+            knowledge.description = extracted["summary"]
+            update_fields.append("description")
+        if not knowledge.tags and extracted["technology_tags"]:
+            knowledge.tags = extracted["technology_tags"]
+            update_fields.append("tags")
+        knowledge.save(update_fields=update_fields)
+        return Response({
+            "item": self.get_serializer(knowledge).data,
+            "extracted": extracted,
+        }, status=status.HTTP_200_OK)
+
+    # ================================================
     # 🗄️ Archive
-    # ========================================================
+    # ================================================
 
     @action(
         detail=True,
@@ -212,9 +243,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    # ========================================================
+    # ================================================
     # ♻️ Restore
-    # ========================================================
+    # ================================================
 
     @action(
         detail=True,
@@ -240,9 +271,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    # ========================================================
+    # ================================================
     # 🔗 Connect to Learning Topic
-    # ========================================================
+    # ================================================
 
     @action(
         detail=True,
@@ -311,9 +342,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    # ========================================================
+    # ================================================
     # 🔌 Disconnect from Topic
-    # ========================================================
+    # ================================================
 
     @action(
         detail=True,
@@ -382,9 +413,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    # ========================================================
+    # ================================================
     # 📎 Files
-    # ========================================================
+    # ================================================
 
     @action(
         detail=True,
@@ -412,9 +443,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             serializer.data
         )
 
-    # ========================================================
+    # ================================================
     # 📤 Upload File
-    # ========================================================
+    # ================================================
 
     @action(
         detail=True,
@@ -473,12 +504,17 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             )
 
         except PermissionError as exc:
-            raise PermissionDenied(
-                str(exc)
-            )
+            raise PermissionDenied(str(exc))
+        except ValueError as exc:
+            raise ValidationError({"file": str(exc)}) from exc
 
         from .tasks import process_knowledge_file
-        process_knowledge_file.delay(knowledge_file.id)
+        try:
+            process_knowledge_file.delay(knowledge_file.id)
+        except Exception:
+            # Do not misreport a successfully stored file as an upload failure.
+            # Keep it pending so an operator or a later retry can process it.
+            pass
 
         serializer = KnowledgeFileSerializer(
             knowledge_file,
@@ -492,9 +528,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    # ========================================================
+    # ================================================
     # 🗑️ Archive All
-    # ========================================================
+    # ================================================
 
     @action(
         detail=False,
@@ -521,9 +557,9 @@ class KnowledgeItemViewSet(viewsets.ModelViewSet):
         )
 
 
-# ============================================================
+# ====================================================
 # 📎 Knowledge File ViewSet
-# ============================================================
+# ====================================================
 
 class KnowledgeFileViewSet(viewsets.ModelViewSet):
     """
@@ -544,9 +580,9 @@ class KnowledgeFileViewSet(viewsets.ModelViewSet):
 
     serializer_class = KnowledgeFileSerializer
 
-    # ========================================================
+    # ================================================
     # 📚 Queryset
-    # ========================================================
+    # ================================================
 
     def get_queryset(self):
         return (
@@ -562,9 +598,9 @@ class KnowledgeFileViewSet(viewsets.ModelViewSet):
             )
         )
 
-    # ========================================================
+    # ================================================
     # ➕ Create
-    # ========================================================
+    # ================================================
 
     def perform_create(self, serializer):
         knowledge = serializer.validated_data.get(
@@ -616,9 +652,9 @@ class KnowledgeFileViewSet(viewsets.ModelViewSet):
 
         serializer.save()
 
-    # ========================================================
+    # ================================================
     # ✏️ Update
-    # ========================================================
+    # ================================================
 
     def perform_update(self, serializer):
         instance = self.get_object()
@@ -633,9 +669,9 @@ class KnowledgeFileViewSet(viewsets.ModelViewSet):
 
         serializer.save()
 
-    # ========================================================
+    # ================================================
     # 🗑️ Delete
-    # ========================================================
+    # ================================================
 
     def perform_destroy(self, instance):
         if (

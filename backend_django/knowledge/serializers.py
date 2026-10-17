@@ -47,9 +47,9 @@ class KnowledgeFileSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    # ========================================================
+    # ================================================
     # 🔗 File URL
-    # ========================================================
+    # ================================================
 
     def get_file_url(self, obj):
         if not obj.file:
@@ -67,9 +67,9 @@ class KnowledgeFileSerializer(serializers.ModelSerializer):
 
         return url
 
-    # ========================================================
+    # ================================================
     # 📦 Human readable size
-    # ========================================================
+    # ================================================
 
     def get_file_size_display(self, obj):
         size = obj.file_size or 0
@@ -85,9 +85,18 @@ class KnowledgeFileSerializer(serializers.ModelSerializer):
 
         return f"{size / (1024 ** 3):.1f} GB"
 
-    # ========================================================
+    def validate_file(self, value):
+        if value:
+            from .file_validation import validate_knowledge_upload
+            try:
+                validate_knowledge_upload(value)
+            except ValueError as exc:
+                raise serializers.ValidationError(str(exc)) from exc
+        return value
+
+    # ================================================
     # 💾 Create
-    # ========================================================
+    # ================================================
 
     def create(self, validated_data):
         uploaded_file = validated_data.get("file")
@@ -117,9 +126,9 @@ class KnowledgeFileSerializer(serializers.ModelSerializer):
             validated_data
         )
 
-    # ========================================================
+    # ================================================
     # 🔄 Update
-    # ========================================================
+    # ================================================
 
     def update(self, instance, validated_data):
         uploaded_file = validated_data.get("file")
@@ -149,9 +158,9 @@ class KnowledgeFileSerializer(serializers.ModelSerializer):
         )
 
 
-# ============================================================
+# ====================================================
 # 🧠 Knowledge Item Serializer
-# ============================================================
+# ====================================================
 
 class KnowledgeItemSerializer(serializers.ModelSerializer):
     """
@@ -222,9 +231,9 @@ class KnowledgeItemSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    # ========================================================
+    # ================================================
     # 📎 Files count
-    # ========================================================
+    # ================================================
 
     def get_files_count(self, obj):
         return getattr(
@@ -233,9 +242,9 @@ class KnowledgeItemSerializer(serializers.ModelSerializer):
             None,
         ) or obj.files.count()
 
-    # ========================================================
+    # ================================================
     # 📚 Learning topics
-    # ========================================================
+    # ================================================
 
     def get_learning_topics(self, obj):
         """

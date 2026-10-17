@@ -298,3 +298,19 @@ class AITopicChatView(APIView):
         assistant = AIMessage.objects.create(conversation=conversation, role="assistant", content=result["content"], provider=result["provider"], model=result["model"], metadata={"topic_id": topic.id})
         conversation.provider=result["provider"]; conversation.model=result["model"]; conversation.save(update_fields=["provider","model","updated_at"])
         return Response({"success": True, "conversation_id": conversation.id, "message": {"id": assistant.id, "role": "assistant", "content": assistant.content, "provider": assistant.provider, "model": assistant.model}})
+
+
+class AIAgentPlanView(APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        intent=(request.data.get("request") or request.data.get("message") or "").strip()
+        if not intent: return Response({"detail":"request is required."},status=400)
+        lower=intent.lower()
+        nodes=[]
+        if any(x in lower for x in ["كل يوم","every day","schedule","الساعة","at 8"]): nodes.append({"type":"schedule","label":"Schedule"})
+        if any(x in lower for x in ["وظائف","jobs","فرص"]): nodes += [{"type":"load_profile","label":"Load User Profile"},{"type":"search_jobs","label":"Search Jobs"},{"type":"ai_matching","label":"AI Matching"},{"type":"rank","label":"Rank"}]
+        elif any(x in lower for x in ["تعلم","learning","learn"]): nodes += [{"type":"load_skills","label":"Load Skills"},{"type":"learning_plan","label":"Create Learning Plan"}]
+        else: nodes += [{"type":"ai_reason","label":"AI Reasoning"}]
+        nodes.append({"type":"notification","label":"Notification"})
+        edges=[{"source":i,"target":i+1} for i in range(len(nodes)-1)]
+        return Response({"intent":intent,"nodes":nodes,"edges":edges,"valid":True,"explanation":"AI generated a safe workflow plan. Execution requires the existing automation permissions and approval flow."})

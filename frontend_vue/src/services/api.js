@@ -68,6 +68,9 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`
     }
 
+    config.metadata = { startedAt: performance.now() }
+    window.dispatchEvent(new CustomEvent('so-iam-api-log', { detail: { phase: 'request', method: config.method?.toUpperCase(), url: `${config.baseURL || ''}${config.url || ''}`, request: config.data ?? null, startedAt: Date.now() } }))
+
     if (import.meta.env.DEV) {
       console.group('🔐 API REQUEST')
       console.log('➡️ Method:', config.method?.toUpperCase())
@@ -84,6 +87,8 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    const duration = response.config?.metadata?.startedAt ? Math.round(performance.now() - response.config.metadata.startedAt) : null
+    window.dispatchEvent(new CustomEvent('so-iam-api-log', { detail: { phase: 'response', method: response.config?.method?.toUpperCase(), url: `${response.config?.baseURL || ''}${response.config?.url || ''}`, status: response.status, response: response.data, duration } }))
     if (import.meta.env.DEV) {
       console.group('📥 API RESPONSE')
       console.log('✅ Status:', response.status)
@@ -96,6 +101,8 @@ api.interceptors.response.use(
   async (error) => {
     const status = error.response?.status
     const originalRequest = error.config
+    const duration = originalRequest?.metadata?.startedAt ? Math.round(performance.now() - originalRequest.metadata.startedAt) : null
+    window.dispatchEvent(new CustomEvent('so-iam-api-log', { detail: { phase: 'error', method: originalRequest?.method?.toUpperCase(), url: `${originalRequest?.baseURL || ''}${originalRequest?.url || ''}`, status: status || 0, response: error.response?.data ?? null, error: error.message, duration } }))
 
     if (import.meta.env.DEV) {
       console.group('🚨 API ERROR')

@@ -46,6 +46,7 @@
               <h2>Job Discovery</h2>
               <p>بحث متقدم مع Match Score و Readiness.</p>
             </div>
+            <Button label="(?) شرح" icon="pi pi-question-circle" text @click="helpDialog = true" />
             <Button
               label="تحليل كل الوظائف"
               icon="pi pi-sparkles"
@@ -126,6 +127,12 @@
                 text
                 @click="analyzeJobNow(job)"
               /><Button icon="pi pi-refresh" label="Match" text @click="matchJob(job)" /><Button
+                icon="pi pi-envelope"
+                label="Cover letter"
+                text
+                :loading="generatingLetterFor === job.id"
+                @click="generateLetter(job)"
+              /><Button
                 icon="pi pi-check"
                 label="Apply"
                 @click="applyJob(job)"
@@ -266,7 +273,12 @@
               <h2>Sources</h2>
               <p>API / RSS / Manual مع health status و background sync.</p>
             </div>
-            <Button label="Add source" icon="pi pi-plus" @click="sourceDialog = true" />
+            <Button label="Add source" icon="pi pi-plus" @click="sourceDialog = true" /><Button
+              label="Scraper Builder"
+              icon="pi pi-code"
+              severity="secondary"
+              @click="openScraperBuilder"
+            />
           </div>
           <div class="list">
             <article v-for="source in sources" :key="source.id" class="list-item">
@@ -356,6 +368,24 @@
       ></Card>
     </section>
 
+    <!-- AI COVER LETTER -->
+    <Dialog v-model:visible="letterDialog" modal header="AI Cover Letter" :style="{ width: '760px', maxWidth: '95vw' }">
+      <p v-if="generatedLetter" class="helper-note">تم إنشاء الخطاب باستخدام مزود الذكاء الاصطناعي المضبوط في إعدادات AI. راجعه وعدّله قبل الإرسال.</p>
+      <Textarea v-model="generatedLetter" rows="16" autoResize class="letter-editor" placeholder="سيظهر الخطاب هنا..." />
+      <template #footer>
+        <Button label="نسخ الخطاب" icon="pi pi-copy" text @click="copyLetter" />
+        <Button label="إغلاق" @click="letterDialog = false" />
+      </template>
+    </Dialog>
+
+    <Dialog v-model:visible="helpDialog" modal header="شرح مطابقة الوظائف وخطاب التقديم" :style="{ width: '600px', maxWidth: '95vw' }">
+      <div class="jobs-help-content">
+        <h3>Resume / Job Matching</h3><p>يعتمد التوافق على بيانات المهارات والتفضيلات والوظيفة المتاحة في حسابك. النتيجة مؤشر مساعد وليست ضمانًا لقبولك.</p>
+        <h3>Cover Letter</h3><p>يتم إرسال وصف الوظيفة ومحتوى السيرة الذاتية المختارة إلى مزود AI الذي ضبطته في إعدادات التطبيق. الخطاب الناتج يُحفظ في سجل خطاباتك؛ راجعه للتأكد من دقته قبل استخدامه.</p>
+        <h3>بيانات الطلب</h3><p>المسار يستخدم معرّف الوظيفة، واختياريًا resume_id وcontext. الوصول محصور في الوظائف والسير الذاتية التابعة لحسابك.</p>
+      </div>
+    </Dialog>
+
     <!-- CREATE JOB -->
     <Dialog
       v-model:visible="dialog"
@@ -401,6 +431,23 @@
           v-model="sourceForm.base_url"
           placeholder="Base URL"
         />
+        <div v-if="sourceForm.source_type === 'scraper'" class="scraper-builder">
+          <Message severity="warn" :closable="false"
+            >لا تستخدم Scraper إلا مع مصادر تسمح بذلك. النظام سيتحقق من robots.txt ولن يتجاوز
+            CAPTCHA أو تسجيل الدخول.</Message
+          >
+          <InputText v-model="scraperForm.card" placeholder="Job card CSS selector" />
+          <InputText v-model="scraperForm.title" placeholder="Title CSS selector" />
+          <InputText v-model="scraperForm.company" placeholder="Company CSS selector" />
+          <InputText v-model="scraperForm.location" placeholder="Location CSS selector" />
+          <InputText v-model="scraperForm.description" placeholder="Description CSS selector" />
+          <InputText v-model="scraperForm.url" placeholder="URL CSS selector" />
+          <InputText v-model="scraperForm.urlAttribute" placeholder="URL attribute (href)" />
+          <div class="check">
+            <Checkbox v-model="scraperForm.termsConfirmed" binary /> I confirm this source permits
+            scraping
+          </div>
+        </div>
       </div>
       <template #footer
         ><Button label="Cancel" text @click="sourceDialog = false" /><Button
@@ -465,6 +512,7 @@ import {
   getPreferences,
   updatePreferences,
   getFeatureCatalog,
+  generateCoverLetter,
 } from '@/services/jobs'
 
 const activeTab = ref('jobs')
@@ -475,6 +523,11 @@ const error = ref('')
 const dialog = ref(false)
 const sourceDialog = ref(false)
 const timelineDialog = ref(false)
+const letterDialog = ref(false)
+const helpDialog = ref(false)
+const generatedLetter = ref('')
+const generatingLetterFor = ref(null)
+const currentLetterJob = ref(null)
 const jobs = ref([])
 const recommendations = ref([])
 const gaps = ref([])
@@ -508,6 +561,16 @@ const form = reactive({
   is_remote: false,
 })
 const sourceForm = reactive({ name: '', source_type: 'rss', feed_url: '', base_url: '' })
+const scraperForm = reactive({
+  card: '',
+  title: '',
+  company: '',
+  location: '',
+  description: '',
+  url: '',
+  urlAttribute: 'href',
+  termsConfirmed: false,
+})
 
 const tabs = [
   { key: 'jobs', label: 'Jobs', icon: 'pi pi-briefcase' },
@@ -540,6 +603,7 @@ const sourceTypes = [
   { label: 'RSS', value: 'rss' },
   { label: 'API', value: 'api' },
   { label: 'Manual', value: 'manual' },
+  { label: 'HTML Scraper', value: 'scraper' },
 ]
 const remotePreferenceOptions = [
   { label: 'Any', value: 'any' },
@@ -683,6 +747,27 @@ async function refreshReadinessData() {
     showError(e, 'تعذر تحديث الجاهزية.')
   }
 }
+async function generateLetter(job) {
+  generatingLetterFor.value = job.id
+  currentLetterJob.value = job
+  try {
+    const letter = await generateCoverLetter(job.id)
+    generatedLetter.value = letter.content || ''
+    letterDialog.value = true
+  } catch (e) {
+    showError(e, 'تعذر إنشاء خطاب التقديم. تحقق من إعدادات مزود AI والسيرة الذاتية.')
+  } finally {
+    generatingLetterFor.value = null
+  }
+}
+async function copyLetter() {
+  try {
+    await navigator.clipboard.writeText(generatedLetter.value)
+  } catch {
+    showError(null, 'تعذر النسخ التلقائي؛ يمكنك تحديد النص ونسخه يدويًا.')
+  }
+}
+
 async function matchJob(job) {
   try {
     await refreshJobMatch(job.id)
@@ -767,6 +852,15 @@ async function syncSourceNow(source) {
     showError(e, 'تعذر تشغيل الـ sync.')
   }
 }
+async function previewSourceNow(source) {
+  try {
+    const { previewSource } = await import('@/services/jobs')
+    const result = await previewSource(source.id)
+    alert(`Preview: ${result.items?.length || 0} jobs`)
+  } catch (e) {
+    showError(e, 'تعذر معاينة المصدر.')
+  }
+}
 async function testSourceNow(source) {
   try {
     await testSource(source.id)
@@ -774,11 +868,48 @@ async function testSourceNow(source) {
     showError(e, 'المصدر غير جاهز.')
   }
 }
+async function openScraperBuilder() {
+  Object.assign(sourceForm, { name: '', source_type: 'scraper', feed_url: '', base_url: '' })
+  Object.assign(scraperForm, {
+    card: '',
+    title: '',
+    company: '',
+    location: '',
+    description: '',
+    url: '',
+    urlAttribute: 'href',
+    termsConfirmed: false,
+  })
+  sourceDialog.value = true
+}
 async function saveSource() {
   try {
-    await createSource(sourceForm)
+    const payload = { ...sourceForm }
+    if (sourceForm.source_type === 'scraper')
+      payload.config = {
+        terms_confirmed: scraperForm.termsConfirmed,
+        robots_required: true,
+        rate_limit_seconds: 1,
+        card: { selector: scraperForm.card },
+        title: { selector: scraperForm.title },
+        company: { selector: scraperForm.company },
+        location: { selector: scraperForm.location },
+        description: { selector: scraperForm.description },
+        url: { selector: scraperForm.url, attribute: scraperForm.urlAttribute },
+      }
+    await createSource(payload)
     sourceDialog.value = false
     Object.assign(sourceForm, { name: '', source_type: 'rss', feed_url: '', base_url: '' })
+    Object.assign(scraperForm, {
+      card: '',
+      title: '',
+      company: '',
+      location: '',
+      description: '',
+      url: '',
+      urlAttribute: 'href',
+      termsConfirmed: false,
+    })
     await loadSources()
   } catch (e) {
     showError(e, 'تعذر حفظ المصدر.')
@@ -831,297 +962,3 @@ async function saveJob() {
 
 onMounted(loadAll)
 </script>
-
-<style scoped>
-.jobs-page {
-  max-width: 1500px;
-  margin: auto;
-  padding: 28px;
-}
-.hero {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: flex-end;
-  margin-bottom: 22px;
-}
-.eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  color: #60a5fa;
-}
-.hero h1 {
-  font-size: 38px;
-  margin: 7px 0;
-}
-.hero p {
-  color: #94a3b8;
-  margin: 0;
-}
-.hero-actions,
-.tabs,
-.filters,
-.actions-row,
-.chips,
-.split,
-.item-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.stats {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-}
-.stat-card span,
-.metric-grid span,
-small {
-  display: block;
-  color: #94a3b8;
-  font-size: 12px;
-}
-.stat-card strong {
-  display: block;
-  font-size: 28px;
-  margin-top: 5px;
-}
-.tabs {
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-.workspace {
-  display: grid;
-  gap: 16px;
-}
-.two-col {
-  grid-template-columns: 1.35fr 0.8fr;
-}
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 16px;
-}
-.section-head h2 {
-  margin: 0;
-}
-.section-head p {
-  margin: 5px 0 0;
-  color: #94a3b8;
-}
-.filters {
-  flex-wrap: wrap;
-}
-.filters .p-inputtext {
-  min-width: 180px;
-}
-.job-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-.job-card h3 {
-  margin: 5px 0 10px;
-}
-.company {
-  color: #60a5fa;
-  font-size: 13px;
-}
-.job-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-.chips {
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-.summary {
-  color: #cbd5e1;
-  line-height: 1.55;
-  min-height: 70px;
-}
-.meter {
-  height: 7px;
-  background: #1e293b;
-  border-radius: 99px;
-  overflow: hidden;
-}
-.meter div {
-  height: 100%;
-  background: #60a5fa;
-}
-.split {
-  justify-content: space-between;
-  font-size: 12px;
-  color: #94a3b8;
-  margin: 9px 0;
-}
-.gaps {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-  font-size: 11px;
-}
-.gaps span {
-  padding: 3px 7px;
-  border-radius: 999px;
-  background: #451a1a;
-  color: #fecaca;
-}
-.actions-row {
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-.actions-row a {
-  color: #60a5fa;
-  text-decoration: none;
-}
-.list {
-  display: grid;
-  gap: 8px;
-}
-.list-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 13px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 12px;
-}
-.list-item p {
-  margin: 6px 0;
-  color: #cbd5e1;
-}
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-.metric-grid > div {
-  padding: 16px;
-  border-radius: 12px;
-  background: rgba(148, 163, 184, 0.06);
-}
-.metric-grid strong {
-  font-size: 25px;
-}
-.kanban {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(180px, 1fr));
-  gap: 10px;
-  overflow: auto;
-}
-.lane {
-  background: rgba(148, 163, 184, 0.05);
-  padding: 10px;
-  border-radius: 12px;
-  min-width: 180px;
-}
-.lane h3 {
-  font-size: 13px;
-}
-.kanban-card {
-  background: var(--surface-card);
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  display: grid;
-  gap: 7px;
-}
-.kanban-card .p-select {
-  width: 100%;
-}
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.feature-grid article {
-  display: grid;
-  grid-template-columns: 35px 1fr auto;
-  gap: 10px;
-  align-items: center;
-  padding: 11px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 10px;
-}
-.feature-grid article > span {
-  font-size: 11px;
-  color: #60a5fa;
-}
-.feature-grid small {
-  margin-top: 2px;
-}
-.form {
-  display: grid;
-  gap: 12px;
-}
-.form .p-inputtext,
-.form .p-select,
-.form .p-inputnumber,
-.form .p-textarea {
-  width: 100%;
-}
-.check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.skill-bars {
-  display: grid;
-  gap: 13px;
-}
-.timeline {
-  display: grid;
-  gap: 10px;
-}
-.timeline article {
-  padding: 12px;
-  border-left: 3px solid #60a5fa;
-  background: rgba(148, 163, 184, 0.05);
-}
-.empty {
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-  border: 1px dashed rgba(148, 163, 184, 0.25);
-  border-radius: 14px;
-}
-@media (max-width: 1200px) {
-  .stats {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .job-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .feature-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 800px) {
-  .jobs-page {
-    padding: 16px;
-  }
-  .hero {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .two-col {
-    grid-template-columns: 1fr;
-  }
-  .job-grid,
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .metric-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-</style>

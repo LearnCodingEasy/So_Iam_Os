@@ -92,42 +92,15 @@ const acceptedFileTypesString = acceptedFileTypes.join(',')
 // ============================================================
 
 const knowledgeTypes = [
-  {
-    value: 'note',
-    label: 'Note',
-  },
-  {
-    value: 'document',
-    label: 'Document',
-  },
-  {
-    value: 'article',
-    label: 'Article',
-  },
-  {
-    value: 'documentation',
-    label: 'Documentation',
-  },
-  {
-    value: 'idea',
-    label: 'Idea',
-  },
-  {
-    value: 'project',
-    label: 'Project',
-  },
-  {
-    value: 'learning',
-    label: 'Learning',
-  },
-  {
-    value: 'reference',
-    label: 'Reference',
-  },
-  {
-    value: 'other',
-    label: 'Other',
-  },
+  { value: 'note', label: 'Note' },
+  { value: 'document', label: 'Document' },
+  { value: 'article', label: 'Article' },
+  { value: 'documentation', label: 'Documentation' },
+  { value: 'idea', label: 'Idea' },
+  { value: 'project', label: 'Project' },
+  { value: 'learning', label: 'Learning' },
+  { value: 'reference', label: 'Reference' },
+  { value: 'other', label: 'Other' },
 ]
 
 // ============================================================
@@ -157,7 +130,6 @@ const resetForm = () => {
   form.visibility = 'private'
 
   tagsInput.value = ''
-
   selectedFiles.value = []
 
   if (fileInput.value) {
@@ -173,20 +145,13 @@ const fillForm = (knowledge) => {
   form.title = knowledge?.title || ''
   form.description = knowledge?.description || ''
   form.content = knowledge?.content || ''
-
   form.knowledge_type = knowledge?.knowledge_type || 'note'
-
   form.source_url = knowledge?.source_url || ''
-
   form.source_name = knowledge?.source_name || ''
-
   form.tags = Array.isArray(knowledge?.tags) ? [...knowledge.tags] : []
-
   form.visibility = knowledge?.visibility || 'private'
 
   tagsInput.value = form.tags.join(', ')
-
-  // New files selected for this form session
   selectedFiles.value = []
 }
 
@@ -222,7 +187,6 @@ const openFilePicker = () => {
 
 const isValidFile = (file) => {
   const extension = `.${file.name.split('.').pop()?.toLowerCase()}`
-
   return acceptedFileTypes.includes(extension)
 }
 
@@ -238,12 +202,10 @@ const addFiles = (files) => {
   const incomingFiles = Array.from(files)
 
   incomingFiles.forEach((file) => {
-    // Ignore unsupported files
     if (!isValidFile(file)) {
       return
     }
 
-    // Prevent duplicate files
     const alreadyExists = selectedFiles.value.some(
       (existingFile) =>
         existingFile.name === file.name &&
@@ -265,8 +227,6 @@ const addFiles = (files) => {
 
 const handleFileChange = (event) => {
   addFiles(event.target.files)
-
-  // Allow selecting the same file again later
   event.target.value = ''
 }
 
@@ -276,21 +236,17 @@ const handleFileChange = (event) => {
 
 const handleDragOver = (event) => {
   event.preventDefault()
-
   isDragging.value = true
 }
 
 const handleDragLeave = (event) => {
   event.preventDefault()
-
   isDragging.value = false
 }
 
 const handleDrop = (event) => {
   event.preventDefault()
-
   isDragging.value = false
-
   addFiles(event.dataTransfer?.files)
 }
 
@@ -312,11 +268,8 @@ const formatFileSize = (size) => {
   }
 
   const units = ['B', 'KB', 'MB', 'GB']
-
   const unitIndex = Math.floor(Math.log(size) / Math.log(1024))
-
   const safeIndex = Math.min(unitIndex, units.length - 1)
-
   const value = size / Math.pow(1024, safeIndex)
 
   return `${value.toFixed(safeIndex === 0 ? 0 : 1)} ${units[safeIndex]}`
@@ -329,34 +282,13 @@ const formatFileSize = (size) => {
 const getFileIcon = (file) => {
   const extension = file.name.split('.').pop()?.toLowerCase()
 
-  if (extension === 'pdf') {
-    return 'fa-solid fa-file-pdf'
-  }
-
-  if (['doc', 'docx'].includes(extension)) {
-    return 'fa-solid fa-file-word'
-  }
-
-  if (['xls', 'xlsx'].includes(extension)) {
-    return 'fa-solid fa-file-excel'
-  }
-
-  if (['ppt', 'pptx'].includes(extension)) {
-    return 'fa-solid fa-file-powerpoint'
-  }
-
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) {
-    return 'fa-solid fa-file-image'
-  }
-
-  if (['mp3', 'wav', 'ogg'].includes(extension)) {
-    return 'fa-solid fa-file-audio'
-  }
-
-  if (['mp4', 'webm', 'mov'].includes(extension)) {
-    return 'fa-solid fa-file-video'
-  }
-
+  if (extension === 'pdf') return 'fa-solid fa-file-pdf'
+  if (['doc', 'docx'].includes(extension)) return 'fa-solid fa-file-word'
+  if (['xls', 'xlsx'].includes(extension)) return 'fa-solid fa-file-excel'
+  if (['ppt', 'pptx'].includes(extension)) return 'fa-solid fa-file-powerpoint'
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'fa-solid fa-file-image'
+  if (['mp3', 'wav', 'ogg'].includes(extension)) return 'fa-solid fa-file-audio'
+  if (['mp4', 'webm', 'mov'].includes(extension)) return 'fa-solid fa-file-video'
   if (
     [
       'py',
@@ -377,17 +309,14 @@ const getFileIcon = (file) => {
   ) {
     return 'fa-solid fa-file-code'
   }
-
-  if (extension === 'md') {
-    return 'fa-brands fa-markdown'
-  }
+  if (extension === 'md') return 'fa-brands fa-markdown'
 
   return 'fa-solid fa-file'
 }
 
-// ============================================================
-// Submit
-// ============================================================
+// ===================================================
+// Submit (متوافق مع معالجة الفورم والملفات)
+// ===================================================
 
 const submit = () => {
   const tags = tagsInput.value
@@ -395,6 +324,7 @@ const submit = () => {
     .map((tag) => tag.trim())
     .filter(Boolean)
 
+  // إرسال البيانات الكلية مع الملفات المختارة ليتم التعامل معها في الـ Parent Component
   emit('submit', {
     title: form.title.trim(),
     description: form.description.trim(),
@@ -404,8 +334,6 @@ const submit = () => {
     source_name: form.source_name.trim(),
     tags,
     visibility: form.visibility,
-
-    // New files
     files: [...selectedFiles.value],
   })
 }
@@ -413,15 +341,11 @@ const submit = () => {
 
 <template>
   <form class="space-y-5" @submit.prevent="submit">
-    <!-- ===================================================== -->
     <!-- Title -->
-    <!-- ===================================================== -->
-
     <div>
       <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
         Title
       </label>
-
       <input
         v-model="form.title"
         type="text"
@@ -431,15 +355,11 @@ const submit = () => {
       />
     </div>
 
-    <!-- ===================================================== -->
     <!-- Type -->
-    <!-- ===================================================== -->
-
     <div>
       <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
         Knowledge type
       </label>
-
       <select
         v-model="form.knowledge_type"
         class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
@@ -450,15 +370,11 @@ const submit = () => {
       </select>
     </div>
 
-    <!-- ========================================= -->
     <!-- Description -->
-    <!-- ========================================= -->
-
     <div>
       <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
         Description
       </label>
-
       <textarea
         v-model="form.description"
         rows="3"
@@ -467,15 +383,11 @@ const submit = () => {
       />
     </div>
 
-    <!-- ========================================= -->
     <!-- Content -->
-    <!-- ========================================= -->
-
     <div>
       <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
         Content
       </label>
-
       <textarea
         v-model="form.content"
         rows="8"
@@ -484,20 +396,14 @@ const submit = () => {
       />
     </div>
 
-    <!-- ===================================================== -->
-    <!-- Files -->
-    <!-- ===================================================== -->
-
+    <!-- Files Section -->
     <div>
       <div class="mb-2 flex items-center justify-between">
         <label class="block text-sm font-medium text-slate-700 dark:text-slate-200"> Files </label>
-
         <span v-if="selectedFiles.length" class="text-xs text-slate-400">
           {{ selectedFiles.length }} selected
         </span>
       </div>
-
-      <!-- Hidden input -->
 
       <input
         ref="fileInput"
@@ -507,8 +413,6 @@ const submit = () => {
         class="hidden"
         @change="handleFileChange"
       />
-
-      <!-- Drop Zone -->
 
       <div
         class="rounded-2xl border-2 border-dashed p-6 text-center transition"
@@ -528,7 +432,6 @@ const submit = () => {
         </div>
 
         <p class="text-sm font-medium text-slate-700 dark:text-slate-200">Drag & drop files here</p>
-
         <p class="mt-1 text-xs text-slate-400">or</p>
 
         <button
@@ -537,32 +440,26 @@ const submit = () => {
           @click="openFilePicker"
         >
           <i class="fa-solid fa-folder-open mr-2"></i>
-
           Choose files
         </button>
 
         <p class="mt-3 text-xs leading-5 text-slate-400">
-          PDF, Word, Excel, PowerPoint, Markdown, Text, Images, Audio, Video and Code files.
+          PDF, Markdown (.md), Text, Word, Excel, Images, Code files.
         </p>
       </div>
 
-      <!-- Selected Files -->
-
+      <!-- Selected Files List -->
       <div v-if="selectedFiles.length" class="mt-4 space-y-2">
         <div
           v-for="(file, index) in selectedFiles"
           :key="`${file.name}-${file.lastModified}-${index}`"
           class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950"
         >
-          <!-- Icon -->
-
           <div
             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
           >
             <i :class="getFileIcon(file)"></i>
           </div>
-
-          <!-- Info -->
 
           <div class="min-w-0 flex-1">
             <p
@@ -571,13 +468,10 @@ const submit = () => {
             >
               {{ file.name }}
             </p>
-
             <p class="mt-0.5 text-xs text-slate-400">
               {{ formatFileSize(file.size) }}
             </p>
           </div>
-
-          <!-- Remove -->
 
           <button
             type="button"
@@ -591,7 +485,6 @@ const submit = () => {
       </div>
 
       <!-- Existing Files -->
-
       <div v-if="existingFiles.length" class="mt-4">
         <p class="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
           Existing files
@@ -616,7 +509,6 @@ const submit = () => {
               <p class="truncate text-sm font-medium text-slate-700 dark:text-slate-200">
                 {{ file.original_name }}
               </p>
-
               <p class="mt-0.5 text-xs text-slate-400">
                 {{ formatFileSize(file.file_size) }}
               </p>
@@ -628,35 +520,26 @@ const submit = () => {
       </div>
     </div>
 
-    <!-- ===================================================== -->
     <!-- Tags -->
-    <!-- ===================================================== -->
-
     <div>
       <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
         Tags
       </label>
-
       <input
         v-model="tagsInput"
         type="text"
         placeholder="django, python, backend"
         class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
       />
-
       <p class="mt-1 text-xs text-slate-400">Separate tags with commas.</p>
     </div>
 
-    <!-- ===================================================== -->
     <!-- Source -->
-    <!-- ===================================================== -->
-
     <div class="grid gap-4 md:grid-cols-2">
       <div>
         <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
           Source name
         </label>
-
         <input
           v-model="form.source_name"
           type="text"
@@ -669,7 +552,6 @@ const submit = () => {
         <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
           Source URL
         </label>
-
         <input
           v-model="form.source_url"
           type="url"
@@ -679,29 +561,21 @@ const submit = () => {
       </div>
     </div>
 
-    <!-- ===================================================== -->
     <!-- Visibility -->
-    <!-- ===================================================== -->
-
     <div>
       <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
         Visibility
       </label>
-
       <select
         v-model="form.visibility"
         class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
       >
         <option value="private">Private</option>
-
         <option value="shared">Shared</option>
       </select>
     </div>
 
-    <!-- ===================================================== -->
     <!-- Actions -->
-    <!-- ===================================================== -->
-
     <div class="flex justify-end gap-3 border-t border-slate-100 pt-5 dark:border-slate-800">
       <button
         type="button"
@@ -717,7 +591,6 @@ const submit = () => {
         class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <i v-if="loading" class="fa-solid fa-spinner fa-spin mr-2"></i>
-
         {{ loading ? 'Saving...' : modelValue ? 'Update knowledge' : 'Create knowledge' }}
       </button>
     </div>

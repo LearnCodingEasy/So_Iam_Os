@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 from django.conf import settings
 from .intelligence import permission, audit
+from .snapshot_service import SnapshotService
 from ..models import CodexExecutionRequest, ProjectRegistry
 
 ALLOWED = {
@@ -34,7 +35,7 @@ def run_safe(user, project: ProjectRegistry, key: str):
 
 import hashlib
 from django.utils import timezone
-from ..models import ChangeSet, CodexChangeFile, ProtectedFeature
+from ..models import ChangeSet, CodexChangeFile, ProtectedFeature, ProtectedItem
 
 
 def _safe_path(rel):
@@ -59,6 +60,10 @@ def apply_changes(user, project, title, objective, changes, confirm=False):
     protected=[]
     for rule in ProtectedFeature.objects.filter(project=project,enabled=True):
         protected += [p for p in rule.paths if any(p==x or x.startswith(p.rstrip('/')+'/') for x in paths)]
+    for rule in ProtectedItem.objects.filter(project=project, approved=True, frozen=True):
+        protected_path = rule.path or rule.target
+        if protected_path and any(protected_path == x or x.startswith(x.rstrip('/') + '/') or x.startswith(protected_path.rstrip('/') + '/') for x in paths):
+            protected.append(protected_path)
     if protected:
         raise PermissionError('Protected paths require explicit protection-rule handling: ' + ', '.join(protected[:10]))
     snapshot = SnapshotService.create(user=user,label=f'Pre-change: {title}')
@@ -71,9 +76,9 @@ def apply_changes(user, project, title, objective, changes, confirm=False):
             if not rel or not isinstance(content,str): raise ValueError('Each change requires path and string content.')
             target=_safe_path(rel)
             before=target.read_text(encoding='utf-8',errors='ignore') if target.exists() else ''
+            before_sha=hashlib.sha256(before.encode('utf-8')).hexdigest() if before else ''
             target.parent.mkdir(parents=True,exist_ok=True)
             target.write_text(content,encoding='utf-8')
-            before_sha=hashlib.sha256(before.encode('utf-8')).hexdigest() if target.exists() else ''
             after_sha=hashlib.sha256(content.encode('utf-8')).hexdigest()
             CodexChangeFile.objects.create(changeset=cs,path=rel,before_content=before,after_content=content,before_sha256=before_sha,after_sha256=after_sha)
             applied.append(rel)

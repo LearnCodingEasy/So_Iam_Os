@@ -43,6 +43,14 @@ export const knowledgeService = {
   },
 
   // -----------------------------------------------
+  // 🧠 Extract metadata from an item
+  // -----------------------------------------------
+  async extractMetadata(id) {
+    const response = await api.post(endpoints.knowledge.extractMetadata(id))
+    return response.data
+  },
+
+  // -----------------------------------------------
   // 🗃️ Archive knowledge
   // -----------------------------------------------
   async archive(id) {
@@ -74,19 +82,15 @@ export const knowledgeService = {
   // -----------------------------------------------
   async uploadFile(knowledgeId, file, description = '') {
     const formData = new FormData()
-
     formData.append('file', file)
-
     if (description) {
       formData.append('description', description)
     }
-
     const response = await api.post(endpoints.knowledge.uploadFile(knowledgeId), formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
-
     return response.data
   },
 

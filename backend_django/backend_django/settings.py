@@ -52,6 +52,18 @@ load_dotenv(ENV_FILE)
 
 SECRET_KEY = config("SECRET_KEY", default="dev-only-change-me")
 
+# Production must fail closed rather than silently booting with development secrets.
+if ENVIRONMENT == "production" and (
+    SECRET_KEY == "dev-only-change-me"
+    or len(SECRET_KEY) < 50
+    or "GENERATE_" in SECRET_KEY
+    or "REPLACE" in SECRET_KEY
+):
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        "Production requires a unique SECRET_KEY with at least 50 characters."
+    )
+
 DEBUG = config(
     "DEBUG",
     default=(ENVIRONMENT != "production"),
@@ -61,9 +73,12 @@ DEBUG = config(
 
 # 2️⃣ Library Simplejwt
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=180),
-    "ROTATE_REFRESH_TOKENS": False,
+    # Short-lived access tokens reduce the impact of a leaked bearer token.
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
 }
 
 # ====================================================
@@ -109,16 +124,16 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_ADAPTER = (
     "users_accounts.adapter.MySocialAccountAdapter"
 )
-# 🔄 Redirect Configuration
-# LOGIN_REDIRECT_URL = "/"
-# LOGIN_REDIRECT_URL = 'http://localhost:5173/'
-# LOGIN_REDIRECT_URL = 'http://localhost:5173/about/'
-# LOGIN_REDIRECT_URL = '/accounts/google/login/callback/'
-LOGIN_REDIRECT_URL = 'http://localhost:5173/auth/callback'
-LOGOUT_REDIRECT_URL = "/accounts/login/"
-ACCOUNT_LOGOUT_REDIRECT_URL = 'http://localhost:5173/login'
-ACCOUNT_SIGNUP_REDIRECT_URL = 'http://localhost:5173'
-SOCIALACCOUNT_LOGIN_REDIRECT_URL = 'http://localhost:5173/auth-callback/'
+# Redirects follow the configured frontend origin rather than hard-coded localhost URLs.
+_FRONTEND_REDIRECT_BASE = config(
+    "FRONTEND_URL",
+    default=("https://app.example.com" if ENVIRONMENT == "production" else "http://localhost:5173"),
+).rstrip("/")
+LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/auth/callback")
+LOGOUT_REDIRECT_URL = config("LOGOUT_REDIRECT_URL", default="/accounts/login/")
+ACCOUNT_LOGOUT_REDIRECT_URL = config("ACCOUNT_LOGOUT_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/login")
+ACCOUNT_SIGNUP_REDIRECT_URL = config("ACCOUNT_SIGNUP_REDIRECT_URL", default=_FRONTEND_REDIRECT_BASE)
+SOCIALACCOUNT_LOGIN_REDIRECT_URL = config("SOCIALACCOUNT_LOGIN_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/auth-callback/")
 
 # 📧 Development Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -161,48 +176,84 @@ WEBSITE_URL = config(
 
 FRONTEND_URL = config(
     "FRONTEND_URL",
-    default="http://localhost:5173",
+    default=_FRONTEND_REDIRECT_BASE,
 )
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
-    for origin in config("CORS_ALLOWED_ORIGINS", default=FRONTEND_URL).split(",")
+    for origin in config(
+        "CORS_ALLOWED_ORIGINS",
+        default=("" if ENVIRONMENT == "production" else FRONTEND_URL),
+    ).split(",")
     if origin.strip()
 ]
 AUTH_USER_MODEL = "users_accounts.User"
 ALLOWED_HOSTS = [h.strip() for h in config(
     "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1,192.168.1.5,172.23.232.133",
+    default=("" if ENVIRONMENT == "production" else "localhost,127.0.0.1,192.168.1.5,172.23.232.133"),
 ).split(",") if h.strip()]
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in config(
     "CSRF_TRUSTED_ORIGINS",
-    default=FRONTEND_URL,
+    default=("" if ENVIRONMENT == "production" else FRONTEND_URL),
 ).split(",") if o.strip()]
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=False, cast=bool)
-SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
-CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=(ENVIRONMENT == "production"), cast=bool)
-SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=(ENVIRONMENT == "production"), cast=bool)
-SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=(31536000 if ENVIRONMENT == "production" else 0), cast=int)
-SECURE_HSTS_INCLUDE_SUBDOMAINS = config("SECURE_HSTS_INCLUDE_SUBDOMAINS", default=(ENVIRONMENT == "production"), cast=bool)
-SECURE_HSTS_PRELOAD = config("SECURE_HSTS_PRELOAD", default=(ENVIRONMENT == "production"), cast=bool)
+CORS_ALLOW_ALL_ORIGINS = config(
+    "CORS_ALLOW_ALL_ORIGINS", default=False, cast=bool)
+SECURE_SSL_REDIRECT = config(
+    "SECURE_SSL_REDIRECT", default=(ENVIRONMENT == "production"), cast=bool
+)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=(
+    ENVIRONMENT == "production"), cast=bool)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=(
+    ENVIRONMENT == "production"), cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=(
+    31536000 if ENVIRONMENT == "production" else 0), cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
+    "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=(ENVIRONMENT == "production"), cast=bool)
+SECURE_HSTS_PRELOAD = config("SECURE_HSTS_PRELOAD", default=(
+    ENVIRONMENT == "production"), cast=bool)
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+if ENVIRONMENT == "production":
+    from django.core.exceptions import ImproperlyConfigured
+
+    if DEBUG:
+        raise ImproperlyConfigured("DEBUG must be False in production.")
+    if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:
+        raise ImproperlyConfigured("Set explicit production ALLOWED_HOSTS.")
+    if not CORS_ALLOWED_ORIGINS:
+        raise ImproperlyConfigured("Set explicit production CORS_ALLOWED_ORIGINS.")
+    if any(not origin.startswith("https://") for origin in CORS_ALLOWED_ORIGINS):
+        raise ImproperlyConfigured("Production CORS origins must use HTTPS.")
+    if not CSRF_TRUSTED_ORIGINS or any(not origin.startswith("https://") for origin in CSRF_TRUSTED_ORIGINS):
+        raise ImproperlyConfigured("Set explicit HTTPS production CSRF_TRUSTED_ORIGINS.")
+    if CORS_ALLOW_ALL_ORIGINS:
+        raise ImproperlyConfigured("CORS_ALLOW_ALL_ORIGINS must be False in production.")
+    if not SECURE_SSL_REDIRECT or not CSRF_COOKIE_SECURE or not SESSION_COOKIE_SECURE:
+        raise ImproperlyConfigured("Production SSL redirect and secure cookies must be enabled.")
+    if SECURE_HSTS_SECONDS < 1:
+        raise ImproperlyConfigured("Production requires a positive SECURE_HSTS_SECONDS value.")
 
 # 0️⃣ channels
 
 ASGI_APPLICATION = "backend_django.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
+CHANNEL_LAYERS_BACKEND = config("CHANNEL_LAYERS_BACKEND", default="memory")
+if CHANNEL_LAYERS_BACKEND == "redis":
+    CHANNEL_LAYERS = {"default": {"BACKEND": "channels_redis.core.RedisChannelLayer", "CONFIG": {
+        "hosts": [config("REDIS_URL", default="redis://127.0.0.1:6379/0")]}}}
+else:
+    CHANNEL_LAYERS = {"default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 SO_IAM_OS_DEBUG_CONSOLE = config(
     "SO_IAM_OS_DEBUG_CONSOLE",
@@ -324,19 +375,20 @@ INSTALLED_APPS = [
 
     "ai",
     "automation",
-    "core",
+    "challenges",
     "codex",
+    "core",
     "goals",
     "jobs_opportunity",
     "knowledge",
     "learning",
     "memory",
     "notification",
+    "personal_finance",
     "projects",
     "social",
     "tasks",
     "users_accounts",
-    "challenges",
 ]
 
 
@@ -396,8 +448,15 @@ else:
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
+            "OPTIONS": {"timeout": 30},
         }
     }
+
+if ENVIRONMENT == "production" and DATABASE_ENGINE != "postgresql":
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        "Production must use DATABASE_ENGINE=postgresql; SQLite is for local development only."
+    )
 
 
 # Password validation
@@ -455,7 +514,6 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 
 
-
 # ====================================================
 # Redis / Celery / Cache
 # ====================================================
@@ -479,3 +537,5 @@ CACHES = {
         "TIMEOUT": 300,
     }
 }
+
+

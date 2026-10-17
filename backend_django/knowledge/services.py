@@ -257,20 +257,12 @@ class KnowledgeService:
         if not file:
             raise ValueError("A file is required.")
 
-        max_size = 25 * 1024 * 1024
-        if getattr(file, "size", 0) > max_size:
-            raise ValueError("Maximum knowledge file size is 25 MB.")
-
-        allowed = {".md", ".markdown", ".txt", ".pdf", ".docx"}
         from pathlib import Path
-        suffix = Path(file.name).suffix.lower()
-        if suffix not in allowed:
-            raise ValueError("Only MD, TXT, PDF and DOCX files are allowed for knowledge processing.")
+        from .file_validation import validate_knowledge_upload
 
-        original_name = (
-            original_name
-            or file.name
-        )
+        validate_knowledge_upload(file)
+        # Keep only a display basename; never persist client-supplied path segments.
+        original_name = Path(str(original_name or file.name).replace("\\", "/")).name[:255]
 
         file_size = (
             getattr(

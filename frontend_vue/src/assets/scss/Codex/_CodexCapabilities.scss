@@ -1,0 +1,12 @@
+.codex-capabilities { display: grid; gap: 1rem; }
+.capability-heading, .capability-toolbar, .capability-actions, .registry-tabs { display: flex; align-items: center; gap: .75rem; }
+.capability-heading { justify-content: space-between; }
+.capability-search { flex: 1; min-width: 260px; }
+.capability-health { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin-top: 1rem; }
+.health-item { display: grid; gap: .35rem; }
+.health-item > span { text-transform: capitalize; }
+.capability-result pre { white-space: pre-wrap; max-height: 360px; overflow: auto; }
+@media (max-width: 900px) {
+  .capability-health { grid-template-columns: 1fr; }
+  .capability-heading, .capability-toolbar { flex-wrap: wrap; }
+}

@@ -70,6 +70,11 @@ class ProgramElementSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ('id', 'slug', 'created_at',
                             'updated_at', 'created_by')
+
+    def validate_program(self, value):
+        request=self.context.get('request')
+        if request and value and value.created_by_id != request.user.id: raise serializers.ValidationError('Program does not belong to the current user.')
+        return value
 # ==================================================
 # 3️⃣ Workflow
 # ==================================================
@@ -113,6 +118,13 @@ class WorkflowNodeSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("id", "slug", "created_at",
                             "updated_at", "created_by")
+
+    def validate(self, attrs):
+        request=self.context.get('request'); workflow=attrs.get('workflow'); program=attrs.get('program'); element=attrs.get('element')
+        if request and workflow and workflow.created_by_id != request.user.id: raise serializers.ValidationError({'workflow':'Workflow does not belong to the current user.'})
+        if request and program and program.created_by_id != request.user.id: raise serializers.ValidationError({'program':'Program does not belong to the current user.'})
+        if request and element and element.created_by_id != request.user.id: raise serializers.ValidationError({'element':'Element does not belong to the current user.'})
+        return attrs
 
 
 # ==================================================

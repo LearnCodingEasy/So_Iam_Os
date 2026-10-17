@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (
-    AITopicChatView,
+    AITopicChatView, AIAgentPlanView,
     AIChatView, AIConversationDetailView, AIConversationListCreateView,
     AISettingsView, AIProviderCredentialListCreateView, AIProviderCredentialDetailView,
     AIProviderModelsView, AIPromptProfileListCreateView, AIPromptProfileDetailView,
@@ -11,6 +11,7 @@ from .views import (
 app_name = "ai"
 
 urlpatterns = [
+    path("agents/plan/", AIAgentPlanView.as_view(), name="agent-plan"),
     path("topic-chat/", AITopicChatView.as_view(), name="ai-topic-chat"),
     path("chat/", AIChatView.as_view(), name="chat"),
     path("conversations/", AIConversationListCreateView.as_view(),

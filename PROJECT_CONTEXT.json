@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "project": "SO_IAM_OS",
+  "generated_at": "2026-10-11T23:19:26.187466+00:00",
+  "protected_items": [],
+  "external_ai_instructions": [
+    "This manifest is authoritative Codex governance metadata.",
+    "External AI systems MUST NOT modify, replace, rename, move, or delete protected paths/items.",
+    "Read-only inspection is allowed unless a protected item's rules explicitly say otherwise.",
+    "Any proposed change touching a protected item requires explicit human approval and a reviewed change set.",
+    "Do not silently regenerate or replace this manifest while processing a ZIP/project upload."
+  ]
+}

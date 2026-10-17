@@ -1,5 +1,3 @@
-import './assets/main.css'
-
 // Tailwind
 import './assets/Tailwind/tailwind.css'
 import 'tailwindcss/tailwind.css'
@@ -9,7 +7,12 @@ import 'animate.css'
 
 // My Style
 import './assets/scss/style.scss'
-import './assets/scss/main.scss'
+
+// استيراد مكتبة الـ Markdown
+import VueMarkdownIt from 'vue3-markdown-it'
+
+// استيراد تنسيق الـ CSS الخاص بـ GitHub لكي يظهر المحتوى منسقاً
+import 'github-markdown-css/github-markdown.css'
 
 // Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -21,7 +24,8 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 library.add(fas, far, fab)
 
 import axios from 'axios'
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+axios.defaults.baseURL =
+  import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -168,6 +172,8 @@ app.use(router)
 
 // eslint-disable-next-line vue/multi-word-component-names
 app.component('fa', FontAwesomeIcon)
+
+app.use(VueMarkdownIt)
 
 // --------------- Initialize PrimeVue ---------------
 // Configure and initialize PrimeVue with theme settings

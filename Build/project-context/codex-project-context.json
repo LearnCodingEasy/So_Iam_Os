@@ -1,0 +1,5283 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "name": "SO_IAM_OS",
+    "codex_scope": "codex only"
+  },
+  "architecture": {
+    "frontend": "Vue 3 + PrimeVue + Pinia + Axios",
+    "backend": "Django + DRF",
+    "principle": "non-destructive development"
+  },
+  "features": [
+    {
+      "key": "feature.project_scanner",
+      "name": "Project Scanner",
+      "category": "Project Intelligence",
+      "purpose": "Provide project scanner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_fingerprint",
+      "name": "Project Fingerprint",
+      "category": "Project Intelligence",
+      "purpose": "Provide project fingerprint capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_metadata",
+      "name": "Project Metadata",
+      "category": "Project Intelligence",
+      "purpose": "Provide project metadata capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.app_discovery",
+      "name": "App Discovery",
+      "category": "Project Intelligence",
+      "purpose": "Provide app discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_index",
+      "name": "File Index",
+      "category": "Project Intelligence",
+      "purpose": "Provide file index capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.symbol_index",
+      "name": "Symbol Index",
+      "category": "Project Intelligence",
+      "purpose": "Provide symbol index capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.import_index",
+      "name": "Import Index",
+      "category": "Project Intelligence",
+      "purpose": "Provide import index capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.export_index",
+      "name": "Export Index",
+      "category": "Project Intelligence",
+      "purpose": "Provide export index capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.route_discovery",
+      "name": "Route Discovery",
+      "category": "Project Intelligence",
+      "purpose": "Provide route discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.api_discovery",
+      "name": "API Discovery",
+      "category": "Project Intelligence",
+      "purpose": "Provide api discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.model_discovery",
+      "name": "Model Discovery",
+      "category": "Project Intelligence",
+      "purpose": "Provide model discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.component_discovery",
+      "name": "Component Discovery",
+      "category": "Project Intelligence",
+      "purpose": "Provide component discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.service_discovery",
+      "name": "Service Discovery",
+      "category": "Project Intelligence",
+      "purpose": "Provide service discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.architecture_graph",
+      "name": "Architecture Graph",
+      "category": "Project Intelligence",
+      "purpose": "Provide architecture graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_knowledge_graph",
+      "name": "Project Knowledge Graph",
+      "category": "Project Intelligence",
+      "purpose": "Provide project knowledge graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_explorer",
+      "name": "File Explorer",
+      "category": "File Management",
+      "purpose": "Provide file explorer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.folder_explorer",
+      "name": "Folder Explorer",
+      "category": "File Management",
+      "purpose": "Provide folder explorer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_viewer",
+      "name": "File Viewer",
+      "category": "File Management",
+      "purpose": "Provide file viewer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.syntax_detection",
+      "name": "Syntax Detection",
+      "category": "File Management",
+      "purpose": "Provide syntax detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_metadata",
+      "name": "File Metadata",
+      "category": "File Management",
+      "purpose": "Provide file metadata capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_search",
+      "name": "File Search",
+      "category": "File Management",
+      "purpose": "Provide file search capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.content_search",
+      "name": "Content Search",
+      "category": "File Management",
+      "purpose": "Provide content search capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.symbol_search",
+      "name": "Symbol Search",
+      "category": "File Management",
+      "purpose": "Provide symbol search capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.multi_file_selection",
+      "name": "Multi-file Selection",
+      "category": "File Management",
+      "purpose": "Provide multi-file selection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_preview",
+      "name": "File Preview",
+      "category": "File Management",
+      "purpose": "Provide file preview capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.markdown_preview",
+      "name": "Markdown Preview",
+      "category": "File Management",
+      "purpose": "Provide markdown preview capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.json_viewer",
+      "name": "JSON Viewer",
+      "category": "File Management",
+      "purpose": "Provide json viewer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.yaml_viewer",
+      "name": "YAML Viewer",
+      "category": "File Management",
+      "purpose": "Provide yaml viewer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.pdf_viewer",
+      "name": "PDF Viewer",
+      "category": "File Management",
+      "purpose": "Provide pdf viewer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.docx_viewer",
+      "name": "DOCX Viewer",
+      "category": "File Management",
+      "purpose": "Provide docx viewer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.python_ast_analysis",
+      "name": "Python AST Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide python ast analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.vue_analysis",
+      "name": "Vue Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide vue analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.javascript_analysis",
+      "name": "JavaScript Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide javascript analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.typescript_analysis",
+      "name": "TypeScript Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide typescript analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.scss_analysis",
+      "name": "SCSS Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide scss analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.import_analysis",
+      "name": "Import Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide import analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.dependency_analysis",
+      "name": "Dependency Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide dependency analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.duplicate_detection",
+      "name": "Duplicate Detection",
+      "category": "Code Analysis",
+      "purpose": "Provide duplicate detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.dead_code_detection",
+      "name": "Dead Code Detection",
+      "category": "Code Analysis",
+      "purpose": "Provide dead code detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.complexity_analysis",
+      "name": "Complexity Analysis",
+      "category": "Code Analysis",
+      "purpose": "Provide complexity analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.large_function_detection",
+      "name": "Large Function Detection",
+      "category": "Code Analysis",
+      "purpose": "Provide large function detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.security_heuristics",
+      "name": "Security Heuristics",
+      "category": "Code Analysis",
+      "purpose": "Provide security heuristics capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.todo_scanner",
+      "name": "TODO Scanner",
+      "category": "Code Analysis",
+      "purpose": "Provide todo scanner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.technical_debt_scanner",
+      "name": "Technical Debt Scanner",
+      "category": "Code Analysis",
+      "purpose": "Provide technical debt scanner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.code_quality_score",
+      "name": "Code Quality Score",
+      "category": "Code Analysis",
+      "purpose": "Provide code quality score capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.architecture_registry",
+      "name": "Architecture Registry",
+      "category": "Architecture",
+      "purpose": "Provide architecture registry capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.layer_registry",
+      "name": "Layer Registry",
+      "category": "Architecture",
+      "purpose": "Provide layer registry capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.module_registry",
+      "name": "Module Registry",
+      "category": "Architecture",
+      "purpose": "Provide module registry capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.dependency_graph",
+      "name": "Dependency Graph",
+      "category": "Architecture",
+      "purpose": "Provide dependency graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.api_graph",
+      "name": "API Graph",
+      "category": "Architecture",
+      "purpose": "Provide api graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_graph",
+      "name": "File Graph",
+      "category": "Architecture",
+      "purpose": "Provide file graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.feature_graph",
+      "name": "Feature Graph",
+      "category": "Architecture",
+      "purpose": "Provide feature graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.database_graph",
+      "name": "Database Graph",
+      "category": "Architecture",
+      "purpose": "Provide database graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.frontend_flow_graph",
+      "name": "Frontend Flow Graph",
+      "category": "Architecture",
+      "purpose": "Provide frontend flow graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.backend_flow_graph",
+      "name": "Backend Flow Graph",
+      "category": "Architecture",
+      "purpose": "Provide backend flow graph capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.cross_layer_analysis",
+      "name": "Cross-layer Analysis",
+      "category": "Architecture",
+      "purpose": "Provide cross-layer analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.architecture_violations",
+      "name": "Architecture Violations",
+      "category": "Architecture",
+      "purpose": "Provide architecture violations capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.circular_dependency_detection",
+      "name": "Circular Dependency Detection",
+      "category": "Architecture",
+      "purpose": "Provide circular dependency detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.architecture_decisions",
+      "name": "Architecture Decisions",
+      "category": "Architecture",
+      "purpose": "Provide architecture decisions capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.architecture_documentation",
+      "name": "Architecture Documentation",
+      "category": "Architecture",
+      "purpose": "Provide architecture documentation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_planner",
+      "name": "Change Planner",
+      "category": "Change Management",
+      "purpose": "Provide change planner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_impact",
+      "name": "Change Impact",
+      "category": "Change Management",
+      "purpose": "Provide change impact capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_risk",
+      "name": "Change Risk",
+      "category": "Change Management",
+      "purpose": "Provide change risk capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_set",
+      "name": "Change Set",
+      "category": "Change Management",
+      "purpose": "Provide change set capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_preview",
+      "name": "Change Preview",
+      "category": "Change Management",
+      "purpose": "Provide change preview capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.diff_generator",
+      "name": "Diff Generator",
+      "category": "Change Management",
+      "purpose": "Provide diff generator capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.snapshot",
+      "name": "Snapshot",
+      "category": "Change Management",
+      "purpose": "Provide snapshot capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.rollback",
+      "name": "Rollback",
+      "category": "Change Management",
+      "purpose": "Provide rollback capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_approval",
+      "name": "Change Approval",
+      "category": "Change Management",
+      "purpose": "Provide change approval capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.protected_change_detection",
+      "name": "Protected Change Detection",
+      "category": "Change Management",
+      "purpose": "Provide protected change detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.locked_file_detection",
+      "name": "Locked File Detection",
+      "category": "Change Management",
+      "purpose": "Provide locked file detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.regression_prediction",
+      "name": "Regression Prediction",
+      "category": "Change Management",
+      "purpose": "Provide regression prediction capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_audit",
+      "name": "Change Audit",
+      "category": "Change Management",
+      "purpose": "Provide change audit capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_history",
+      "name": "Change History",
+      "category": "Change Management",
+      "purpose": "Provide change history capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.change_versioning",
+      "name": "Change Versioning",
+      "category": "Change Management",
+      "purpose": "Provide change versioning capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_aware_chat",
+      "name": "Project-aware Chat",
+      "category": "AI Assistance",
+      "purpose": "Provide project-aware chat capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.file_aware_chat",
+      "name": "File-aware Chat",
+      "category": "AI Assistance",
+      "purpose": "Provide file-aware chat capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.multi_file_chat",
+      "name": "Multi-file Chat",
+      "category": "AI Assistance",
+      "purpose": "Provide multi-file chat capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.feature_aware_chat",
+      "name": "Feature-aware Chat",
+      "category": "AI Assistance",
+      "purpose": "Provide feature-aware chat capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.architecture_chat",
+      "name": "Architecture Chat",
+      "category": "AI Assistance",
+      "purpose": "Provide architecture chat capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.debug_assistant",
+      "name": "Debug Assistant",
+      "category": "AI Assistance",
+      "purpose": "Provide debug assistant capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.code_review_ai",
+      "name": "Code Review AI",
+      "category": "AI Assistance",
+      "purpose": "Provide code review ai capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.documentation_ai",
+      "name": "Documentation AI",
+      "category": "AI Assistance",
+      "purpose": "Provide documentation ai capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.test_planning_ai",
+      "name": "Test Planning AI",
+      "category": "AI Assistance",
+      "purpose": "Provide test planning ai capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.prompt_generator",
+      "name": "Prompt Generator",
+      "category": "AI Assistance",
+      "purpose": "Provide prompt generator capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.image_prompt_generator",
+      "name": "Image Prompt Generator",
+      "category": "AI Assistance",
+      "purpose": "Provide image prompt generator capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.refactor_planner",
+      "name": "Refactor Planner",
+      "category": "AI Assistance",
+      "purpose": "Provide refactor planner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.explanation_generator",
+      "name": "Explanation Generator",
+      "category": "AI Assistance",
+      "purpose": "Provide explanation generator capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.acceptance_criteria_generator",
+      "name": "Acceptance Criteria Generator",
+      "category": "AI Assistance",
+      "purpose": "Provide acceptance criteria generator capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.next_best_action_ai",
+      "name": "Next Best Action AI",
+      "category": "AI Assistance",
+      "purpose": "Provide next best action ai capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.error_capture",
+      "name": "Error Capture",
+      "category": "Debugging",
+      "purpose": "Provide error capture capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.stack_trace_parser",
+      "name": "Stack Trace Parser",
+      "category": "Debugging",
+      "purpose": "Provide stack trace parser capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.error_classification",
+      "name": "Error Classification",
+      "category": "Debugging",
+      "purpose": "Provide error classification capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.root_cause_analysis",
+      "name": "Root Cause Analysis",
+      "category": "Debugging",
+      "purpose": "Provide root cause analysis capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.error_to_file_mapping",
+      "name": "Error-to-file Mapping",
+      "category": "Debugging",
+      "purpose": "Provide error-to-file mapping capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.error_to_feature_mapping",
+      "name": "Error-to-feature Mapping",
+      "category": "Debugging",
+      "purpose": "Provide error-to-feature mapping capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.fix_planner",
+      "name": "Fix Planner",
+      "category": "Debugging",
+      "purpose": "Provide fix planner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.fix_validation",
+      "name": "Fix Validation",
+      "category": "Debugging",
+      "purpose": "Provide fix validation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.regression_check",
+      "name": "Regression Check",
+      "category": "Debugging",
+      "purpose": "Provide regression check capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.debug_history",
+      "name": "Debug History",
+      "category": "Debugging",
+      "purpose": "Provide debug history capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.test_registry",
+      "name": "Test Registry",
+      "category": "Testing",
+      "purpose": "Provide test registry capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.test_discovery",
+      "name": "Test Discovery",
+      "category": "Testing",
+      "purpose": "Provide test discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.test_planner",
+      "name": "Test Planner",
+      "category": "Testing",
+      "purpose": "Provide test planner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.test_runner",
+      "name": "Test Runner",
+      "category": "Testing",
+      "purpose": "Provide test runner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.test_result_parser",
+      "name": "Test Result Parser",
+      "category": "Testing",
+      "purpose": "Provide test result parser capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.failed_test_analyzer",
+      "name": "Failed Test Analyzer",
+      "category": "Testing",
+      "purpose": "Provide failed test analyzer capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.regression_runner",
+      "name": "Regression Runner",
+      "category": "Testing",
+      "purpose": "Provide regression runner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.api_contract_test",
+      "name": "API Contract Test",
+      "category": "Testing",
+      "purpose": "Provide api contract test capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.frontend_smoke_test",
+      "name": "Frontend Smoke Test",
+      "category": "Testing",
+      "purpose": "Provide frontend smoke test capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.coverage_intelligence",
+      "name": "Coverage Intelligence",
+      "category": "Testing",
+      "purpose": "Provide coverage intelligence capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_registry",
+      "name": "Agent Registry",
+      "category": "Agents",
+      "purpose": "Provide agent registry capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_profiles",
+      "name": "Agent Profiles",
+      "category": "Agents",
+      "purpose": "Provide agent profiles capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_permissions",
+      "name": "Agent Permissions",
+      "category": "Agents",
+      "purpose": "Provide agent permissions capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_tools",
+      "name": "Agent Tools",
+      "category": "Agents",
+      "purpose": "Provide agent tools capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_context",
+      "name": "Agent Context",
+      "category": "Agents",
+      "purpose": "Provide agent context capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_planner",
+      "name": "Agent Planner",
+      "category": "Agents",
+      "purpose": "Provide agent planner capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_orchestrator",
+      "name": "Agent Orchestrator",
+      "category": "Agents",
+      "purpose": "Provide agent orchestrator capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_run_history",
+      "name": "Agent Run History",
+      "category": "Agents",
+      "purpose": "Provide agent run history capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_validation",
+      "name": "Agent Validation",
+      "category": "Agents",
+      "purpose": "Provide agent validation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.agent_risk_engine",
+      "name": "Agent Risk Engine",
+      "category": "Agents",
+      "purpose": "Provide agent risk engine capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_registry",
+      "name": "Tool Registry",
+      "category": "Tools",
+      "purpose": "Provide tool registry capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_permissions",
+      "name": "Tool Permissions",
+      "category": "Tools",
+      "purpose": "Provide tool permissions capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_discovery",
+      "name": "Tool Discovery",
+      "category": "Tools",
+      "purpose": "Provide tool discovery capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_validation",
+      "name": "Tool Validation",
+      "category": "Tools",
+      "purpose": "Provide tool validation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_audit",
+      "name": "Tool Audit",
+      "category": "Tools",
+      "purpose": "Provide tool audit capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_execution",
+      "name": "Tool Execution",
+      "category": "Tools",
+      "purpose": "Provide tool execution capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_dependencies",
+      "name": "Tool Dependencies",
+      "category": "Tools",
+      "purpose": "Provide tool dependencies capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_health",
+      "name": "Tool Health",
+      "category": "Tools",
+      "purpose": "Provide tool health capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_versioning",
+      "name": "Tool Versioning",
+      "category": "Tools",
+      "purpose": "Provide tool versioning capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.tool_capability_matrix",
+      "name": "Tool Capability Matrix",
+      "category": "Tools",
+      "purpose": "Provide tool capability matrix capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_knowledge",
+      "name": "Project Knowledge",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide project knowledge capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.knowledge_extraction",
+      "name": "Knowledge Extraction",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide knowledge extraction capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.documentation_index",
+      "name": "Documentation Index",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide documentation index capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.learning_topic_generation",
+      "name": "Learning Topic Generation",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide learning topic generation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.knowledge_gap_detection",
+      "name": "Knowledge Gap Detection",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide knowledge gap detection capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_explanation",
+      "name": "Project Explanation",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide project explanation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.concept_mapping",
+      "name": "Concept Mapping",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide concept mapping capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.practice_generation",
+      "name": "Practice Generation",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide practice generation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.quiz_generation",
+      "name": "Quiz Generation",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide quiz generation capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.learning_feedback",
+      "name": "Learning Feedback",
+      "category": "Learning / Knowledge",
+      "purpose": "Provide learning feedback capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_pipeline",
+      "name": "Project Pipeline",
+      "category": "Project Workflow",
+      "purpose": "Provide project pipeline capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.stage_dependencies",
+      "name": "Stage Dependencies",
+      "category": "Project Workflow",
+      "purpose": "Provide stage dependencies capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_state",
+      "name": "Project State",
+      "category": "Project Workflow",
+      "purpose": "Provide project state capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.task_dependencies",
+      "name": "Task Dependencies",
+      "category": "Project Workflow",
+      "purpose": "Provide task dependencies capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.approval_workflow",
+      "name": "Approval Workflow",
+      "category": "Project Workflow",
+      "purpose": "Provide approval workflow capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.release_readiness",
+      "name": "Release Readiness",
+      "category": "Project Workflow",
+      "purpose": "Provide release readiness capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_health",
+      "name": "Project Health",
+      "category": "Project Workflow",
+      "purpose": "Provide project health capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.technical_debt_tracking",
+      "name": "Technical Debt Tracking",
+      "category": "Project Workflow",
+      "purpose": "Provide technical debt tracking capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.next_best_action",
+      "name": "Next Best Action",
+      "category": "Project Workflow",
+      "purpose": "Provide next best action capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    },
+    {
+      "key": "feature.project_evolution_history",
+      "name": "Project Evolution History",
+      "category": "Project Workflow",
+      "purpose": "Provide project evolution history capability for the Codex project intelligence platform.",
+      "backend": "codex.services.capabilities",
+      "frontend": "CodexCapabilities.vue",
+      "api": "/codex/registry/features/",
+      "data_model": "CodexFeatureDefinition",
+      "permissions": [
+        "READ_FILES"
+      ],
+      "ui": "Codex Capability Registry",
+      "integration": [
+        "backend-registry",
+        "frontend-store",
+        "project-context"
+      ],
+      "tests": [
+        "registry",
+        "contract",
+        "integration"
+      ],
+      "status": "implemented"
+    }
+  ],
+  "tools": [
+    {
+      "key": "file.read",
+      "name": "Read",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable read tool for Codex."
+    },
+    {
+      "key": "file.metadata",
+      "name": "Metadata",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable metadata tool for Codex."
+    },
+    {
+      "key": "file.exists",
+      "name": "Exists",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable exists tool for Codex."
+    },
+    {
+      "key": "file.search",
+      "name": "Search",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable search tool for Codex."
+    },
+    {
+      "key": "file.preview",
+      "name": "Preview",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable preview tool for Codex."
+    },
+    {
+      "key": "file.hash",
+      "name": "Hash",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable hash tool for Codex."
+    },
+    {
+      "key": "file.compare",
+      "name": "Compare",
+      "category": "File Tools",
+      "capability": "execute",
+      "risk": "high",
+      "purpose": "Reusable compare tool for Codex."
+    },
+    {
+      "key": "file.select",
+      "name": "Select",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable select tool for Codex."
+    },
+    {
+      "key": "file.batch_read",
+      "name": "Batch Read",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable batch read tool for Codex."
+    },
+    {
+      "key": "file.relations",
+      "name": "Relations",
+      "category": "File Tools",
+      "capability": "read",
+      "risk": "low",
+      "purpose": "Reusable relations tool for Codex."
+    },
+    {
+      "key": "code.parse",
+      "name": "Parse",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable parse tool for Codex."
+    },
+    {
+      "key": "code.symbols",
+      "name": "Symbols",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable symbols tool for Codex."
+    },
+    {
+      "key": "code.imports",
+      "name": "Imports",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable imports tool for Codex."
+    },
+    {
+      "key": "code.exports",
+      "name": "Exports",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable exports tool for Codex."
+    },
+    {
+      "key": "code.review",
+      "name": "Review",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable review tool for Codex."
+    },
+    {
+      "key": "code.format",
+      "name": "Format",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable format tool for Codex."
+    },
+    {
+      "key": "code.complexity",
+      "name": "Complexity",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable complexity tool for Codex."
+    },
+    {
+      "key": "code.duplicates",
+      "name": "Duplicates",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable duplicates tool for Codex."
+    },
+    {
+      "key": "code.debt",
+      "name": "Debt",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable debt tool for Codex."
+    },
+    {
+      "key": "code.explain",
+      "name": "Explain",
+      "category": "Code Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable explain tool for Codex."
+    },
+    {
+      "key": "project.scan",
+      "name": "Scan",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable scan tool for Codex."
+    },
+    {
+      "key": "project.search",
+      "name": "Search",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable search tool for Codex."
+    },
+    {
+      "key": "project.analyze",
+      "name": "Analyze",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable analyze tool for Codex."
+    },
+    {
+      "key": "project.health",
+      "name": "Health",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable health tool for Codex."
+    },
+    {
+      "key": "project.context",
+      "name": "Context",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable context tool for Codex."
+    },
+    {
+      "key": "project.snapshot",
+      "name": "Snapshot",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable snapshot tool for Codex."
+    },
+    {
+      "key": "project.restore",
+      "name": "Restore",
+      "category": "Project Tools",
+      "capability": "execute",
+      "risk": "high",
+      "purpose": "Reusable restore tool for Codex."
+    },
+    {
+      "key": "project.fingerprint",
+      "name": "Fingerprint",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable fingerprint tool for Codex."
+    },
+    {
+      "key": "project.metadata",
+      "name": "Metadata",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable metadata tool for Codex."
+    },
+    {
+      "key": "project.next_action",
+      "name": "Next Action",
+      "category": "Project Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable next action tool for Codex."
+    },
+    {
+      "key": "architecture.graph",
+      "name": "Graph",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable graph tool for Codex."
+    },
+    {
+      "key": "architecture.layers",
+      "name": "Layers",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable layers tool for Codex."
+    },
+    {
+      "key": "architecture.dependencies",
+      "name": "Dependencies",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable dependencies tool for Codex."
+    },
+    {
+      "key": "architecture.violations",
+      "name": "Violations",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable violations tool for Codex."
+    },
+    {
+      "key": "architecture.circular",
+      "name": "Circular",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable circular tool for Codex."
+    },
+    {
+      "key": "architecture.api_graph",
+      "name": "Api Graph",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable api graph tool for Codex."
+    },
+    {
+      "key": "architecture.file_graph",
+      "name": "File Graph",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable file graph tool for Codex."
+    },
+    {
+      "key": "architecture.feature_graph",
+      "name": "Feature Graph",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable feature graph tool for Codex."
+    },
+    {
+      "key": "architecture.database_graph",
+      "name": "Database Graph",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable database graph tool for Codex."
+    },
+    {
+      "key": "architecture.document",
+      "name": "Document",
+      "category": "Architecture Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable document tool for Codex."
+    },
+    {
+      "key": "django.check",
+      "name": "Check",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable check tool for Codex."
+    },
+    {
+      "key": "django.migrations",
+      "name": "Migrations",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable migrations tool for Codex."
+    },
+    {
+      "key": "django.models",
+      "name": "Models",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable models tool for Codex."
+    },
+    {
+      "key": "django.urls",
+      "name": "Urls",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable urls tool for Codex."
+    },
+    {
+      "key": "django.views",
+      "name": "Views",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable views tool for Codex."
+    },
+    {
+      "key": "django.serializers",
+      "name": "Serializers",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable serializers tool for Codex."
+    },
+    {
+      "key": "django.permissions",
+      "name": "Permissions",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable permissions tool for Codex."
+    },
+    {
+      "key": "django.tests",
+      "name": "Tests",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable tests tool for Codex."
+    },
+    {
+      "key": "django.admin",
+      "name": "Admin",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable admin tool for Codex."
+    },
+    {
+      "key": "django.settings",
+      "name": "Settings",
+      "category": "Django Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable settings tool for Codex."
+    },
+    {
+      "key": "vue.components",
+      "name": "Components",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable components tool for Codex."
+    },
+    {
+      "key": "vue.routes",
+      "name": "Routes",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable routes tool for Codex."
+    },
+    {
+      "key": "vue.stores",
+      "name": "Stores",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable stores tool for Codex."
+    },
+    {
+      "key": "vue.services",
+      "name": "Services",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable services tool for Codex."
+    },
+    {
+      "key": "vue.imports",
+      "name": "Imports",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable imports tool for Codex."
+    },
+    {
+      "key": "vue.props",
+      "name": "Props",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable props tool for Codex."
+    },
+    {
+      "key": "vue.emits",
+      "name": "Emits",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable emits tool for Codex."
+    },
+    {
+      "key": "vue.composables",
+      "name": "Composables",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable composables tool for Codex."
+    },
+    {
+      "key": "vue.build",
+      "name": "Build",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable build tool for Codex."
+    },
+    {
+      "key": "vue.tests",
+      "name": "Tests",
+      "category": "Vue Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable tests tool for Codex."
+    },
+    {
+      "key": "db.schema",
+      "name": "Schema",
+      "category": "Database Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable schema tool for Codex."
+    },
+    {
+      "key": "db.models",
+      "name": "Models",
+      "category": "Database Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable models tool for Codex."
+    },
+    {
+      "key": "db.relations",
+      "name": "Relations",
+      "category": "Database Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable relations tool for Codex."
+    },
+    {
+      "key": "db.migrations",
+      "name": "Migrations",
+      "category": "Database Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable migrations tool for Codex."
+    },
+    {
+      "key": "db.safe_query",
+      "name": "Safe Query",
+      "category": "Database Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable safe query tool for Codex."
+    },
+    {
+      "key": "api.discovery",
+      "name": "Discovery",
+      "category": "API Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable discovery tool for Codex."
+    },
+    {
+      "key": "api.contract",
+      "name": "Contract",
+      "category": "API Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable contract tool for Codex."
+    },
+    {
+      "key": "api.dependencies",
+      "name": "Dependencies",
+      "category": "API Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable dependencies tool for Codex."
+    },
+    {
+      "key": "api.test",
+      "name": "Test",
+      "category": "API Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable test tool for Codex."
+    },
+    {
+      "key": "api.coverage",
+      "name": "Coverage",
+      "category": "API Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable coverage tool for Codex."
+    },
+    {
+      "key": "test.discover",
+      "name": "Discover",
+      "category": "Testing Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable discover tool for Codex."
+    },
+    {
+      "key": "test.plan",
+      "name": "Plan",
+      "category": "Testing Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable plan tool for Codex."
+    },
+    {
+      "key": "test.run",
+      "name": "Run",
+      "category": "Testing Tools",
+      "capability": "execute",
+      "risk": "high",
+      "purpose": "Reusable run tool for Codex."
+    },
+    {
+      "key": "test.parse",
+      "name": "Parse",
+      "category": "Testing Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable parse tool for Codex."
+    },
+    {
+      "key": "test.regression",
+      "name": "Regression",
+      "category": "Testing Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable regression tool for Codex."
+    },
+    {
+      "key": "git.status",
+      "name": "Status",
+      "category": "Git Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable status tool for Codex."
+    },
+    {
+      "key": "git.diff",
+      "name": "Diff",
+      "category": "Git Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable diff tool for Codex."
+    },
+    {
+      "key": "git.log",
+      "name": "Log",
+      "category": "Git Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable log tool for Codex."
+    },
+    {
+      "key": "git.branch",
+      "name": "Branch",
+      "category": "Git Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable branch tool for Codex."
+    },
+    {
+      "key": "git.commit_analysis",
+      "name": "Commit Analysis",
+      "category": "Git Tools",
+      "capability": "execute",
+      "risk": "high",
+      "purpose": "Reusable commit analysis tool for Codex."
+    },
+    {
+      "key": "debug.capture",
+      "name": "Capture",
+      "category": "Debug Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable capture tool for Codex."
+    },
+    {
+      "key": "debug.parse",
+      "name": "Parse",
+      "category": "Debug Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable parse tool for Codex."
+    },
+    {
+      "key": "debug.locate",
+      "name": "Locate",
+      "category": "Debug Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable locate tool for Codex."
+    },
+    {
+      "key": "debug.explain",
+      "name": "Explain",
+      "category": "Debug Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable explain tool for Codex."
+    },
+    {
+      "key": "debug.validate",
+      "name": "Validate",
+      "category": "Debug Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable validate tool for Codex."
+    },
+    {
+      "key": "docs.generate",
+      "name": "Generate",
+      "category": "Documentation Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable generate tool for Codex."
+    },
+    {
+      "key": "docs.update",
+      "name": "Update",
+      "category": "Documentation Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable update tool for Codex."
+    },
+    {
+      "key": "docs.index",
+      "name": "Index",
+      "category": "Documentation Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable index tool for Codex."
+    },
+    {
+      "key": "docs.search",
+      "name": "Search",
+      "category": "Documentation Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable search tool for Codex."
+    },
+    {
+      "key": "docs.validate",
+      "name": "Validate",
+      "category": "Documentation Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable validate tool for Codex."
+    },
+    {
+      "key": "ai.context",
+      "name": "Context",
+      "category": "AI Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable context tool for Codex."
+    },
+    {
+      "key": "ai.route",
+      "name": "Route",
+      "category": "AI Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable route tool for Codex."
+    },
+    {
+      "key": "ai.prompt",
+      "name": "Prompt",
+      "category": "AI Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable prompt tool for Codex."
+    },
+    {
+      "key": "ai.analyze",
+      "name": "Analyze",
+      "category": "AI Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable analyze tool for Codex."
+    },
+    {
+      "key": "ai.summarize",
+      "name": "Summarize",
+      "category": "AI Tools",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable summarize tool for Codex."
+    },
+    {
+      "key": "knowledge.search",
+      "name": "Search",
+      "category": "Knowledge / Learning",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable search tool for Codex."
+    },
+    {
+      "key": "knowledge.extract",
+      "name": "Extract",
+      "category": "Knowledge / Learning",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable extract tool for Codex."
+    },
+    {
+      "key": "learning.explain",
+      "name": "Explain",
+      "category": "Knowledge / Learning",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable explain tool for Codex."
+    },
+    {
+      "key": "learning.quiz",
+      "name": "Quiz",
+      "category": "Knowledge / Learning",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable quiz tool for Codex."
+    },
+    {
+      "key": "learning.practice",
+      "name": "Practice",
+      "category": "Knowledge / Learning",
+      "capability": "analyze",
+      "risk": "low",
+      "purpose": "Reusable practice tool for Codex."
+    }
+  ],
+  "agents": [
+    {
+      "key": "agent.projectanalyzeragent",
+      "name": "ProjectAnalyzerAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectanalyzer agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectscanneragent",
+      "name": "ProjectScannerAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectscanner agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectmapperagent",
+      "name": "ProjectMapperAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectmapper agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectcontextagent",
+      "name": "ProjectContextAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectcontext agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projecthealthagent",
+      "name": "ProjectHealthAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projecthealth agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectsearchagent",
+      "name": "ProjectSearchAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectsearch agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectknowledgeagent",
+      "name": "ProjectKnowledgeAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectknowledge agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectevolutionagent",
+      "name": "ProjectEvolutionAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectevolution agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.projectriskagent",
+      "name": "ProjectRiskAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized projectrisk agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.nextactionagent",
+      "name": "NextActionAgent",
+      "category": "Project Intelligence",
+      "purpose": "Specialized nextaction agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.architectureagent",
+      "name": "ArchitectureAgent",
+      "category": "Architecture",
+      "purpose": "Specialized architecture agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.architecturereviewagent",
+      "name": "ArchitectureReviewAgent",
+      "category": "Architecture",
+      "purpose": "Specialized architecturereview agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.architecturegraphagent",
+      "name": "ArchitectureGraphAgent",
+      "category": "Architecture",
+      "purpose": "Specialized architecturegraph agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.dependencyarchitectureagent",
+      "name": "DependencyArchitectureAgent",
+      "category": "Architecture",
+      "purpose": "Specialized dependencyarchitecture agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.frontendarchitectureagent",
+      "name": "FrontendArchitectureAgent",
+      "category": "Architecture",
+      "purpose": "Specialized frontendarchitecture agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.backendarchitectureagent",
+      "name": "BackendArchitectureAgent",
+      "category": "Architecture",
+      "purpose": "Specialized backendarchitecture agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.databasearchitectureagent",
+      "name": "DatabaseArchitectureAgent",
+      "category": "Architecture",
+      "purpose": "Specialized databasearchitecture agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.apiarchitectureagent",
+      "name": "APIArchitectureAgent",
+      "category": "Architecture",
+      "purpose": "Specialized apiarchitecture agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.architecturedecisionagent",
+      "name": "ArchitectureDecisionAgent",
+      "category": "Architecture",
+      "purpose": "Specialized architecturedecision agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.architecturedocumentationagent",
+      "name": "ArchitectureDocumentationAgent",
+      "category": "Architecture",
+      "purpose": "Specialized architecturedocumentation agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangoagent",
+      "name": "DjangoAgent",
+      "category": "Backend",
+      "purpose": "Specialized django agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangomodelagent",
+      "name": "DjangoModelAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangomodel agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangoviewagent",
+      "name": "DjangoViewAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangoview agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangoserializeragent",
+      "name": "DjangoSerializerAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangoserializer agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangourlagent",
+      "name": "DjangoURLAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangourl agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangoserviceagent",
+      "name": "DjangoServiceAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangoservice agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangopermissionagent",
+      "name": "DjangoPermissionAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangopermission agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangomigrationagent",
+      "name": "DjangoMigrationAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangomigration agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangoperformanceagent",
+      "name": "DjangoPerformanceAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangoperformance agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.djangosecurityagent",
+      "name": "DjangoSecurityAgent",
+      "category": "Backend",
+      "purpose": "Specialized djangosecurity agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.vueagent",
+      "name": "VueAgent",
+      "category": "Frontend",
+      "purpose": "Specialized vue agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.vuecomponentagent",
+      "name": "VueComponentAgent",
+      "category": "Frontend",
+      "purpose": "Specialized vuecomponent agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.vuerouteragent",
+      "name": "VueRouterAgent",
+      "category": "Frontend",
+      "purpose": "Specialized vuerouter agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.piniaagent",
+      "name": "PiniaAgent",
+      "category": "Frontend",
+      "purpose": "Specialized pinia agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.axiosagent",
+      "name": "AxiosAgent",
+      "category": "Frontend",
+      "purpose": "Specialized axios agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.primevueagent",
+      "name": "PrimeVueAgent",
+      "category": "Frontend",
+      "purpose": "Specialized primevue agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.vueflowagent",
+      "name": "VueFlowAgent",
+      "category": "Frontend",
+      "purpose": "Specialized vueflow agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.scssagent",
+      "name": "SCSSAgent",
+      "category": "Frontend",
+      "purpose": "Specialized scss agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.frontendperformanceagent",
+      "name": "FrontendPerformanceAgent",
+      "category": "Frontend",
+      "purpose": "Specialized frontendperformance agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.frontendaccessibilityagent",
+      "name": "FrontendAccessibilityAgent",
+      "category": "Frontend",
+      "purpose": "Specialized frontendaccessibility agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.codeanalysisagent",
+      "name": "CodeAnalysisAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized codeanalysis agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.codereviewagent",
+      "name": "CodeReviewAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized codereview agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.refactoringagent",
+      "name": "RefactoringAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized refactoring agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.complexityagent",
+      "name": "ComplexityAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized complexity agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.duplicatecodeagent",
+      "name": "DuplicateCodeAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized duplicatecode agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.deadcodeagent",
+      "name": "DeadCodeAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized deadcode agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.dependencyagent",
+      "name": "DependencyAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized dependency agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.symbolagent",
+      "name": "SymbolAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized symbol agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.importgraphagent",
+      "name": "ImportGraphAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized importgraph agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.technicaldebtagent",
+      "name": "TechnicalDebtAgent",
+      "category": "Code Intelligence",
+      "purpose": "Specialized technicaldebt agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.debugagent",
+      "name": "DebugAgent",
+      "category": "Debugging",
+      "purpose": "Specialized debug agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.erroranalysisagent",
+      "name": "ErrorAnalysisAgent",
+      "category": "Debugging",
+      "purpose": "Specialized erroranalysis agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.stacktraceagent",
+      "name": "StackTraceAgent",
+      "category": "Debugging",
+      "purpose": "Specialized stacktrace agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.rootcauseagent",
+      "name": "RootCauseAgent",
+      "category": "Debugging",
+      "purpose": "Specialized rootcause agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.frontenddebugagent",
+      "name": "FrontendDebugAgent",
+      "category": "Debugging",
+      "purpose": "Specialized frontenddebug agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.backenddebugagent",
+      "name": "BackendDebugAgent",
+      "category": "Debugging",
+      "purpose": "Specialized backenddebug agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.apierroragent",
+      "name": "APIErrorAgent",
+      "category": "Debugging",
+      "purpose": "Specialized apierror agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.databaseerroragent",
+      "name": "DatabaseErrorAgent",
+      "category": "Debugging",
+      "purpose": "Specialized databaseerror agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.regressiondebugagent",
+      "name": "RegressionDebugAgent",
+      "category": "Debugging",
+      "purpose": "Specialized regressiondebug agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.fixvalidationagent",
+      "name": "FixValidationAgent",
+      "category": "Debugging",
+      "purpose": "Specialized fixvalidation agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.testingagent",
+      "name": "TestingAgent",
+      "category": "Testing",
+      "purpose": "Specialized testing agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.unittestagent",
+      "name": "UnitTestAgent",
+      "category": "Testing",
+      "purpose": "Specialized unittest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.integrationtestagent",
+      "name": "IntegrationTestAgent",
+      "category": "Testing",
+      "purpose": "Specialized integrationtest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.apitestagent",
+      "name": "APITestAgent",
+      "category": "Testing",
+      "purpose": "Specialized apitest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.frontendtestagent",
+      "name": "FrontendTestAgent",
+      "category": "Testing",
+      "purpose": "Specialized frontendtest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.backendtestagent",
+      "name": "BackendTestAgent",
+      "category": "Testing",
+      "purpose": "Specialized backendtest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.regressiontestagent",
+      "name": "RegressionTestAgent",
+      "category": "Testing",
+      "purpose": "Specialized regressiontest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.testfailureagent",
+      "name": "TestFailureAgent",
+      "category": "Testing",
+      "purpose": "Specialized testfailure agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.coverageagent",
+      "name": "CoverageAgent",
+      "category": "Testing",
+      "purpose": "Specialized coverage agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.releasetestagent",
+      "name": "ReleaseTestAgent",
+      "category": "Testing",
+      "purpose": "Specialized releasetest agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.changeplanneragent",
+      "name": "ChangePlannerAgent",
+      "category": "Change Management",
+      "purpose": "Specialized changeplanner agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.impactanalysisagent",
+      "name": "ImpactAnalysisAgent",
+      "category": "Change Management",
+      "purpose": "Specialized impactanalysis agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.changeriskagent",
+      "name": "ChangeRiskAgent",
+      "category": "Change Management",
+      "purpose": "Specialized changerisk agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.changereviewagent",
+      "name": "ChangeReviewAgent",
+      "category": "Change Management",
+      "purpose": "Specialized changereview agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.changeapprovalagent",
+      "name": "ChangeApprovalAgent",
+      "category": "Change Management",
+      "purpose": "Specialized changeapproval agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.changeexecutionagent",
+      "name": "ChangeExecutionAgent",
+      "category": "Change Management",
+      "purpose": "Specialized changeexecution agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.rollbackagent",
+      "name": "RollbackAgent",
+      "category": "Change Management",
+      "purpose": "Specialized rollback agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.snapshotagent",
+      "name": "SnapshotAgent",
+      "category": "Change Management",
+      "purpose": "Specialized snapshot agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.protectionagent",
+      "name": "ProtectionAgent",
+      "category": "Change Management",
+      "purpose": "Specialized protection agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.regressionprotectionagent",
+      "name": "RegressionProtectionAgent",
+      "category": "Change Management",
+      "purpose": "Specialized regressionprotection agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.aiorchestratoragent",
+      "name": "AIOrchestratorAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized aiorchestrator agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.modelrouteragent",
+      "name": "ModelRouterAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized modelrouter agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.localaiagent",
+      "name": "LocalAIAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized localai agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.cloudaiagent",
+      "name": "CloudAIAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized cloudai agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.promptgeneratoragent",
+      "name": "PromptGeneratorAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized promptgenerator agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.imagepromptagent",
+      "name": "ImagePromptAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized imageprompt agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.contextcompressionagent",
+      "name": "ContextCompressionAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized contextcompression agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.contextselectionagent",
+      "name": "ContextSelectionAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized contextselection agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.aireviewagent",
+      "name": "AIReviewAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized aireview agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.airesponsevalidationagent",
+      "name": "AIResponseValidationAgent",
+      "category": "AI / Prompt",
+      "purpose": "Specialized airesponsevalidation agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.knowledgeagent",
+      "name": "KnowledgeAgent",
+      "category": "Knowledge / Learning",
+      "purpose": "Specialized knowledge agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.documentationagent",
+      "name": "DocumentationAgent",
+      "category": "Knowledge / Learning",
+      "purpose": "Specialized documentation agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.learningagent",
+      "name": "LearningAgent",
+      "category": "Knowledge / Learning",
+      "purpose": "Specialized learning agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.knowledgegapagent",
+      "name": "KnowledgeGapAgent",
+      "category": "Knowledge / Learning",
+      "purpose": "Specialized knowledgegap agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.practiceagent",
+      "name": "PracticeAgent",
+      "category": "Knowledge / Learning",
+      "purpose": "Specialized practice agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.securityagent",
+      "name": "SecurityAgent",
+      "category": "Governance / Security",
+      "purpose": "Specialized security agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.permissionagent",
+      "name": "PermissionAgent",
+      "category": "Governance / Security",
+      "purpose": "Specialized permission agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.auditagent",
+      "name": "AuditAgent",
+      "category": "Governance / Security",
+      "purpose": "Specialized audit agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.complianceagent",
+      "name": "ComplianceAgent",
+      "category": "Governance / Security",
+      "purpose": "Specialized compliance agent for Codex.",
+      "risk": "medium"
+    },
+    {
+      "key": "agent.safetyguardianagent",
+      "name": "SafetyGuardianAgent",
+      "category": "Governance / Security",
+      "purpose": "Specialized safetyguardian agent for Codex.",
+      "risk": "medium"
+    }
+  ],
+  "protected_features": [],
+  "locked_files": [],
+  "dependencies": [],
+  "development_pipeline": [],
+  "current_stage": "Codex Capability Registry",
+  "known_issues": [],
+  "testing": {
+    "contract_counts": {
+      "features": 150,
+      "tools": 100,
+      "agents": 100
+    },
+    "status": "source-level contract validated; runtime requires project dependencies"
+  },
+  "catalog_version": "1.0.0"
+}

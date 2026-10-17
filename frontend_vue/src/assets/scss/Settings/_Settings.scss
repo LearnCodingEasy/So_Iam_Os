@@ -1,0 +1,80 @@
+.page {
+  max-width: 1300px;
+  margin: auto;
+  padding: 32px;
+}
+.page header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.page header span {
+  font-size: 12px;
+  color: #60a5fa;
+  letter-spacing: 0.15em;
+}
+.page h1 {
+  font-size: 34px;
+  margin: 5px 0;
+}
+.page header p {
+  color: #94a3b8;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.wide {
+  grid-column: 1/-1;
+}
+.form {
+  display: grid;
+  gap: 18px;
+}
+.form label,
+.learning-settings label {
+  display: grid;
+  gap: 8px;
+}
+.learning-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.save-row {
+  margin-top: 18px;
+}
+.credential {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 10px;
+  margin-top: 18px;
+}
+.prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+.prompt p {
+  color: #94a3b8;
+  white-space: pre-wrap;
+}
+@media (max-width: 800px) {
+  .page {
+    padding: 18px;
+  }
+  .grid,
+  .learning-settings {
+    grid-template-columns: 1fr;
+  }
+  .wide {
+    grid-column: auto;
+  }
+  .credential {
+    grid-template-columns: 1fr;
+  }
+}

@@ -22,6 +22,7 @@ const knowledgeItems = ref([])
 
 const loading = ref(false)
 const saving = ref(false)
+const extractingMetadata = ref(false)
 
 const error = ref('')
 const successMessage = ref('')
@@ -32,43 +33,20 @@ const selectedType = ref('all')
 const showForm = ref(false)
 const editingKnowledge = ref(null)
 
+// حالة إظهار وإخفاء البوب أب الخاص بعرض كافة تفاصيل المستند
+const viewDialogVisible = ref(false)
+const selectedKnowledge = ref(null)
+
 const knowledgeTypes = [
-  {
-    value: 'note',
-    label: 'Notes',
-  },
-  {
-    value: 'document',
-    label: 'Documents',
-  },
-  {
-    value: 'article',
-    label: 'Articles',
-  },
-  {
-    value: 'documentation',
-    label: 'Documentation',
-  },
-  {
-    value: 'idea',
-    label: 'Ideas',
-  },
-  {
-    value: 'project',
-    label: 'Projects',
-  },
-  {
-    value: 'learning',
-    label: 'Learning',
-  },
-  {
-    value: 'reference',
-    label: 'References',
-  },
-  {
-    value: 'other',
-    label: 'Other',
-  },
+  { value: 'note', label: 'Notes' },
+  { value: 'document', label: 'Documents' },
+  { value: 'article', label: 'Articles' },
+  { value: 'documentation', label: 'Documentation' },
+  { value: 'idea', label: 'Ideas' },
+  { value: 'project', label: 'Projects' },
+  { value: 'learning', label: 'Learning' },
+  { value: 'reference', label: 'References' },
+  { value: 'other', label: 'Other' },
 ]
 
 const loadKnowledge = async () => {
@@ -77,11 +55,9 @@ const loadKnowledge = async () => {
 
   try {
     const response = await knowledgeService.getAll()
-
     knowledgeItems.value = Array.isArray(response) ? response : response.results || []
   } catch (err) {
     console.error('Failed to load knowledge:', err)
-
     error.value = err.response?.data?.detail || 'Failed to load your knowledge.'
   } finally {
     loading.value = false
@@ -128,6 +104,29 @@ const openEditForm = (knowledge) => {
   error.value = ''
 }
 
+// دالة فتح نافذة البوب أب وعرض تفاصيل المستند بالكامل
+const openViewDialog = (knowledge) => {
+  selectedKnowledge.value = knowledge
+  viewDialogVisible.value = true
+}
+
+const extractSelectedMetadata = async () => {
+  if (!selectedKnowledge.value || extractingMetadata.value) return
+  extractingMetadata.value = true
+  error.value = ''
+  try {
+    const result = await knowledgeService.extractMetadata(selectedKnowledge.value.id)
+    selectedKnowledge.value = result.item
+    const index = knowledgeItems.value.findIndex((item) => item.id === result.item.id)
+    if (index !== -1) knowledgeItems.value[index] = result.item
+    successMessage.value = 'Metadata extracted and saved.'
+  } catch (err) {
+    error.value = err.response?.data?.detail || 'Could not extract metadata.'
+  } finally {
+    extractingMetadata.value = false
+  }
+}
+
 const closeForm = () => {
   showForm.value = false
   editingKnowledge.value = null
@@ -140,7 +139,6 @@ const saveKnowledge = async (data) => {
   try {
     if (editingKnowledge.value) {
       const updated = await knowledgeService.update(editingKnowledge.value.id, data)
-
       const index = knowledgeItems.value.findIndex((item) => item.id === editingKnowledge.value.id)
 
       if (index !== -1) {
@@ -150,16 +148,13 @@ const saveKnowledge = async (data) => {
       successMessage.value = 'Knowledge updated successfully.'
     } else {
       const created = await knowledgeService.create(data)
-
       knowledgeItems.value.unshift(created)
-
       successMessage.value = 'Knowledge created successfully.'
     }
 
     closeForm()
   } catch (err) {
     console.error('Failed to save knowledge:', err)
-
     error.value = err.response?.data?.detail || 'Failed to save knowledge.'
   } finally {
     saving.value = false
@@ -177,13 +172,10 @@ const archiveKnowledge = async (knowledge) => {
 
   try {
     await knowledgeService.archive(knowledge.id)
-
     knowledgeItems.value = knowledgeItems.value.filter((item) => item.id !== knowledge.id)
-
     successMessage.value = 'Knowledge archived successfully.'
   } catch (err) {
     console.error('Failed to archive knowledge:', err)
-
     error.value = err.response?.data?.detail || 'Failed to archive knowledge.'
   }
 }
@@ -246,7 +238,6 @@ onMounted(() => {
           class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
         >
           <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Total knowledge</p>
-
           <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
             {{ totalKnowledge }}
           </p>
@@ -256,7 +247,6 @@ onMounted(() => {
           class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
         >
           <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Visible now</p>
-
           <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
             {{ filteredKnowledge.length }}
           </p>
@@ -269,7 +259,6 @@ onMounted(() => {
         class="mb-5 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300"
       >
         <span>{{ successMessage }}</span>
-
         <button type="button" @click="successMessage = ''">
           <FontAwesomeIcon :icon="faXmark" />
         </button>
@@ -280,7 +269,6 @@ onMounted(() => {
         class="mb-5 flex items-center justify-between rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300"
       >
         <span>{{ error }}</span>
-
         <button type="button" @click="error = ''">
           <FontAwesomeIcon :icon="faXmark" />
         </button>
@@ -296,7 +284,6 @@ onMounted(() => {
               :icon="faMagnifyingGlass"
               class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
             />
-
             <input
               v-model="searchQuery"
               type="search"
@@ -311,13 +298,11 @@ onMounted(() => {
                 :icon="faFilter"
                 class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               />
-
               <select
                 v-model="selectedType"
                 class="min-w-[190px] rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-8 text-sm outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               >
                 <option value="all">All types</option>
-
                 <option v-for="type in knowledgeTypes" :key="type.value" :value="type.value">
                   {{ type.label }}
                 </option>
@@ -357,7 +342,6 @@ onMounted(() => {
         class="rounded-2xl border border-slate-200 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900"
       >
         <h3 class="text-lg font-semibold text-slate-900 dark:text-white">No knowledge found</h3>
-
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
           Try changing your search or filters.
         </p>
@@ -371,11 +355,205 @@ onMounted(() => {
           :knowledge="knowledge"
           @edit="openEditForm"
           @archive="archiveKnowledge"
+          @view="openViewDialog"
         />
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- PrimeVue Dialog لعرض كافة البيانات بالتفصيل ومحتوى الـ Markdown -->
+    <Dialog
+      v-model:visible="viewDialogVisible"
+      modal
+      :header="selectedKnowledge?.title || 'تفاصيل المستند'"
+      :style="{ width: '65vw' }"
+    >
+      <div v-if="selectedKnowledge" class="space-y-6 text-sm">
+        <!-- الحارات العلوية (Type, Visibility, Archived status) -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span
+            class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+          >
+            Type: {{ selectedKnowledge.knowledge_type }}
+          </span>
+          <span
+            class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+          >
+            Visibility: {{ selectedKnowledge.visibility }}
+          </span>
+          <span
+            v-if="selectedKnowledge.is_archived"
+            class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700"
+          >
+            Archived
+          </span>
+        </div>
+
+        <!-- شبكة البيانات التعريفية (IDs, Counts, Dates) -->
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800"
+        >
+          <div>
+            <span class="block text-xs text-slate-400">ID</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200"
+              >#{{ selectedKnowledge.id }}</span
+            >
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400">User UUID</span>
+            <span
+              class="font-medium text-slate-800 dark:text-slate-200 truncate block"
+              :title="selectedKnowledge.user"
+              >{{ selectedKnowledge.user }}</span
+            >
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400">Files Count</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200">{{
+              selectedKnowledge.files_count
+            }}</span>
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400">Learning Topics Count</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200">{{
+              selectedKnowledge.learning_topics_count
+            }}</span>
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400">Notes / Apps Count</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200"
+              >{{ selectedKnowledge.learning_notes_count }} /
+              {{ selectedKnowledge.learning_applications_count }}</span
+            >
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400">Created At</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200">{{
+              new Date(selectedKnowledge.created_at).toLocaleString()
+            }}</span>
+          </div>
+          <div>
+            <span class="block text-xs text-slate-400">Updated At</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200">{{
+              new Date(selectedKnowledge.updated_at).toLocaleString()
+            }}</span>
+          </div>
+          <div v-if="selectedKnowledge.source_name">
+            <span class="block text-xs text-slate-400">Source Name</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200">{{
+              selectedKnowledge.source_name
+            }}</span>
+          </div>
+        </div>
+
+        <!-- Source URL لو وجد -->
+        <div
+          v-if="selectedKnowledge.source_url"
+          class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
+        >
+          <span class="block text-xs text-slate-400 mb-1">Source URL</span>
+          <a
+            :href="selectedKnowledge.source_url"
+            target="_blank"
+            class="text-indigo-600 dark:text-indigo-400 underline break-all"
+          >
+            {{ selectedKnowledge.source_url }}
+          </a>
+        </div>
+
+        <!-- Tags لو وجدت -->
+        <div v-if="selectedKnowledge.tags && selectedKnowledge.tags.length > 0">
+          <span class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Tags</span>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              v-for="tag in selectedKnowledge.tags"
+              :key="tag"
+              class="px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-xs font-medium"
+            >
+              #{{ tag }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Description لو وجد -->
+        <div v-if="selectedKnowledge.description">
+          <span class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase"
+            >Description</span
+          >
+          <p
+            class="text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800"
+          >
+            {{ selectedKnowledge.description }}
+          </p>
+        </div>
+
+        <!-- Learning Topics (مواضيع التعلم المرتبطة) -->
+        <div
+          v-if="selectedKnowledge.learning_topics && selectedKnowledge.learning_topics.length > 0"
+        >
+          <span class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase"
+            >Learning Topics</span
+          >
+          <div class="space-y-2">
+            <div
+              v-for="topic in selectedKnowledge.learning_topics"
+              :key="topic.id"
+              class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
+            >
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-slate-900 dark:text-white">{{ topic.title }}</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">{{
+                  topic.status
+                }}</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                Path: {{ topic.path_title }} (Order: {{ topic.order }})
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="selectedKnowledge.metadata?.extracted" class="rounded-xl border border-indigo-200 bg-indigo-50/70 p-4 dark:border-indigo-900 dark:bg-indigo-950/30">
+          <h3 class="mb-2 font-semibold text-indigo-900 dark:text-indigo-200">Extracted metadata</h3>
+          <p class="text-sm text-slate-700 dark:text-slate-300">{{ selectedKnowledge.metadata.extracted.summary || 'No summary detected.' }}</p>
+          <div v-if="selectedKnowledge.metadata.extracted.keywords?.length" class="mt-3 flex flex-wrap gap-2">
+            <span v-for="keyword in selectedKnowledge.metadata.extracted.keywords" :key="keyword" class="rounded-full bg-white px-2.5 py-1 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ keyword }}</span>
+          </div>
+          <p class="mt-2 text-xs text-slate-500">Language: {{ selectedKnowledge.metadata.extracted.language_hint }} · Words: {{ selectedKnowledge.metadata.extracted.word_count }}</p>
+        </div>
+
+        <!-- Main Content (محتوى الـ Markdown) -->
+        <div>
+          <span class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase"
+            >Content (Markdown)</span
+          >
+          <div
+            class="markdown-body p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+          >
+            <vue-markdown :source="selectedKnowledge.content || 'لا يوجد محتوى نصي متاح.'" />
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <Button
+          label="Extract metadata"
+          icon="pi pi-sparkles"
+          :loading="extractingMetadata"
+          :disabled="!selectedKnowledge || extractingMetadata"
+          severity="help"
+          outlined
+          @click="extractSelectedMetadata"
+        />
+        <Button
+          label="إغلاق"
+          icon="pi pi-check"
+          @click="viewDialogVisible = false"
+          severity="secondary"
+        />
+      </template>
+    </Dialog>
+
+    <!-- Modal Form (Create / Edit) -->
     <Teleport to="body">
       <div
         v-if="showForm"
@@ -392,7 +570,6 @@ onMounted(() => {
               <h2 class="text-lg font-bold text-slate-900 dark:text-white">
                 {{ editingKnowledge ? 'Edit knowledge' : 'Create knowledge' }}
               </h2>
-
               <p class="mt-1 text-xs text-slate-400">
                 Store information that So_Iam_OS can understand later.
               </p>
@@ -420,3 +597,12 @@ onMounted(() => {
     </Teleport>
   </section>
 </template>
+
+<style scoped>
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 100%;
+  background-color: transparent !important;
+}
+</style>

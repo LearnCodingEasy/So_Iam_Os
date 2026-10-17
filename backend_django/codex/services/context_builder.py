@@ -1,4 +1,4 @@
-from ..models import ProjectRegistry,Feature,FileRegistry,APIEndpoint,ProtectedFeature,ArchitectureNode,ArchitectureEdge,CodexPolicy,CodexTool,CodexFinding
+from ..models import ProjectRegistry,Feature,FileRegistry,APIEndpoint,ProtectedFeature,ProtectedItem,CodexWorkflowStep,ArchitectureNode,ArchitectureEdge,CodexPolicy,CodexTool,CodexFinding
 
 class ContextBuilder:
     @staticmethod
@@ -8,7 +8,8 @@ class ContextBuilder:
             "features":list(Feature.objects.filter(project=project).values("key","name","app_label","status","protected")),
             "files":list(FileRegistry.objects.filter(project=project).values("path","kind","app_label","protected")),
             "apis":list(APIEndpoint.objects.filter(project=project).values("method","path","name","app_label","frontend_route","frontend_section","frontend_service","coverage_status")),
-            "protected":list(ProtectedFeature.objects.filter(project=project,enabled=True).values("key","reason","paths","rules")),
+            "protected":list(ProtectedFeature.objects.filter(project=project,enabled=True).values("key","reason","paths","rules")) + [{"key": x.key, "reason": x.reason, "paths": [x.path] if x.path else [], "rules": x.rules, "frozen": x.frozen, "item_type": x.item_type} for x in ProtectedItem.objects.filter(project=project, approved=True, frozen=True)],
+            "workflow": list(CodexWorkflowStep.objects.filter(project=project).values("key","name","order","status","dependencies","checks","evidence")),
             "architecture":{"nodes":ArchitectureNode.objects.filter(project=project).count(),"edges":ArchitectureEdge.objects.filter(project=project).count()},
             "tools":list(CodexTool.objects.filter(project=project,enabled=True).values("key","name","capability")),
             "security_findings":list(CodexFinding.objects.filter(project=project,resolved=False).values("category","severity","title","path","line","message")[:100]),

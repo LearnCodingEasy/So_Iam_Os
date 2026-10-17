@@ -1,0 +1,382 @@
+.finance-page {
+  min-height: 100vh;
+  background: var(--surface-ground);
+  padding: 1.25rem;
+  color: var(--text-color);
+}
+
+.finance-shell {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero h1 {
+  margin: 0.35rem 0;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+.hero p,
+.muted {
+  color: var(--text-color-secondary);
+  margin: 0;
+  line-height: 1.8;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.page-message {
+  margin-bottom: 1rem;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.metric {
+  min-height: 140px;
+}
+
+.metric-top {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--text-color-secondary);
+}
+
+.metric-top i {
+  color: var(--primary-color);
+}
+
+.metric strong {
+  display: block;
+  font-size: 1.55rem;
+  margin: 0.65rem 0;
+}
+
+.metric small {
+  color: var(--text-color-secondary);
+}
+
+.health-grid,
+.section-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(300px, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel {
+  height: 100%;
+}
+
+.panel-title,
+.section-head,
+.row-actions,
+.mini-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.section-head {
+  margin-bottom: 1rem;
+}
+
+.section-head h2 {
+  margin: 0;
+}
+
+.section-head p {
+  margin: 0.25rem 0;
+  color: var(--text-color-secondary);
+}
+
+.health-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.health-metrics div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem;
+  border-radius: 12px;
+  background: var(--surface-100);
+}
+
+.health-note {
+  margin-top: 1rem;
+}
+
+.alert-row,
+.insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.alert-row div,
+.insight div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.alert-row small,
+.insight small {
+  color: var(--text-color-secondary);
+  line-height: 1.6;
+}
+
+.section-switch {
+  margin: 1rem 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.section-card {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.bars {
+  display: grid;
+  gap: 1rem;
+}
+
+.bar-row > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.goal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.goal {
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.goal small,
+.goal-mini small {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--text-color-secondary);
+}
+
+.goal-mini {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.stack {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.mini-row {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.plan-result,
+.scenario {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.scenario {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--primary-50);
+}
+
+.integration-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.integration {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+}
+
+.integration span {
+  color: var(--text-color-secondary);
+}
+
+.flow-list {
+  display: grid;
+  gap: 0.8rem;
+  padding-right: 1rem;
+}
+
+.opportunity {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--primary-50);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.coach-button {
+  margin-top: 0.75rem;
+}
+
+.coach-answer {
+  margin-top: 1rem;
+  padding: 1rem;
+  white-space: pre-wrap;
+  line-height: 1.8;
+  border-radius: 14px;
+  background: var(--surface-100);
+}
+
+pre {
+  white-space: pre-wrap;
+  max-height: 520px;
+  overflow: auto;
+  background: var(--surface-100);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.w-full {
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .metric-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .integration-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .hero,
+  .section-grid,
+  .health-grid {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .goal-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full {
+    grid-column: auto;
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .finance-page {
+    padding: 0.6rem;
+  }
+
+  .metric-grid,
+  .integration-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 1rem;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .health-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+

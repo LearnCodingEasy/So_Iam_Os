@@ -17,16 +17,12 @@ from .engine_runtime import run_action_instance
 # ---------------------------------------
 
 
-def execute_workflow(workflow_id, user):
+def execute_workflow(workflow_id, user, task_run=None):
 
-    workflow = Workflow.objects.get(id=workflow_id)
+    workflow = Workflow.objects.get(id=workflow_id, created_by=user)
 
-    task_run = TaskRun.objects.create(
-        workflow=workflow,
-        created_by=user,
-        status="running",
-        logs=""
-    )
+    if task_run is None:
+        task_run = TaskRun.objects.create(workflow=workflow, created_by=user, status="running", logs="")
 
     log_data = {
         "task_run_id": str(task_run.id),

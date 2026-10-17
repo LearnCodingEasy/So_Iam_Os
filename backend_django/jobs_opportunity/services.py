@@ -1,8 +1,10 @@
+import logging
 import re
+import time
 from collections import Counter
 from decimal import Decimal
 
-from django.db import transaction
+from django.db import OperationalError, transaction
 from django.db.models import Avg, Count, Q
 from django.utils import timezone
 
@@ -14,6 +16,8 @@ from .models import (
     JobRecommendation, JobReadiness, JobResume, JobSavedSearch, JobSkillGap,
     JobSkillRequirement, JobSource,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class JobMatchingService:
@@ -209,7 +213,7 @@ class JobRecommendationService:
 
 class JobAnalyticsService:
     @staticmethod
-    def dashboard(user):
+    def dashboard(user, *, persist_snapshot=False):
         jobs = JobOpportunity.objects.filter(user=user)
         apps = JobApplication.objects.filter(user=user)
         interviews = JobInterview.objects.filter(application__user=user)
@@ -221,8 +225,39 @@ class JobAnalyticsService:
             for req in job.skill_requirements.all(): skills[req.skill.name] += 1
         salaries = list(jobs.exclude(salary_min__isnull=True).values_list("salary_min", flat=True))
         snapshot = {"jobs": jobs.count(), "active_jobs": jobs.filter(is_active=True).count(), "saved": apps.filter(status="saved").count(), "applied": applied, "interviews": interview_count, "offers": offers, "rejected": apps.filter(status="rejected").count(), "application_conversion_rate": round(interview_count / applied * 100) if applied else 0, "interview_rate": round(interview_count / applied * 100) if applied else 0, "offer_rate": round(offers / applied * 100) if applied else 0, "avg_salary_min": round(float(sum(salaries) / len(salaries)), 2) if salaries else None, "remote_jobs": jobs.filter(is_remote=True).count(), "top_skills": skills.most_common(10), "sources": list(jobs.values("source__name").annotate(count=Count("id")).order_by("-count")[:10])}
-        JobAnalyticsSnapshot.objects.update_or_create(user=user, snapshot_date=timezone.localdate(), defaults={"metrics": snapshot})
+        # Dashboard reads must remain read-only. Writing a snapshot during every GET
+        # caused concurrent requests to contend for SQLite's single writer lock.
+        # Persist only when an explicit refresh operation asks for it.
+        if persist_snapshot:
+            JobAnalyticsService._persist_snapshot(user, snapshot)
         return snapshot
+
+    @staticmethod
+    def _persist_snapshot(user, snapshot, *, attempts=3):
+        """Best-effort snapshot persistence with bounded retries for SQLite lock contention.
+
+        Analytics is supplemental: a locked snapshot table must not turn a successful
+        refresh into an HTTP 500 after matching/recommendations have completed.
+        """
+        for attempt in range(attempts):
+            try:
+                JobAnalyticsSnapshot.objects.update_or_create(
+                    user=user,
+                    snapshot_date=timezone.localdate(),
+                    defaults={"metrics": snapshot},
+                )
+                return True
+            except OperationalError as exc:
+                locked = "locked" in str(exc).lower() or "busy" in str(exc).lower()
+                if not locked or attempt == attempts - 1:
+                    logger.warning(
+                        "Could not persist job analytics snapshot (attempt %s/%s): %s",
+                        attempt + 1, attempts, exc,
+                    )
+                    return False
+                # Give the current SQLite writer time to finish before retrying.
+                time.sleep(0.15 * (attempt + 1))
+        return False
 
 
 class JobService:

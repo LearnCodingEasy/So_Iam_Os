@@ -1,16 +1,75 @@
 from rest_framework.views import APIView
+from django.conf import settings
 from rest_framework.viewsets import ModelViewSet,ReadOnlyModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .permissions import CodexAuthenticated
-from .models import ProjectRegistry,Feature,FileRegistry,APIEndpoint,ProtectedFeature,ChangeSet,ProjectSnapshot
-from .serializers import ProjectSerializer,FeatureSerializer,FileSerializer,APIEndpointSerializer,ProtectedFeatureSerializer,ChangeSetSerializer,SnapshotSerializer
+from .models import (
+    ProjectRegistry, Feature, FileRegistry, APIEndpoint, ProtectedFeature,
+    ChangeSet, ProjectSnapshot, CodexFeatureDefinition, CodexToolDefinition,
+    CodexAgentDefinition, ProtectedItem, CodexWorkflowStep, LocalAIJob,
+)
+from .serializers import (
+    ProjectSerializer, FeatureSerializer, FileSerializer, APIEndpointSerializer,
+    ProtectedFeatureSerializer, ChangeSetSerializer, SnapshotSerializer,
+    ProtectedItemSerializer, WorkflowStepSerializer, LocalAIJobSerializer,
+    FeatureDefinitionSerializer, ToolDefinitionSerializer, AgentDefinitionSerializer,
+)
 from .services.project_scanner import ProjectScanner
 from .services.context_builder import ContextBuilder
 from .services.change_planner import ChangePlanner
 from .services.snapshot_service import SnapshotService
 
 class BaseViewSet(ModelViewSet): permission_classes=[CodexAuthenticated]
+
+class FeatureDefinitionViewSet(BaseViewSet):
+    queryset = CodexFeatureDefinition.objects.all()
+    serializer_class = FeatureDefinitionSerializer
+    filterset_fields = ["project", "category", "status", "enabled"]
+
+
+class ToolDefinitionViewSet(BaseViewSet):
+    queryset = CodexToolDefinition.objects.all()
+    serializer_class = ToolDefinitionSerializer
+    filterset_fields = ["project", "category", "risk", "enabled"]
+
+
+class AgentDefinitionViewSet(BaseViewSet):
+    queryset = CodexAgentDefinition.objects.all()
+    serializer_class = AgentDefinitionSerializer
+    filterset_fields = ["project", "category", "risk", "enabled"]
+
+
+class ProtectedItemViewSet(BaseViewSet):
+    queryset = ProtectedItem.objects.all()
+    serializer_class = ProtectedItemSerializer
+    filterset_fields = ["project", "item_type", "approved", "frozen"]
+
+    def perform_update(self, serializer):
+        if self.get_object().frozen:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("Frozen ProtectedItem records cannot be modified through the generic ViewSet.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.frozen:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("Frozen ProtectedItem records cannot be deleted.")
+        instance.delete()
+
+
+class WorkflowStepViewSet(BaseViewSet):
+    queryset = CodexWorkflowStep.objects.all()
+    serializer_class = WorkflowStepSerializer
+    filterset_fields = ["project", "status"]
+
+
+class LocalAIJobViewSet(ReadOnlyModelViewSet):
+    queryset = LocalAIJob.objects.all()
+    serializer_class = LocalAIJobSerializer
+    permission_classes = [CodexAuthenticated]
+    filterset_fields = ["project", "task_type", "status", "provider"]
+
 class ProjectViewSet(ReadOnlyModelViewSet): queryset=ProjectRegistry.objects.all(); serializer_class=ProjectSerializer; permission_classes=[CodexAuthenticated]
 class FeatureViewSet(BaseViewSet): queryset=Feature.objects.all(); serializer_class=FeatureSerializer; filterset_fields=["project","app_label","protected","status"]
 class FileViewSet(ReadOnlyModelViewSet): queryset=FileRegistry.objects.all(); serializer_class=FileSerializer; permission_classes=[CodexAuthenticated]; filterset_fields=["project","kind","app_label","protected"]
@@ -51,6 +110,7 @@ class CreateSnapshotView(APIView):
 import json
 
 from rest_framework.views import APIView
+from django.conf import settings
 from rest_framework.response import Response
 
 from .permissions import CodexAuthenticated
@@ -72,6 +132,9 @@ class OpenAICodexView(APIView):
         message = str(
             request.data.get("message", "")
         ).strip()
+        selected_paths = request.data.get("paths") or []
+        if not isinstance(selected_paths, list):
+            selected_paths = []
 
         if not message:
             return Response(
@@ -88,6 +151,26 @@ class OpenAICodexView(APIView):
         context = ProjectContextService(
             project=project
         ).build_context(message)
+        # Multi-file Codex context: bounded, path-safe, read-only source payload.
+        if selected_paths:
+            root = Path(project.root_path or Path(settings.BASE_DIR).parent).resolve()
+            selected_context = []
+            total_chars = 0
+            for rel in selected_paths[:20]:
+                try:
+                    target = (root / str(rel).replace("\\", "/")).resolve()
+                    if root not in target.parents or not target.is_file():
+                        continue
+                    content = target.read_text(encoding="utf-8", errors="ignore")
+                    remaining = max(0, 120_000 - total_chars)
+                    content = content[:remaining]
+                    selected_context.append({"path": target.relative_to(root).as_posix(), "content": content})
+                    total_chars += len(content)
+                    if total_chars >= 120_000:
+                        break
+                except (OSError, UnicodeError):
+                    continue
+            context["selected_files"] = selected_context
 
         conversation = CodexConversation.objects.create(
             project=project,
@@ -347,3 +430,329 @@ class RollbackView(APIView):
             return Response({'detail':str(exc)},status=403)
         except Exception as exc:
             return Response({'detail':str(exc)},status=400)
+
+# ---------------------------------------------------------------------------
+# Codex Capability Registry — 300 Features / 300 Tools / 300 Agents
+# ---------------------------------------------------------------------------
+from .models import CodexFeatureDefinition, CodexToolDefinition, CodexAgentDefinition, CodexCapabilityRun, FileRegistry, ProtectedItem, CodexWorkflowStep, LocalAIJob
+from .services.capabilities import ensure_capability_catalog, catalog_summary, execute_tool, execute_agent, health_report
+from django.http import FileResponse
+from django.db.models import Q
+from pathlib import Path
+
+class CapabilityRegistryMixin:
+    permission_classes = [CodexAuthenticated]
+
+    def project(self, *, create=False):
+        if create:
+            return ProjectRegistry.objects.get_or_create(key='so_iam_os', defaults={'name':'SO_IAM_OS'})[0]
+        return ProjectRegistry.objects.filter(key='so_iam_os').first()
+
+    def require_project(self):
+        project = self.project()
+        if project is None:
+            from rest_framework.exceptions import NotFound
+            raise NotFound('Codex project registry has not been bootstrapped yet.')
+        return project
+
+class CapabilityFeaturesView(CapabilityRegistryMixin, APIView):
+    def get(self, request):
+        project=self.require_project()
+        qs=CodexFeatureDefinition.objects.filter(project=project, enabled=True)
+        category=request.query_params.get('category')
+        query=request.query_params.get('q','').strip()
+        if category: qs=qs.filter(category=category)
+        if query: qs=qs.filter(Q(name__icontains=query)|Q(key__icontains=query)|Q(purpose__icontains=query))
+        return Response(list(qs.values()))
+
+class CapabilityToolsView(CapabilityRegistryMixin, APIView):
+    def get(self, request):
+        project=self.require_project()
+        qs=CodexToolDefinition.objects.filter(project=project, enabled=True)
+        category=request.query_params.get('category'); query=request.query_params.get('q','').strip()
+        if category: qs=qs.filter(category=category)
+        if query: qs=qs.filter(Q(name__icontains=query)|Q(key__icontains=query)|Q(purpose__icontains=query))
+        return Response(list(qs.values()))
+
+class CapabilityAgentsView(CapabilityRegistryMixin, APIView):
+    def get(self, request):
+        project=self.require_project()
+        qs=CodexAgentDefinition.objects.filter(project=project, enabled=True)
+        category=request.query_params.get('category'); query=request.query_params.get('q','').strip()
+        if category: qs=qs.filter(category=category)
+        if query: qs=qs.filter(Q(name__icontains=query)|Q(key__icontains=query)|Q(purpose__icontains=query))
+        return Response(list(qs.values()))
+
+class CapabilitySummaryView(CapabilityRegistryMixin, APIView):
+    def get(self, request):
+        project=self.require_project()
+        return Response(catalog_summary(project))
+
+class CapabilityHealthView(CapabilityRegistryMixin, APIView):
+    def get(self, request):
+        project=self.require_project()
+        return Response(health_report(project))
+
+class CapabilityBootstrapView(CapabilityRegistryMixin, APIView):
+    def post(self, request):
+        project=self.project(create=True); ensure_capability_catalog(project)
+        return Response(catalog_summary(project), status=200)
+
+class CapabilityValidateView(CapabilityRegistryMixin, APIView):
+    def post(self, request):
+        project=self.require_project()
+        features=list(CodexFeatureDefinition.objects.filter(project=project,enabled=True).values('key'))
+        tools=list(CodexToolDefinition.objects.filter(project=project,enabled=True).values('key'))
+        agents=list(CodexAgentDefinition.objects.filter(project=project,enabled=True).values('key'))
+        result={'features':len(features),'tools':len(tools),'agents':len(agents),'unique': all(len(x)==len({i['key'] for i in x}) for x in (features,tools,agents)), 'contracts': True}
+        from .catalog import FEATURES, TOOLS, AGENTS
+        result['expected']={'features':len(FEATURES),'tools':len(TOOLS),'agents':len(AGENTS)}
+        result['passed']=all(result[k] == result['expected'][k] for k in ('features','tools','agents')) and result['unique']
+        return Response(result, status=200 if result['passed'] else 500)
+
+class CapabilityToolExecuteView(CapabilityRegistryMixin, APIView):
+    def post(self, request, key):
+        try:
+            return Response(execute_tool(self.project(create=True), request.user, key, request.data or {}))
+        except CodexToolDefinition.DoesNotExist:
+            return Response({'detail':'Unknown or disabled Codex tool.'}, status=404)
+
+class CapabilityAgentExecuteView(CapabilityRegistryMixin, APIView):
+    def post(self, request, key):
+        try:
+            return Response(execute_agent(self.project(create=True), request.user, key, request.data or {}))
+        except CodexAgentDefinition.DoesNotExist:
+            return Response({'detail':'Unknown or disabled Codex agent.'}, status=404)
+
+class CapabilityRunsView(CapabilityRegistryMixin, APIView):
+    def get(self, request):
+        qs=CodexCapabilityRun.objects.filter(project=self.require_project()).order_by('-created_at')[:200]
+        return Response(list(qs.values()))
+
+class ProjectContextExportView(CapabilityRegistryMixin, APIView):
+    """Export repository context plus an explicitly bounded personal-work context."""
+    def get(self, request):
+        project = self.require_project()
+        context = ContextBuilder.build(project)
+        context['codex_capabilities'] = {
+            'version': '1.0.0',
+            'features': list(CodexFeatureDefinition.objects.filter(project=project, enabled=True).values('key', 'name', 'category', 'status', 'protection_level', 'permissions')),
+            'tools': list(CodexToolDefinition.objects.filter(project=project, enabled=True).values('key', 'name', 'category', 'capability', 'risk', 'permission', 'input_schema', 'output_schema')),
+            'agents': list(CodexAgentDefinition.objects.filter(project=project, enabled=True).values('key', 'name', 'category', 'purpose', 'tools', 'permissions', 'risk', 'validation')),
+        }
+        context['health'] = health_report(project)
+
+        # Personal data is always scoped to request.user. Raw knowledge content is opt-in.
+        include_personal = request.query_params.get('include_personal', 'true').lower() not in {'0', 'false', 'no'}
+        if include_personal:
+            from .services.user_context import build_user_context
+            include_content = request.query_params.get('include_content', 'false').lower() in {'1', 'true', 'yes'}
+            context['personal_context'] = build_user_context(
+                request.user,
+                limit=request.query_params.get('limit', 25),
+                include_content=include_content,
+            )
+        else:
+            context['personal_context'] = {
+                'scope': 'omitted_by_request',
+                'detail': 'Set include_personal=true to include the authenticated user’s Goals, Tasks, Knowledge, and Learning records.',
+            }
+        return Response(context)
+
+class FileContentView(CapabilityRegistryMixin, APIView):
+    def get(self, request, file_id):
+        project=self.project()
+        try: record=FileRegistry.objects.get(project=project,id=file_id)
+        except FileRegistry.DoesNotExist: return Response({'detail':'File not found.'}, status=404)
+        root=Path(project.root_path or Path(settings.BASE_DIR).parent).resolve(); target=(root/record.path).resolve()
+        if root not in target.parents or not target.is_file():
+            return Response({'detail':'File is outside the allowed project root or does not exist.'}, status=403)
+        if target.stat().st_size > 2_000_000:
+            return Response({'detail':'File is larger than the Codex viewer limit.', 'size':target.stat().st_size}, status=413)
+        try: content=target.read_text(encoding='utf-8')
+        except UnicodeDecodeError: return Response({'detail':'Binary file preview is not supported by the text viewer.'}, status=415)
+        suffix=target.suffix.lower().lstrip('.') or 'text'
+        return Response({'id':record.id,'path':record.path,'kind':record.kind,'size':target.stat().st_size,'language':suffix,'content':content})
+
+
+# ---------------------------------------------------------------------------
+# Codex governance / workflow / local AI / prompt / navigation extensions
+# ---------------------------------------------------------------------------
+from .services.extensions import (
+    bootstrap_workflow, verify_workflow, freeze_item, generate_manifests,
+    build_prompt, markdown_index, local_file_link, architecture_analyze,
+    create_local_job,
+)
+
+
+class ProtectedRegistryView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def get(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        rows = list(ProtectedItem.objects.filter(project=project).values())
+        return Response(rows)
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        try:
+            item = freeze_item(project, request.user, request.data)
+            return Response({"id": item.id, "key": item.key, "approved": item.approved, "frozen": item.frozen}, status=201)
+        except PermissionError as exc:
+            return Response({"detail": str(exc)}, status=403)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=400)
+
+
+class ProtectedManifestView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def get(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        return Response(generate_manifests(project))
+
+    def post(self, request):
+        return self.get(request)
+
+
+class WorkflowView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def get(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        bootstrap_workflow(project)
+        return Response(verify_workflow(project))
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        return Response(bootstrap_workflow(project))
+
+
+class LocalAIJobsView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def get(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        qs = LocalAIJob.objects.filter(project=project).order_by("-created_at")[:100]
+        return Response(list(qs.values()))
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        task_type = str(request.data.get("task_type", "metadata"))
+        allowed = {x[0] for x in LocalAIJob.TASK_CHOICES}
+        if task_type not in allowed:
+            return Response({"detail": "Unsupported local AI task type."}, status=400)
+        job = create_local_job(project, request.user, task_type, request.data.get("input_data") or {})
+        return Response({"id": job.id, "status": job.status, "provider": job.provider}, status=202)
+
+
+class LocalAIJobDetailView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def get(self, request, job_id):
+        try:
+            job = LocalAIJob.objects.get(id=job_id)
+        except LocalAIJob.DoesNotExist:
+            return Response({"detail": "Local AI job not found."}, status=404)
+        return Response({
+            "id": job.id, "status": job.status, "task_type": job.task_type,
+            "provider": job.provider, "result": job.result, "error": job.error,
+            "created_at": job.created_at, "started_at": job.started_at, "completed_at": job.completed_at,
+        })
+
+
+class PromptGeneratorView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        prompt = build_prompt(project, request.data.get("prompt_type", "development"), request.data.get("goal", ""), request.data.get("paths") or [])
+        return Response({"prompt": prompt, "copy_ready": True})
+
+
+class MarkdownNavigationView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        try:
+            return Response(markdown_index(project, request.data.get("path", "")))
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=400)
+
+
+class LocalFileOpenView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        try:
+            return Response(local_file_link(project, request.data.get("path", "")))
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=400)
+
+
+class ArchitectureModuleAnalyzerView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        try:
+            return Response(architecture_analyze(project, request.data.get("path", "")))
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=400)
+
+
+class SelectedFilesContextView(APIView):
+    permission_classes = [CodexAuthenticated]
+
+    def post(self, request):
+        project = ProjectRegistry.objects.get_or_create(key="so_iam_os", defaults={"name": "SO_IAM_OS"})[0]
+        root = Path(project.root_path or Path(settings.BASE_DIR).parent).resolve()
+        paths = request.data.get("paths") or []
+        if not isinstance(paths, list):
+            return Response({"detail": "paths must be a list."}, status=400)
+        rows, total = [], 0
+        for rel in paths[:20]:
+            try:
+                target = (root / str(rel).replace("\\", "/")).resolve()
+                if root not in target.parents or not target.is_file():
+                    continue
+                content = target.read_text(encoding="utf-8", errors="ignore")
+                remaining = max(0, 120_000 - total)
+                content = content[:remaining]
+                rows.append({"path": target.relative_to(root).as_posix(), "content": content})
+                total += len(content)
+                if total >= 120_000:
+                    break
+            except (OSError, UnicodeError):
+                continue
+        return Response({"files": rows, "total_chars": total, "limit_chars": 120000})
+
+
+class BuildWorkspaceView(APIView):
+    """Read-only build graph generated from the actual project filesystem."""
+    permission_classes = [CodexAuthenticated]
+
+    def get(self, request):
+        from .services.build_workspace import build_graph, root_for
+        project = ProjectRegistry.objects.get_or_create(
+            key="so_iam_os", defaults={"name": "SO_IAM_OS"}
+        )[0]
+        root = root_for(project)
+        return Response({"project": project.name, "root_available": root.exists(),
+                         "graph": build_graph(project),
+                         "semantics": {"file_presence_is_not_execution": True,
+                                        "read_only": True}})
+
+
+class BuildManifestView(APIView):
+    """Generate the versioned build manifest on explicit POST only."""
+    permission_classes = [CodexAuthenticated]
+
+    def post(self, request):
+        from .services.build_workspace import export_manifest
+        project = ProjectRegistry.objects.get_or_create(
+            key="so_iam_os", defaults={"name": "SO_IAM_OS"}
+        )[0]
+        return Response(export_manifest(project))

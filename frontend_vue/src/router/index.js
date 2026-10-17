@@ -24,6 +24,11 @@ import NotificationsView from '@/views/Notifications/NotificationsView.vue'
 import MyProgressView from '@/views/Progress/MyProgress.vue'
 import JobsView from '@/views/jobs/JobsView.vue'
 import CodexView from '@/views/Codex/CodexView.vue'
+import ProjectsView from '@/views/Projects/ProjectsView.vue'
+import ChallengesView from '@/views/Challenges/ChallengesView.vue'
+import FinanceView from '@/views/Finance/FinanceView.vue'
+import MemoryView from '@/views/Memory/MemoryView.vue'
+import AgentPlanner from '@/views/AI/AgentPlanner.vue'
 
 // Automation
 import Automation from '../views/Automation/AutomationView.vue'
@@ -51,12 +56,18 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: {
+        requiresAuth: true,
+      },
     },
 
     {
       path: '/About',
       name: 'About',
       component: AboutView,
+      meta: {
+        requiresAuth: true,
+      },
     },
 
     // ==============================
@@ -159,6 +170,21 @@ const router = createRouter({
     },
 
     { path: '/codex', name: 'codex', component: CodexView, meta: { requiresAuth: true } },
+    { path: '/projects', name: 'projects', component: ProjectsView, meta: { requiresAuth: true } },
+    {
+      path: '/challenges',
+      name: 'challenges',
+      component: ChallengesView,
+      meta: { requiresAuth: true },
+    },
+    { path: '/finance', name: 'finance', component: FinanceView, meta: { requiresAuth: true } },
+    { path: '/memory', name: 'memory', component: MemoryView, meta: { requiresAuth: true } },
+    {
+      path: '/ai/agents',
+      name: 'ai-agents',
+      component: AgentPlanner,
+      meta: { requiresAuth: true },
+    },
     { path: '/social', name: 'social', component: SocialView, meta: { requiresAuth: true } },
     {
       path: '/notifications',
@@ -194,7 +220,6 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
-
       meta: {
         requiresAuth: true,
       },

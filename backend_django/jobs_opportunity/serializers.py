@@ -13,8 +13,15 @@ class JobSourceSerializer(serializers.ModelSerializer):
         read_only_fields = ["user", "last_synced_at", "last_sync_status", "last_sync_error", "last_sync_count", "created_at", "updated_at"]
 
     def validate(self, attrs):
-        if attrs.get("feed_url") and attrs.get("source_type") not in {"rss", "api"}:
+        source_type = attrs.get("source_type", getattr(self.instance, "source_type", None))
+        if attrs.get("feed_url") and source_type not in {"rss", "api"}:
             raise serializers.ValidationError({"source_type": "A feed URL requires RSS or API source type."})
+        if source_type == "scraper":
+            config = attrs.get("config", getattr(self.instance, "config", {})) or {}
+            if not config.get("terms_confirmed"):
+                raise serializers.ValidationError({"config": "Confirm that this source permits scraping before enabling a scraper."})
+            if not (attrs.get("base_url") or getattr(self.instance, "base_url", "")):
+                raise serializers.ValidationError({"base_url": "Scraper sources require a URL."})
         return attrs
 
 
@@ -85,6 +92,18 @@ class JobApplicationSerializer(serializers.ModelSerializer):
         model = JobApplication
         fields = "__all__"
         read_only_fields = ["user", "created_at", "updated_at"]
+
+    def validate_resume(self, resume):
+        request = self.context.get("request")
+        if resume and request and resume.user_id != request.user.id:
+            raise serializers.ValidationError("This resume does not belong to the current user.")
+        return resume
+
+    def validate_cover_letter(self, cover_letter):
+        request = self.context.get("request")
+        if cover_letter and request and cover_letter.user_id != request.user.id:
+            raise serializers.ValidationError("This cover letter does not belong to the current user.")
+        return cover_letter
 
     def validate_job(self, job):
         request = self.context.get("request")

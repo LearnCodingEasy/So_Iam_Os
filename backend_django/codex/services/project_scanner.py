@@ -2,7 +2,7 @@ from pathlib import Path
 import hashlib
 from django.conf import settings
 from django.urls import get_resolver
-from ..models import ProjectRegistry,Feature,FileRegistry,APIEndpoint,ProtectedFeature
+from ..models import ProjectRegistry,Feature,FileRegistry,APIEndpoint,ProtectedFeature,ProtectedItem
 
 EXCLUDED={".git","node_modules","__pycache__",".venv","venv","dist","coverage"}
 
@@ -20,7 +20,8 @@ class ProjectScanner:
             except OSError: continue
             ext=p.suffix.lower(); kind={".py":"python",".js":"javascript",".vue":"vue",".json":"json",".md":"markdown",".css":"css",".scss":"scss"}.get(ext,"other")
             app=rel.split("/")[1] if rel.startswith("backend_django/") and len(rel.split("/"))>1 else ""
-            FileRegistry.objects.update_or_create(project=self.project,path=rel,defaults={"kind":kind,"app_label":app,"sha256":digest,"size":size})
+            frozen = ProtectedItem.objects.filter(project=self.project, approved=True, frozen=True, path=rel).exists()
+            FileRegistry.objects.update_or_create(project=self.project,path=rel,defaults={"kind":kind,"app_label":app,"sha256":digest,"size":size,"protected":frozen})
             seen.add(rel); count+=1
         FileRegistry.objects.filter(project=self.project).exclude(path__in=seen).delete()
         return count

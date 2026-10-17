@@ -12,6 +12,7 @@ class JobSource(models.Model):
         API = "api", "Official API"
         RSS = "rss", "RSS/Public Feed"
         MANUAL = "manual", "Manual"
+        SCRAPER = "scraper", "HTML Scraper"
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="job_sources")
     name = models.CharField(max_length=150)

@@ -1,0 +1,1377 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finora - Personal Finance Dashboard</title>
+    <!-- Tailwind CSS CDN with Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Configuration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              finora: {
+                bg: '#f3f6fa',
+                sidebar: '#ffffff',
+                primary: '#2563eb',
+                accent: '#0284c7',
+                dark: '#1e293b',
+                muted: '#64748b',
+                border: '#e2e8f0',
+              },
+            },
+            fontFamily: {
+              sans: [
+                'Inter',
+                'system-ui',
+                '-apple-system',
+                'BlinkMacSystemFont',
+                'Segoe UI',
+                'Roboto',
+                'sans-serif',
+              ],
+            },
+            boxShadow: {
+              card: '0 4px 20px -2px rgba(148, 163, 184, 0.12), 0 2px 6px -1px rgba(148, 163, 184, 0.08)',
+              pill: '0 2px 8px -1px rgba(37, 99, 235, 0.15)',
+            },
+          },
+        },
+      }
+    </script>
+    <style data-purpose="custom-utilities">
+      /* Custom scrollbars and high fidelity polish */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body class="bg-[#f2f5f9] text-[#1e293b] font-sans antialiased min-h-screen flex">
+    <!-- BEGIN: Sidebar -->
+    <aside
+      class="w-64 bg-white border-r border-[#e9eff6] flex flex-col justify-between py-6 px-4 shrink-0 fixed inset-y-0 left-0 z-30 lg:static"
+      data-purpose="sidebar-navigation"
+    >
+      <div class="flex flex-col gap-8">
+        <!-- Logo Brand -->
+        <div class="flex items-center gap-3 px-3">
+          <div class="flex items-center -space-x-1.5">
+            <div class="w-6 h-6 rounded-full bg-[#38bdf8] opacity-90"></div>
+            <div class="w-6 h-6 rounded-full bg-[#2563eb] opacity-80"></div>
+          </div>
+          <span class="text-2xl font-bold tracking-tight text-[#0f172a]">Finora</span>
+        </div>
+        <!-- Navigation Links -->
+        <nav aria-label="Main Navigation" class="flex flex-col gap-1.5">
+          <!-- Dashboard (Active) -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-[#eaf2ff] text-[#2563eb] font-semibold text-sm transition-all duration-200"
+            href="#dashboard"
+          >
+            <svg class="w-5 h-5 text-[#2563eb]" fill="currentColor" viewbox="0 0 24 24">
+              <path
+                d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13zm7 7v-5h4v5h-4z"
+              ></path>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <!-- Accounts -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#accounts"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <rect height="16" rx="3" stroke-linecap="round" width="18" x="3" y="4"></rect>
+              <line x1="3" x2="21" y1="9" y2="9"></line>
+              <line x1="7" x2="11" y1="14" y2="14"></line>
+            </svg>
+            <span>Accounts</span>
+          </a>
+          <!-- Transactions -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#transactions"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+            <span>Transactions</span>
+          </a>
+          <!-- Analytics -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#analytics"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+            <span>Analytics</span>
+          </a>
+          <!-- Goals -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#goals"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="9"></circle>
+              <circle cx="12" cy="12" r="5"></circle>
+              <circle cx="12" cy="12" r="1"></circle>
+            </svg>
+            <span>Goals</span>
+          </a>
+          <!-- Loans -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#loans"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <rect height="10" rx="2" width="14" x="5" y="11"></rect>
+              <path d="M8 11V7a4 4 0 018 0v4"></path>
+            </svg>
+            <span>Loans</span>
+          </a>
+          <!-- Cards -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#cards"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <rect height="14" rx="2" width="20" x="2" y="5"></rect>
+              <line x1="2" x2="22" y1="10" y2="10"></line>
+            </svg>
+            <span>Cards</span>
+          </a>
+          <!-- Settings -->
+          <a
+            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] font-medium text-sm transition-colors duration-150"
+            href="#settings"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+    <!-- END: Sidebar -->
+    <!-- BEGIN: Main Content Area -->
+    <main class="flex-1 min-w-0 flex flex-col p-4 md:p-8 overflow-y-auto max-w-[1440px]">
+      <!-- BEGIN: Top Bar -->
+      <header
+        class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-7"
+        data-purpose="dashboard-topbar"
+      >
+        <!-- Search Input -->
+        <div class="relative w-full sm:w-96">
+          <span
+            class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3" stroke-linecap="round"></path>
+            </svg>
+          </span>
+          <input
+            class="w-full pl-10 pr-4 py-2.5 bg-white border border-[#e2e8f0] rounded-full text-sm text-[#334155] placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            placeholder="Search anything..."
+            type="text"
+          />
+        </div>
+        <!-- Right Header Actions (Notifications & User Profile) -->
+        <div class="flex items-center gap-3 self-end sm:self-auto">
+          <!-- Notification Bell -->
+          <button
+            class="relative p-2.5 bg-white rounded-full text-slate-600 hover:text-slate-900 border border-[#e2e8f0] shadow-sm transition"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+          <!-- User Dropdown Pill -->
+          <button
+            class="flex items-center gap-2 pl-1 pr-3 py-1 bg-white rounded-full border border-[#e2e8f0] shadow-sm hover:bg-slate-50 transition"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-[#3b82f6] text-white flex items-center justify-center font-bold text-xs shadow-inner"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                <path
+                  clip-rule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  fill-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+            <svg
+              class="w-4 h-4 text-slate-500"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+      <!-- END: Top Bar -->
+      <!-- BEGIN: Welcome Banner & Date Filter -->
+      <section
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-7"
+        data-purpose="greeting-header"
+      >
+        <div class="flex items-center gap-3">
+          <div class="text-3xl leading-none select-none">
+            <!-- Sun & Cloud Illustration Icon -->
+            <span class="text-amber-400">☀️</span>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-[#0f172a] tracking-tight">Good Morning!</h1>
+            <p class="text-sm text-[#64748b]">Here's what's happening with your finances today.</p>
+          </div>
+        </div>
+        <!-- Date Selector Dropdown Pill -->
+        <div
+          class="flex items-center gap-2 bg-white px-4 py-2 rounded-2xl border border-[#e2e8f0] shadow-sm text-sm font-medium text-[#475569] cursor-pointer hover:bg-slate-50 transition"
+        >
+          <svg
+            class="w-4 h-4 text-slate-500"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewbox="0 0 24 24"
+          >
+            <rect height="18" rx="2" stroke-linecap="round" width="18" x="3" y="4"></rect>
+            <line x1="16" x2="16" y1="2" y2="6"></line>
+            <line x1="8" x2="8" y1="2" y2="6"></line>
+            <line x1="3" x2="21" y1="10" y2="10"></line>
+          </svg>
+          <span>Mon, 22 Sep 2026</span>
+          <svg
+            class="w-3.5 h-3.5 text-slate-400 ml-1"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewbox="0 0 24 24"
+          >
+            <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+      </section>
+      <!-- END: Welcome Banner & Date Filter -->
+      <!-- BEGIN: Key Metric Summary Cards -->
+      <section
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7"
+        data-purpose="kpi-cards"
+      >
+        <!-- Card 1: Total Balance -->
+        <div
+          class="bg-white rounded-3xl p-5 border border-[#eef2f6] shadow-card flex flex-col justify-between relative"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div
+              class="w-11 h-11 rounded-2xl bg-[#eff6ff] text-[#2563eb] flex items-center justify-center"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </div>
+            <svg
+              class="w-4 h-4 text-slate-300 cursor-pointer"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-medium text-slate-500">Total Balance</span>
+            <h2 class="text-2xl font-bold text-slate-900 mt-1">₹ 1,48,230</h2>
+            <div
+              class="flex items-center gap-1.5 mt-3 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md w-fit"
+            >
+              <span>↑ 12%</span>
+              <span class="font-normal text-slate-400">vs. last month</span>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2: Total Income -->
+        <div
+          class="bg-white rounded-3xl p-5 border border-[#eef2f6] shadow-card flex flex-col justify-between relative"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div
+              class="w-11 h-11 rounded-2xl bg-[#ecfdf5] text-[#10b981] flex items-center justify-center"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </div>
+            <svg
+              class="w-4 h-4 text-slate-300 cursor-pointer"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-medium text-slate-500">Total Income</span>
+            <h2 class="text-2xl font-bold text-slate-900 mt-1">₹ 85,400</h2>
+            <div
+              class="flex items-center gap-1.5 mt-3 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md w-fit"
+            >
+              <span>↑ 8%</span>
+              <span class="font-normal text-slate-400">vs. last month</span>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3: Total Expenses -->
+        <div
+          class="bg-white rounded-3xl p-5 border border-[#eef2f6] shadow-card flex flex-col justify-between relative"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div
+              class="w-11 h-11 rounded-2xl bg-[#fff7ed] text-[#f97316] flex items-center justify-center"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </div>
+            <svg
+              class="w-4 h-4 text-slate-300 cursor-pointer"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-medium text-slate-500">Total Expenses</span>
+            <h2 class="text-2xl font-bold text-slate-900 mt-1">₹ 52,180</h2>
+            <div
+              class="flex items-center gap-1.5 mt-3 text-xs font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-md w-fit"
+            >
+              <span>↓ 5%</span>
+              <span class="font-normal text-slate-400">vs. last month</span>
+            </div>
+          </div>
+        </div>
+        <!-- Card 4: Savings -->
+        <div
+          class="bg-white rounded-3xl p-5 border border-[#eef2f6] shadow-card flex flex-col justify-between relative"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div
+              class="w-11 h-11 rounded-2xl bg-[#fdf2f8] text-[#ec4899] flex items-center justify-center"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </div>
+            <svg
+              class="w-4 h-4 text-slate-300 cursor-pointer"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewbox="0 0 24 24"
+            >
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-medium text-slate-500">Savings</span>
+            <h2 class="text-2xl font-bold text-slate-900 mt-1">₹ 28,050</h2>
+            <div
+              class="flex items-center gap-1.5 mt-3 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md w-fit"
+            >
+              <span>↑ 15%</span>
+              <span class="font-normal text-slate-400">vs. last month</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: Key Metric Summary Cards -->
+      <!-- BEGIN: Main Dashboard Grid (2 Columns) -->
+      <div
+        class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+        data-purpose="main-layout-grid"
+      >
+        <!-- LEFT / CENTER COLUMN (8 cols) -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+          <!-- Spending Overview Line Chart Card -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card"
+            data-purpose="spending-overview-chart"
+          >
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Spending Overview</h2>
+                <p class="text-xs text-slate-400">Your monthly expenses</p>
+              </div>
+              <div
+                class="flex items-center gap-1 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 cursor-pointer"
+              >
+                <span>Last 6 Months</span>
+                <svg
+                  class="w-3.5 h-3.5 text-slate-400"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewbox="0 0 24 24"
+                >
+                  <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <!-- Line Chart SVG Canvas -->
+            <div class="relative w-full h-56 pt-2">
+              <!-- Y-Axis Labels & Gridlines -->
+              <div
+                class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-slate-400"
+              >
+                <div class="flex items-center w-full">
+                  <span class="w-8 shrink-0">₹ 80K</span>
+                  <div class="flex-1 border-b border-dashed border-slate-100"></div>
+                </div>
+                <div class="flex items-center w-full">
+                  <span class="w-8 shrink-0">₹ 60K</span>
+                  <div class="flex-1 border-b border-dashed border-slate-100"></div>
+                </div>
+                <div class="flex items-center w-full">
+                  <span class="w-8 shrink-0">₹ 40K</span>
+                  <div class="flex-1 border-b border-dashed border-slate-100"></div>
+                </div>
+                <div class="flex items-center w-full">
+                  <span class="w-8 shrink-0">₹ 20K</span>
+                  <div class="flex-1 border-b border-dashed border-slate-100"></div>
+                </div>
+                <div class="flex items-center w-full">
+                  <span class="w-8 shrink-0">₹ 0</span>
+                  <div class="flex-1 border-b border-slate-100"></div>
+                </div>
+              </div>
+              <!-- SVG Vector Area & Curve -->
+              <svg
+                class="w-[calc(100%-2rem)] h-[calc(100%-1.25rem)] ml-8 absolute inset-0 overflow-visible"
+                preserveaspectratio="none"
+                viewbox="0 0 500 160"
+              >
+                <defs>
+                  <lineargradient id="spendingGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25"></stop>
+                    <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"></stop>
+                  </lineargradient>
+                </defs>
+                <!-- Filled Area -->
+                <path
+                  d="M 20,120 Q 70,110 115,80 T 205,100 T 295,45 T 385,85 T 475,35 L 475,160 L 20,160 Z"
+                  fill="url(#spendingGrad)"
+                ></path>
+                <!-- Smooth Curve Line -->
+                <path
+                  d="M 20,120 Q 70,110 115,80 T 205,100 T 295,45 T 385,85 T 475,35"
+                  fill="none"
+                  stroke="#3b82f6"
+                  stroke-linecap="round"
+                  stroke-width="3"
+                ></path>
+                <!-- Plot Points -->
+                <circle
+                  class="transition-transform hover:scale-125"
+                  cx="20"
+                  cy="120"
+                  fill="#3b82f6"
+                  r="4"
+                ></circle>
+                <circle cx="115" cy="80" fill="#3b82f6" r="4"></circle>
+                <circle cx="205" cy="100" fill="#3b82f6" r="4"></circle>
+                <circle cx="295" cy="45" fill="#3b82f6" r="4"></circle>
+                <circle cx="385" cy="85" fill="#3b82f6" r="4"></circle>
+                <circle
+                  cx="475"
+                  cy="35"
+                  fill="#2563eb"
+                  r="5"
+                  stroke="#ffffff"
+                  stroke-width="2"
+                ></circle>
+              </svg>
+              <!-- Tooltip on September Point -->
+              <div
+                class="absolute right-4 top-2 bg-[#2563eb] text-white text-[11px] font-semibold py-1 px-2.5 rounded-lg shadow-md flex items-center gap-1 z-10"
+              >
+                <span>₹ 52,180</span>
+              </div>
+              <!-- X-Axis Labels -->
+              <div
+                class="absolute -bottom-5 left-8 right-0 flex justify-between text-[11px] text-slate-400"
+              >
+                <span>Apr</span>
+                <span>May</span>
+                <span>Jun</span>
+                <span>Jul</span>
+                <span>Aug</span>
+                <span>Sep</span>
+              </div>
+            </div>
+          </div>
+          <!-- Row: Income vs Expenses & Goals Progress Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Income vs Expenses (Bar Chart) Card -->
+            <div
+              class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card flex flex-col justify-between"
+              data-purpose="income-vs-expenses-chart"
+            >
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Income vs Expenses</h2>
+                <!-- Legend Indicator -->
+                <div class="flex items-center gap-4 mt-2">
+                  <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span>
+                    <span>Income</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6]"></span>
+                    <span>Expenses</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Bar Chart Component -->
+              <div class="relative w-full h-44 mt-4 flex flex-col justify-between">
+                <!-- Y-Labels -->
+                <div
+                  class="absolute inset-0 flex flex-col justify-between text-[9px] text-slate-400 pointer-events-none"
+                >
+                  <div class="border-b border-dashed border-slate-100 pb-0.5">₹ 100K</div>
+                  <div class="border-b border-dashed border-slate-100 pb-0.5">₹ 75K</div>
+                  <div class="border-b border-dashed border-slate-100 pb-0.5">₹ 50K</div>
+                  <div class="border-b border-dashed border-slate-100 pb-0.5">₹ 25K</div>
+                  <div class="border-b border-slate-100 pb-0.5">₹ 0</div>
+                </div>
+                <!-- Bar Columns Representation -->
+                <div class="relative z-10 flex justify-between items-end h-36 pl-8 pr-1 pt-2">
+                  <!-- Apr -->
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="flex items-end gap-1 h-28">
+                      <div class="w-2.5 bg-[#4ade80] rounded-t-sm" style="height: 52%"></div>
+                      <div class="w-2.5 bg-[#60a5fa] rounded-t-sm" style="height: 40%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Apr</span>
+                  </div>
+                  <!-- May -->
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="flex items-end gap-1 h-28">
+                      <div class="w-2.5 bg-[#4ade80] rounded-t-sm" style="height: 65%"></div>
+                      <div class="w-2.5 bg-[#60a5fa] rounded-t-sm" style="height: 48%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">May</span>
+                  </div>
+                  <!-- Jun -->
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="flex items-end gap-1 h-28">
+                      <div class="w-2.5 bg-[#4ade80] rounded-t-sm" style="height: 58%"></div>
+                      <div class="w-2.5 bg-[#60a5fa] rounded-t-sm" style="height: 50%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Jun</span>
+                  </div>
+                  <!-- Jul -->
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="flex items-end gap-1 h-28">
+                      <div class="w-2.5 bg-[#4ade80] rounded-t-sm" style="height: 72%"></div>
+                      <div class="w-2.5 bg-[#60a5fa] rounded-t-sm" style="height: 55%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Jul</span>
+                  </div>
+                  <!-- Aug -->
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="flex items-end gap-1 h-28">
+                      <div class="w-2.5 bg-[#4ade80] rounded-t-sm" style="height: 68%"></div>
+                      <div class="w-2.5 bg-[#60a5fa] rounded-t-sm" style="height: 60%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Aug</span>
+                  </div>
+                  <!-- Sep -->
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="flex items-end gap-1 h-28">
+                      <div class="w-2.5 bg-[#4ade80] rounded-t-sm" style="height: 85%"></div>
+                      <div class="w-2.5 bg-[#60a5fa] rounded-t-sm" style="height: 70%"></div>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Sep</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Goals Progress Card -->
+            <div
+              class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card flex flex-col justify-between"
+              data-purpose="goals-progress-card"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-base font-bold text-slate-900">Goals Progress</h2>
+                <a class="text-xs font-semibold text-[#2563eb] hover:underline" href="#all-goals"
+                  >View All</a
+                >
+              </div>
+              <div class="flex flex-col gap-4">
+                <!-- Goal Item 1: Emergency Fund -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2.5">
+                      <div
+                        class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                          <path
+                            clip-rule="evenodd"
+                            d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944z"
+                            fill-rule="evenodd"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xs font-bold text-slate-800">Emergency Fund</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">₹ 42,000 / ₹ 1,00,000</p>
+                      </div>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-600">42%</span>
+                  </div>
+                  <!-- Bar -->
+                  <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#10b981] h-full rounded-full" style="width: 42%"></div>
+                  </div>
+                </div>
+                <!-- Goal Item 2: Vacation Trip -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2.5">
+                      <div
+                        class="w-8 h-8 rounded-xl bg-blue-50 text-[#3b82f6] flex items-center justify-center"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                          <path
+                            d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xs font-bold text-slate-800">Vacation Trip</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">₹ 30,000 / ₹ 75,000</p>
+                      </div>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-600">40%</span>
+                  </div>
+                  <!-- Bar -->
+                  <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-[#3b82f6] h-full rounded-full" style="width: 40%"></div>
+                  </div>
+                </div>
+                <!-- Goal Item 3: New Laptop -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2.5">
+                      <div
+                        class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                          <path
+                            clip-rule="evenodd"
+                            d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H11.23l-.6-2.4H9.371l-.6 2.4z"
+                            fill-rule="evenodd"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xs font-bold text-slate-800">New Laptop</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">₹ 18,000 / ₹ 60,000</p>
+                      </div>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-600">30%</span>
+                  </div>
+                  <!-- Bar -->
+                  <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-rose-500 h-full rounded-full" style="width: 30%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Transactions Table Card -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card"
+            data-purpose="transactions-table-card"
+          >
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-base font-bold text-slate-900">Transactions</h2>
+              <a
+                class="text-xs font-semibold text-[#2563eb] hover:underline"
+                href="#all-transactions"
+                >View All</a
+              >
+            </div>
+            <div class="overflow-x-auto">
+              <table
+                aria-label="Recent Transactions Table"
+                class="w-full text-left text-xs text-slate-600"
+              >
+                <thead>
+                  <tr class="text-[11px] text-slate-400 border-b border-slate-100">
+                    <th class="pb-3 font-medium">Date</th>
+                    <th class="pb-3 font-medium">Description</th>
+                    <th class="pb-3 font-medium">Category</th>
+                    <th class="pb-3 font-medium">Amount</th>
+                    <th class="pb-3 font-medium text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50 font-normal">
+                  <!-- Row 1 -->
+                  <tr>
+                    <td class="py-3 text-slate-500">20 Sep 2026</td>
+                    <td class="py-3 font-medium text-slate-800">Salary Credit</td>
+                    <td class="py-3">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Income</span
+                      >
+                    </td>
+                    <td class="py-3 font-semibold text-emerald-600">+ ₹ 45,000</td>
+                    <td class="py-3 text-right">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Completed</span
+                      >
+                    </td>
+                  </tr>
+                  <!-- Row 2 -->
+                  <tr>
+                    <td class="py-3 text-slate-500">19 Sep 2026</td>
+                    <td class="py-3 font-medium text-slate-800">Amazon India</td>
+                    <td class="py-3">
+                      <span
+                        class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Shopping</span
+                      >
+                    </td>
+                    <td class="py-3 font-medium text-slate-800">- ₹ 2,499</td>
+                    <td class="py-3 text-right">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Completed</span
+                      >
+                    </td>
+                  </tr>
+                  <!-- Row 3 -->
+                  <tr>
+                    <td class="py-3 text-slate-500">18 Sep 2026</td>
+                    <td class="py-3 font-medium text-slate-800">Electricity Bill</td>
+                    <td class="py-3">
+                      <span
+                        class="bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Utilities</span
+                      >
+                    </td>
+                    <td class="py-3 font-medium text-slate-800">- ₹ 1,250</td>
+                    <td class="py-3 text-right">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Completed</span
+                      >
+                    </td>
+                  </tr>
+                  <!-- Row 4 -->
+                  <tr>
+                    <td class="py-3 text-slate-500">16 Sep 2026</td>
+                    <td class="py-3 font-medium text-slate-800">Mutual Fund SIP</td>
+                    <td class="py-3">
+                      <span
+                        class="bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Investments</span
+                      >
+                    </td>
+                    <td class="py-3 font-medium text-slate-800">- ₹ 5,000</td>
+                    <td class="py-3 text-right">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Completed</span
+                      >
+                    </td>
+                  </tr>
+                  <!-- Row 5 -->
+                  <tr>
+                    <td class="py-3 text-slate-500">15 Sep 2026</td>
+                    <td class="py-3 font-medium text-slate-800">Uber Ride</td>
+                    <td class="py-3">
+                      <span
+                        class="bg-rose-50 text-rose-500 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Transport</span
+                      >
+                    </td>
+                    <td class="py-3 font-medium text-slate-800">- ₹ 320</td>
+                    <td class="py-3 text-right">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                        >Completed</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Stay on Track Bottom Banner -->
+          <div
+            class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-3xl p-5 flex items-center justify-between"
+            data-purpose="bottom-insight-banner"
+          >
+            <div class="flex items-center gap-4">
+              <!-- Plant/Sprout Icon Pill -->
+              <div
+                class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl shrink-0"
+              >
+                🌱
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Stay on track!</h3>
+                <p class="text-xs text-slate-500">You're saving 15% more this month. Keep it up!</p>
+              </div>
+            </div>
+            <button
+              class="bg-[#2563eb] hover:bg-blue-700 text-white font-medium text-xs px-4 py-2.5 rounded-xl shadow-sm transition whitespace-nowrap"
+            >
+              View Insights →
+            </button>
+          </div>
+        </div>
+        <!-- END: LEFT COLUMN -->
+        <!-- RIGHT COLUMN (4 cols) -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+          <!-- Expense Breakdown Donut Card -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card"
+            data-purpose="expense-breakdown-card"
+          >
+            <h2 class="text-base font-bold text-slate-900 mb-6">Expense Breakdown</h2>
+            <!-- SVG Donut Chart with Center Text -->
+            <div class="relative flex items-center justify-center mb-6">
+              <svg class="w-48 h-48 -rotate-90" viewbox="0 0 120 120">
+                <!-- Background Ring -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  fill="none"
+                  r="45"
+                  stroke="#f1f5f9"
+                  stroke-width="14"
+                ></circle>
+                <!-- Food & Dining (32%) = 90.47 -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  fill="none"
+                  r="45"
+                  stroke="#3b82f6"
+                  stroke-dasharray="90.5 282.7"
+                  stroke-dashoffset="0"
+                  stroke-width="14"
+                ></circle>
+                <!-- Transport (18%) = 50.88 -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  fill="none"
+                  r="45"
+                  stroke="#f59e0b"
+                  stroke-dasharray="50.9 282.7"
+                  stroke-dashoffset="-90.5"
+                  stroke-width="14"
+                ></circle>
+                <!-- Shopping (15%) = 42.4 -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  fill="none"
+                  r="45"
+                  stroke="#10b981"
+                  stroke-dasharray="42.4 282.7"
+                  stroke-dashoffset="-141.4"
+                  stroke-width="14"
+                ></circle>
+                <!-- Bills & Utilities (12%) = 33.9 -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  fill="none"
+                  r="45"
+                  stroke="#ef4444"
+                  stroke-dasharray="33.9 282.7"
+                  stroke-dashoffset="-183.8"
+                  stroke-width="14"
+                ></circle>
+                <!-- Others (23%) = 65.0 -->
+                <circle
+                  cx="60"
+                  cy="60"
+                  fill="none"
+                  r="45"
+                  stroke="#a855f7"
+                  stroke-dasharray="65.0 282.7"
+                  stroke-dashoffset="-217.7"
+                  stroke-width="14"
+                ></circle>
+              </svg>
+              <!-- Center Content -->
+              <div
+                class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none"
+              >
+                <span class="text-sm font-bold text-slate-900">₹ 52,180</span>
+                <span class="text-[10px] text-slate-400 font-medium">Total Expenses</span>
+              </div>
+            </div>
+            <!-- Breakdown List -->
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6]"></span>
+                  <span class="text-slate-600">Food &amp; Dining</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-slate-400 text-[11px]">32%</span>
+                  <span class="font-semibold text-slate-800">₹ 16,700</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span>
+                  <span class="text-slate-600">Transport</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-slate-400 text-[11px]">18%</span>
+                  <span class="font-semibold text-slate-800">₹ 9,380</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span>
+                  <span class="text-slate-600">Shopping</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-slate-400 text-[11px]">15%</span>
+                  <span class="font-semibold text-slate-800">₹ 7,827</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#ef4444]"></span>
+                  <span class="text-slate-600">Bills &amp; Utilities</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-slate-400 text-[11px]">12%</span>
+                  <span class="font-semibold text-slate-800">₹ 6,260</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#a855f7]"></span>
+                  <span class="text-slate-600">Others</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-slate-400 text-[11px]">23%</span>
+                  <span class="font-semibold text-slate-800">₹ 12,013</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Recent Activity Card -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card"
+            data-purpose="recent-activity-card"
+          >
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-base font-bold text-slate-900">Recent Activity</h2>
+              <a class="text-xs font-semibold text-[#2563eb] hover:underline" href="#all-activity"
+                >View All</a
+              >
+            </div>
+            <div class="flex flex-col gap-4">
+              <!-- Activity 1 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewbox="0 0 24 24"
+                    >
+                      <path
+                        d="M5 10l7-7m0 0l7 7m-7-7v18"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Salary Credit</h4>
+                    <p class="text-[10px] text-slate-400 font-medium">Sep 20, 2026 • HDFC Bank</p>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-emerald-600">+ ₹ 45,000</span>
+              </div>
+              <!-- Activity 2 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                      <path
+                        clip-rule="evenodd"
+                        d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                        fill-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Amazon India</h4>
+                    <p class="text-[10px] text-slate-400 font-medium">Sep 19, 2026 • Shopping</p>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-rose-500">- ₹ 2,499</span>
+              </div>
+              <!-- Activity 3 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                      <path
+                        clip-rule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        fill-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Electricity Bill</h4>
+                    <p class="text-[10px] text-slate-400 font-medium">Sep 18, 2026 • Utilities</p>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-rose-500">- ₹ 1,250</span>
+              </div>
+              <!-- Activity 4 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center shrink-0"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewbox="0 0 24 24"
+                    >
+                      <path
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Mutual Fund SIP</h4>
+                    <p class="text-[10px] text-slate-400 font-medium">Sep 16, 2026 • Investments</p>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-rose-500">- ₹ 5,000</span>
+              </div>
+              <!-- Activity 5 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+                      <path
+                        d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
+                      ></path>
+                      <path
+                        d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0h4.1a2.5 2.5 0 014.9 0H18a1 1 0 001-1V9l-3-5H4a1 1 0 00-1 1z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-800">Uber Ride</h4>
+                    <p class="text-[10px] text-slate-400 font-medium">Sep 15, 2026 • Transport</p>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-rose-500">- ₹ 320</span>
+              </div>
+            </div>
+          </div>
+          <!-- Messages Card -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-[#eef2f6] shadow-card"
+            data-purpose="messages-card"
+          >
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-base font-bold text-slate-900">Messages</h2>
+              <a class="text-xs font-semibold text-[#2563eb] hover:underline" href="#all-messages"
+                >View All</a
+              >
+            </div>
+            <div class="flex flex-col gap-4">
+              <!-- Message 1 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-xs font-bold text-amber-700 overflow-hidden shrink-0"
+                  >
+                    <!-- User Avatar Simulated -->
+                    <div
+                      class="w-full h-full bg-[#fde047] flex items-center justify-center text-[#78350f]"
+                    >
+                      RS
+                    </div>
+                  </div>
+                  <div class="overflow-hidden">
+                    <h4 class="text-xs font-bold text-slate-800 truncate">Rohit Sharma</h4>
+                    <p class="text-[11px] text-slate-400 truncate w-36">
+                      Hey! Can you share the latest...
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end gap-1 shrink-0">
+                  <span class="text-[10px] text-slate-400">10:24 AM</span>
+                  <span
+                    class="w-4 h-4 rounded-full bg-[#2563eb] text-white text-[9px] font-bold flex items-center justify-center"
+                    >2</span
+                  >
+                </div>
+              </div>
+              <!-- Message 2 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-700 overflow-hidden shrink-0"
+                  >
+                    <div
+                      class="w-full h-full bg-[#fbcfe8] flex items-center justify-center text-[#831843]"
+                    >
+                      PM
+                    </div>
+                  </div>
+                  <div class="overflow-hidden">
+                    <h4 class="text-xs font-bold text-slate-800 truncate">Priya Mehta</h4>
+                    <p class="text-[11px] text-slate-400 truncate w-36">
+                      Your bill is due tomorrow.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end gap-1 shrink-0">
+                  <span class="text-[10px] text-slate-400">09:12 AM</span>
+                  <span
+                    class="w-4 h-4 rounded-full bg-[#2563eb] text-white text-[9px] font-bold flex items-center justify-center"
+                    >1</span
+                  >
+                </div>
+              </div>
+              <!-- Message 3 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center shrink-0"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewbox="0 0 24 24"
+                    >
+                      <path
+                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div class="overflow-hidden">
+                    <h4 class="text-xs font-bold text-slate-800 truncate">Support Team</h4>
+                    <p class="text-[11px] text-slate-400 truncate w-36">Your KYC is verified.</p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end shrink-0">
+                  <span class="text-[10px] text-slate-400">Yesterday</span>
+                </div>
+              </div>
+              <!-- Message 4 -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-800 overflow-hidden shrink-0"
+                  >
+                    <div
+                      class="w-full h-full bg-[#bbf7d0] flex items-center justify-center text-[#14532d]"
+                    >
+                      AV
+                    </div>
+                  </div>
+                  <div class="overflow-hidden">
+                    <h4 class="text-xs font-bold text-slate-800 truncate">Amit Verma</h4>
+                    <p class="text-[11px] text-slate-400 truncate w-36">
+                      Let's catch up this weekend?
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end shrink-0">
+                  <span class="text-[10px] text-slate-400">Yesterday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END: RIGHT COLUMN -->
+      </div>
+      <!-- END: Main Dashboard Grid -->
+    </main>
+    <!-- END: Main Content Area -->
+  </body>
+</html>

@@ -56,6 +56,21 @@ class AIContextBuilder:
         except Exception:
             context["learning_goals"] = []
             context["learning_paths"] = []
+        try:
+            from memory.models import MemoryItem
+            context["memory"] = [{"id": x.id, "type": x.type, "key": x.key, "content": x.content[:1000], "importance": x.importance} for x in MemoryItem.objects.filter(user=self.user, is_active=True).order_by("-importance","-updated_at")[:self.max_items]]
+        except Exception:
+            context["memory"] = []
+        try:
+            from jobs_opportunity.models import JobOpportunity
+            context["job_opportunities"] = [{"id": x.id, "title": x.title, "company": x.company, "location": x.location, "remote": x.is_remote} for x in JobOpportunity.objects.filter(user=self.user, is_active=True).order_by("-published_at")[:10]]
+        except Exception:
+            context["job_opportunities"] = []
+        try:
+            from projects.models import Project
+            context["projects"] = [{"id": x.id, "title": x.title, "status": x.status, "description": x.description[:500]} for x in Project.objects.filter(user=self.user).order_by("-updated_at")[:10]]
+        except Exception:
+            context["projects"] = []
         return context
 
 

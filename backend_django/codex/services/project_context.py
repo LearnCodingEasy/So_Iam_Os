@@ -11,7 +11,7 @@ from ..models import (
     ArchitectureEdge,
     CodexPolicy,
     CodexTool,
-    CodexFinding,
+    CodexFinding, ProtectedItem,
 )
 
 
@@ -59,6 +59,17 @@ class ProjectContextService:
                 "rules",
             )
         )
+        protected += [
+            {
+                "key": item.key,
+                "reason": item.reason,
+                "paths": [item.path] if item.path else [],
+                "rules": item.rules,
+                "frozen": item.frozen,
+                "item_type": item.item_type,
+            }
+            for item in ProtectedItem.objects.filter(project=self.project, approved=True, frozen=True)
+        ]
 
         return {
             "project": {

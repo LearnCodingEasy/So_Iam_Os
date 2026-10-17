@@ -28,6 +28,19 @@
 
 [Gsap ](Gsap_css.md)
 
+```
+npm install vue3-markdown-it github-markdown-css
+```
+```
+// استيراد مكتبة الـ Markdown
+import VueMarkdownIt from 'vue3-markdown-it';
+
+// استيراد تنسيق الـ CSS الخاص بـ GitHub لكي يظهر المحتوى منسقاً
+import 'github-markdown-css/github-markdown.css';
+
+app.use(VueMarkdownIt);
+```
+
 ## 🚀 Run Vue Project
 
 [Run Vue Project ](runserver.md)
