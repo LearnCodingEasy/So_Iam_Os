@@ -44,6 +44,7 @@ const menuItems = [
   { label: 'Social', icon: 'pi pi-users', route: '/social' },
 
   { label: 'Jobs', icon: 'pi pi-briefcase', route: '/jobs' },
+  { label: 'Scraper', icon: 'pi pi-briefcase', route: '/scraper' },
 
   { label: 'AI Assistant', icon: 'pi pi-sparkles', route: '/ai' },
 

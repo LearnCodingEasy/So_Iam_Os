@@ -206,10 +206,7 @@ export async function updateLearningProgress(payload) {
 // ===================================================
 
 export async function generateLearningTopicContent(topicId, payload = {}) {
-  const response = await api.post(
-    endpoints.learning.topicGenerateContent(topicId),
-    payload,
-  )
+  const response = await api.post(endpoints.learning.topicGenerateContent(topicId), payload)
 
   return response.data
 }
@@ -565,4 +562,6 @@ export async function uploadKnowledgeFile(knowledgeId, file, extra = {}) {
 
 export { normalizeList, getErrorMessage }
 
-export async function topicChat(payload) { return (await api.post('/ai/topic-chat/', payload)).data }
+export async function topicChat(payload) {
+  return (await api.post('/ai/topic-chat/', payload)).data
+}

@@ -6,7 +6,8 @@
 @use 'Framework/Framework';
 @use 'Header/Header';
 @use 'Jobs/Jobs';
-@use 'Learn/Learn.scss';
+@use 'Learn/LearnView';
+@use 'Learn/LearningTopic';
 @use 'LiveDebugConsole/LiveDebugConsole';
 @use 'Library/Vue_Flow/vue_flow';
 @use 'Login/Login';

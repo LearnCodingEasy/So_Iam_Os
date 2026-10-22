@@ -213,7 +213,9 @@ const review = computed(() => {
 const images = computed(() => topic.value?.images ?? [])
 
 const references = computed(() => topic.value?.references ?? [])
-const sourceLessonContent = computed(() => lesson.value?.content || knowledgeItem.value?.content || '')
+const sourceLessonContent = computed(
+  () => lesson.value?.content || knowledgeItem.value?.content || '',
+)
 
 // ==================================================
 // APPLICATION
@@ -725,15 +727,39 @@ const completeTopic = async () => {
   }
 }
 
-const loadTopicChat = async () => { try { const stored=localStorage.getItem(`topic_chat_${topic.value?.id}`); if(!stored)return; const data=(await (await import('@/services/api')).default.get(`/ai/conversations/${stored}/`)).data; chatMessages.value=(data.messages||[]).filter(m=>['user','assistant'].includes(m.role)).map(m=>({role:m.role,content:m.content})) } catch {} }
+const loadTopicChat = async () => {
+  try {
+    const stored = localStorage.getItem(`topic_chat_${topic.value?.id}`)
+    if (!stored) return
+    const data = (
+      await (await import('@/services/api')).default.get(`/ai/conversations/${stored}/`)
+    ).data
+    chatMessages.value = (data.messages || [])
+      .filter((m) => ['user', 'assistant'].includes(m.role))
+      .map((m) => ({ role: m.role, content: m.content }))
+  } catch {}
+}
 
 const sendTopicChat = async () => {
   const message = chatMessage.value.trim()
   if (!message || !topic.value || chatLoading.value) return
-  chatMessages.value.push({role:'user',content:message}); chatMessage.value=''; chatLoading.value=true
-  try { const result=await topicChat({topic_id:topic.value.id,message,conversation_id:localStorage.getItem(`topic_chat_${topic.value.id}`)||undefined}); if(result.conversation_id)localStorage.setItem(`topic_chat_${topic.value.id}`,result.conversation_id); chatMessages.value.push({role:'assistant',content:result.message?.content||''}) }
-  catch(err){ error.value=err?.response?.data?.error||'Unable to answer this topic question.' }
-  finally { chatLoading.value=false }
+  chatMessages.value.push({ role: 'user', content: message })
+  chatMessage.value = ''
+  chatLoading.value = true
+  try {
+    const result = await topicChat({
+      topic_id: topic.value.id,
+      message,
+      conversation_id: localStorage.getItem(`topic_chat_${topic.value.id}`) || undefined,
+    })
+    if (result.conversation_id)
+      localStorage.setItem(`topic_chat_${topic.value.id}`, result.conversation_id)
+    chatMessages.value.push({ role: 'assistant', content: result.message?.content || '' })
+  } catch (err) {
+    error.value = err?.response?.data?.error || 'Unable to answer this topic question.'
+  } finally {
+    chatLoading.value = false
+  }
 }
 
 // ==================================================
@@ -817,7 +843,9 @@ onMounted(loadTopic)
           {{ error }}
         </p>
 
-        <button type="button" class="primary-button" @click="loadTopic">Try again</button>
+        <prime_button type="button" class="primary-button" @click="loadTopic"
+          >Try again</prime_button
+        >
       </div>
     </div>
 
@@ -922,14 +950,14 @@ onMounted(loadTopic)
           <div class="hero-ai-status">
             <span class="ai-status-dot" :class="`status-${topic.ai?.status || 'empty'}`" />
             <div v-if="!topic.ai?.content_available" class="hero-actions">
-              <button
+              <prime_button
                 type="button"
                 class="primary-button"
                 :disabled="generatingContent"
                 @click="generateTopicContent"
               >
                 {{ generatingContent ? 'Generating...' : 'Generate learning content' }}
-              </button>
+              </prime_button>
             </div>
             <span v-if="topic.ai?.content_available"> AI content ready </span>
 
@@ -949,7 +977,18 @@ onMounted(loadTopic)
             </div>
 
             <!-- No content -->
-            <div v-if="!lesson && knowledgeItem" class="content-placeholder source-ready"><span class="placeholder-number">K</span><div><h3>Knowledge source is ready</h3><p>{{ knowledgeItem.title }} is the primary source for this topic. Use it directly or ask AI to explain it.</p><pre class="source-content">{{ knowledgeItem.content }}</pre></div></div><div v-else-if="!lesson" class="content-placeholder">
+            <div v-if="!lesson && knowledgeItem" class="content-placeholder source-ready">
+              <span class="placeholder-number">K</span>
+              <div>
+                <h3>Knowledge source is ready</h3>
+                <p>
+                  {{ knowledgeItem.title }} is the primary source for this topic. Use it directly or
+                  ask AI to explain it.
+                </p>
+                <pre class="source-content">{{ knowledgeItem.content }}</pre>
+              </div>
+            </div>
+            <div v-else-if="!lesson" class="content-placeholder">
               <span class="placeholder-number"> L </span>
 
               <div>
@@ -964,14 +1003,14 @@ onMounted(loadTopic)
                   {{ generationError }}
                 </div>
 
-                <button
+                <prime_button
                   type="button"
                   class="primary-button"
                   :disabled="generatingContent"
                   @click="generateTopicContent"
                 >
                   {{ generatingContent ? 'Generating content...' : 'Generate learning content' }}
-                </button>
+                </prime_button>
               </div>
             </div>
 
@@ -1019,7 +1058,7 @@ onMounted(loadTopic)
                 </div>
 
                 <div class="reference-list">
-                  <button
+                  <prime_button
                     v-for="resource in resources"
                     :key="resource.id"
                     type="button"
@@ -1057,7 +1096,7 @@ onMounted(loadTopic)
                     </div>
 
                     <span class="reference-arrow"> → </span>
-                  </button>
+                  </prime_button>
                 </div>
               </div>
 
@@ -1070,7 +1109,7 @@ onMounted(loadTopic)
                 </div>
 
                 <div class="reference-list">
-                  <button
+                  <prime_button
                     v-for="reference in references"
                     :key="reference.id"
                     type="button"
@@ -1102,7 +1141,7 @@ onMounted(loadTopic)
                     </div>
 
                     <span class="reference-arrow"> → </span>
-                  </button>
+                  </prime_button>
                 </div>
               </div>
 
@@ -1114,14 +1153,14 @@ onMounted(loadTopic)
                   <p>Mark the lesson as completed to continue to the knowledge check.</p>
                 </div>
 
-                <button
+                <prime_button
                   type="button"
                   class="primary-button"
                   :disabled="lessonCompleted"
                   @click="markLessonCompleted"
                 >
                   {{ lessonCompleted ? 'Lesson completed ✓' : 'Mark lesson completed' }}
-                </button>
+                </prime_button>
               </div>
             </template>
           </section>
@@ -1143,10 +1182,10 @@ onMounted(loadTopic)
               </p>
             </div>
 
-            <button type="button" class="primary-button" @click="goToStep(nextStep.key)">
+            <prime_button type="button" class="primary-button" @click="goToStep(nextStep.key)">
               Continue
               <span>→</span>
-            </button>
+            </prime_button>
           </section>
 
           <!-- ======================================
@@ -1164,7 +1203,7 @@ onMounted(loadTopic)
             </div>
 
             <div v-if="resources.length" class="reference-list">
-              <button
+              <prime_button
                 v-for="resource in resources"
                 :key="resource.id"
                 type="button"
@@ -1202,7 +1241,7 @@ onMounted(loadTopic)
                 </div>
 
                 <span class="reference-arrow"> → </span>
-              </button>
+              </prime_button>
             </div>
 
             <div v-else class="visual-empty">
@@ -1260,9 +1299,9 @@ onMounted(loadTopic)
                 </p>
               </div>
 
-              <button type="button" class="secondary-button" @click="generateImagePrompt">
+              <prime_button type="button" class="secondary-button" @click="generateImagePrompt">
                 Create visual prompt
-              </button>
+              </prime_button>
             </div>
 
             <!-- IMAGE PROMPT -->
@@ -1275,19 +1314,21 @@ onMounted(loadTopic)
                   <h3>Prompt for image generation</h3>
                 </div>
 
-                <button type="button" class="icon-button" @click="imagePrompt = ''">×</button>
+                <prime_button type="button" class="icon-button" @click="imagePrompt = ''"
+                  >×</prime_button
+                >
               </div>
 
-              <textarea v-model="imagePrompt" rows="8" />
+              <prime_textarea v-model="imagePrompt" rows="8" />
 
               <div class="prompt-actions">
-                <button type="button" class="secondary-button" @click="generateImagePrompt">
+                <prime_button type="button" class="secondary-button" @click="generateImagePrompt">
                   Regenerate
-                </button>
+                </prime_button>
 
-                <button type="button" class="primary-button" @click="copyImagePrompt">
+                <prime_button type="button" class="primary-button" @click="copyImagePrompt">
                   {{ imagePromptCopied ? 'Copied' : 'Copy prompt' }}
-                </button>
+                </prime_button>
               </div>
 
               <small>
@@ -1312,7 +1353,7 @@ onMounted(loadTopic)
             </div>
 
             <div v-if="references.length" class="reference-list">
-              <button
+              <prime_button
                 v-for="reference in references"
                 :key="reference.id"
                 type="button"
@@ -1344,7 +1385,7 @@ onMounted(loadTopic)
                 </div>
 
                 <span class="reference-arrow"> → </span>
-              </button>
+              </prime_button>
             </div>
 
             <div v-else class="content-placeholder">
@@ -1385,9 +1426,9 @@ onMounted(loadTopic)
                 <p>Answer a few short questions before moving to practical application.</p>
               </div>
 
-              <button type="button" class="primary-button" @click="startQuickCheck">
+              <prime_button type="button" class="primary-button" @click="startQuickCheck">
                 Start check
-              </button>
+              </prime_button>
             </div>
 
             <div v-else-if="!quickCheckCompleted" class="quiz-placeholder">
@@ -1397,9 +1438,9 @@ onMounted(loadTopic)
 
               <p>This area is ready for the backend assessment engine.</p>
 
-              <button type="button" class="primary-button" @click="finishQuickCheck">
+              <prime_button type="button" class="primary-button" @click="finishQuickCheck">
                 Complete demo check
-              </button>
+              </prime_button>
             </div>
 
             <div v-else class="success-card">
@@ -1425,7 +1466,7 @@ onMounted(loadTopic)
               </div>
             </div>
 
-            <textarea
+            <prime_textarea
               v-model="personalNote"
               class="personal-note"
               placeholder="Explain the idea in your own words. What became clear? What is still confusing?"
@@ -1435,14 +1476,14 @@ onMounted(loadTopic)
             <div class="notes-footer">
               <span> Your own explanation becomes part of your personal knowledge. </span>
 
-              <button
+              <prime_button
                 type="button"
                 class="primary-button"
                 :disabled="!personalNote.trim()"
                 @click="savePersonalNote"
               >
                 {{ noteSaved ? 'Saved ✓' : 'Save reflection' }}
-              </button>
+              </prime_button>
             </div>
           </section>
 
@@ -1573,7 +1614,7 @@ onMounted(loadTopic)
 
                   <small> passing </small>
 
-                  <button type="button" class="secondary-button">Start</button>
+                  <prime_button type="button" class="secondary-button">Start</prime_button>
                 </div>
               </article>
             </div>
@@ -1633,7 +1674,7 @@ onMounted(loadTopic)
             <div class="sidebar-card-title">Learning path</div>
 
             <div class="step-list">
-              <button
+              <prime_button
                 v-for="step in learningSteps"
                 :key="step.key"
                 type="button"
@@ -1657,7 +1698,7 @@ onMounted(loadTopic)
                     {{ step.label }}
                   </small>
                 </span>
-              </button>
+              </prime_button>
             </div>
           </div>
 
@@ -1672,7 +1713,13 @@ onMounted(loadTopic)
 
             <p>Ask questions about this lesson without leaving the learning workspace.</p>
 
-            <button type="button" class="secondary-button full-width" @click="showTopicChat=true">Ask about this topic</button>
+            <prime_button
+              type="button"
+              class="secondary-button full-width"
+              @click="showTopicChat = true"
+            >
+              Ask about this topic
+            </prime_button>
           </div>
 
           <!-- ===============================================
@@ -1690,20 +1737,40 @@ onMounted(loadTopic)
 
             <p v-else>Finish the remaining learning steps before completing this topic.</p>
 
-            <button
+            <prime_button
               type="button"
               class="primary-button full-width"
               :disabled="!canCompleteTopic"
               @click="openCompletePanel"
             >
               {{ canCompleteTopic ? 'Complete topic' : 'Finish learning first' }}
-            </button>
+            </prime_button>
           </div>
         </aside>
       </section>
     </template>
 
-    <div v-if="showTopicChat" class="modal-backdrop" @click.self="showTopicChat=false"><div class="modal-card chat-modal"><button type="button" class="modal-close" @click="showTopicChat=false">×</button><span class="section-kicker">TOPIC CHAT</span><h2>{{ topic?.title }}</h2><div class="chat-messages"><div v-for="(m,i) in chatMessages" :key="i" :class="['chat-message',m.role]"><b>{{m.role==='user'?'You':'AI'}}</b><p>{{m.content}}</p></div><div v-if="chatLoading" class="chat-message assistant"><p>Thinking...</p></div></div><form @submit.prevent="sendTopicChat" class="chat-form"><input v-model="chatMessage" placeholder="Ask about this topic..."/><button class="primary-button">Send</button></form></div></div>
+    <div v-if="showTopicChat" class="modal-backdrop" @click.self="showTopicChat = false">
+      <div class="modal-card chat-modal">
+        <prime_button type="button" class="modal-close" @click="showTopicChat = false"
+          >×</prime_button
+        ><span class="section-kicker">TOPIC CHAT</span>
+        <h2>{{ topic?.title }}</h2>
+        <div class="chat-messages">
+          <div v-for="(m, i) in chatMessages" :key="i" :class="['chat-message', m.role]">
+            <b>{{ m.role === 'user' ? 'You' : 'AI' }}</b>
+            <p>{{ m.content }}</p>
+          </div>
+          <div v-if="chatLoading" class="chat-message assistant"><p>Thinking...</p></div>
+        </div>
+        <form @submit.prevent="sendTopicChat" class="chat-form">
+          <prime_input_text
+            v-model="chatMessage"
+            placeholder="Ask about this topic..."
+          /><prime_button class="primary-button"> Send </prime_button>
+        </form>
+      </div>
+    </div>
 
     <!-- ============================================
     REFERENCE MODAL
@@ -1711,7 +1778,7 @@ onMounted(loadTopic)
 
     <div v-if="activeReference" class="modal-backdrop" @click.self="closeReference">
       <div class="modal-card">
-        <button type="button" class="modal-close" @click="closeReference">×</button>
+        <prime_button type="button" class="modal-close" @click="closeReference">×</prime_button>
 
         <span class="section-kicker"> REFERENCE </span>
 
@@ -1755,7 +1822,7 @@ onMounted(loadTopic)
 
     <div v-if="showCompletePanel" class="modal-backdrop" @click.self="closeCompletePanel">
       <div class="modal-card completion-modal">
-        <button type="button" class="modal-close" @click="closeCompletePanel">×</button>
+        <prime_button type="button" class="modal-close" @click="closeCompletePanel">×</prime_button>
 
         <div class="completion-symbol">✓</div>
 
@@ -1776,13 +1843,13 @@ onMounted(loadTopic)
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="secondary-button" @click="closeCompletePanel">
+          <prime_button type="button" class="secondary-button" @click="closeCompletePanel">
             Continue
-          </button>
+          </prime_button>
 
-          <button type="button" class="primary-button" @click="completeTopic">
+          <prime_button type="button" class="primary-button" @click="completeTopic">
             Confirm completion
-          </button>
+          </prime_button>
         </div>
       </div>
     </div>
@@ -1793,7 +1860,9 @@ onMounted(loadTopic)
 
     <div v-if="showKnowledgePreview" class="modal-backdrop" @click.self="closeKnowledgePreview">
       <div class="modal-card knowledge-modal">
-        <button type="button" class="modal-close" @click="closeKnowledgePreview">×</button>
+        <prime_button type="button" class="modal-close" @click="closeKnowledgePreview"
+          >×</prime_button
+        >
 
         <span class="section-kicker"> KNOWLEDGE </span>
 
@@ -1804,19 +1873,19 @@ onMounted(loadTopic)
         <div class="knowledge-preview">
           <label> Title </label>
 
-          <input :value="topic.title" readonly />
+          <prime_input_text :value="topic.title" readonly />
 
           <label> Source </label>
 
-          <input value="Learning Topic" readonly />
+          <prime_input_text value="Learning Topic" readonly />
 
           <label> Mastery </label>
 
-          <input :value="mastery" readonly />
+          <prime_input_text :value="mastery" readonly />
 
           <label> Knowledge </label>
 
-          <textarea
+          <prime_textarea
             :value="personalNote || lesson?.content || topic.description || ''"
             rows="8"
             readonly
@@ -1824,1095 +1893,20 @@ onMounted(loadTopic)
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="secondary-button" @click="closeKnowledgePreview">
+          <prime_button type="button" class="secondary-button" @click="closeKnowledgePreview">
             Cancel
-          </button>
+          </prime_button>
 
-          <button
+          <prime_button
             type="button"
             class="primary-button"
             :disabled="knowledgeSaving"
             @click="saveToKnowledge"
           >
             {{ knowledgeSaving ? 'Saving...' : 'Save to Knowledge' }}
-          </button>
+          </prime_button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.topic-page {
-  width: 100%;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 28px 28px 100px;
-}
-
-/* =========================================================
-   LOADING / ERROR
-========================================================= */
-
-.topic-loading,
-.topic-error {
-  min-height: 500px;
-  display: grid;
-  place-items: center;
-}
-
-.topic-loading {
-  color: inherit;
-  opacity: 0.6;
-}
-
-.loader {
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgba(127, 127, 127, 0.2);
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 14px;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.error-card {
-  width: min(500px, 100%);
-  padding: 30px;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 20px;
-}
-
-/* =========================================================
-   BREADCRUMB
-========================================================= */
-
-.topic-breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 30px;
-  font-size: 12px;
-  opacity: 0.55;
-}
-
-.topic-breadcrumb a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.topic-breadcrumb strong {
-  opacity: 1;
-}
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.topic-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
-  gap: 50px;
-  padding-bottom: 42px;
-  border-bottom: 1px solid rgba(127, 127, 127, 0.16);
-}
-
-.topic-kicker,
-.section-kicker {
-  display: block;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.5;
-}
-
-.hero-main h1 {
-  max-width: 900px;
-  margin: 9px 0 16px;
-  font-size: clamp(38px, 6vw, 68px);
-  line-height: 0.98;
-  letter-spacing: -0.045em;
-}
-
-.hero-description {
-  max-width: 760px;
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.8;
-  opacity: 0.62;
-}
-
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 22px;
-}
-
-.hero-meta span {
-  padding: 7px 11px;
-  border-radius: 999px;
-  background: rgba(127, 127, 127, 0.08);
-  font-size: 11px;
-  text-transform: capitalize;
-}
-
-.hero-progress {
-  align-self: start;
-  padding: 22px;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 20px;
-}
-
-.progress-top,
-.progress-bottom,
-.sidebar-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.progress-top span {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  opacity: 0.5;
-}
-
-.progress-top strong {
-  font-size: 32px;
-}
-
-.progress-track {
-  height: 7px;
-  margin-top: 16px;
-  overflow: hidden;
-  border-radius: 99px;
-  background: rgba(127, 127, 127, 0.12);
-}
-
-.progress-fill {
-  height: 100%;
-  background: currentColor;
-  border-radius: inherit;
-  transition: width 0.4s ease;
-}
-
-.progress-bottom {
-  margin-top: 13px;
-  font-size: 11px;
-  opacity: 0.55;
-}
-
-/* =========================================================
-   LAYOUT
-========================================================= */
-
-.learning-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
-  gap: 34px;
-  margin-top: 34px;
-}
-
-.learning-main {
-  min-width: 0;
-}
-
-.topic-sidebar {
-  align-self: start;
-  position: sticky;
-  top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* =========================================================
-   NEXT ACTION
-========================================================= */
-
-.next-action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 28px;
-  padding: 22px;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 20px;
-}
-
-.next-action h2 {
-  margin: 5px 0 3px;
-}
-
-.next-action p {
-  margin: 0;
-  opacity: 0.55;
-}
-
-/* =========================================================
-   SECTIONS
-========================================================= */
-
-.workspace-section {
-  scroll-margin-top: 30px;
-  margin-bottom: 34px;
-  padding: 28px;
-  border: 1px solid rgba(127, 127, 127, 0.15);
-  border-radius: 22px;
-}
-
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px;
-  margin-bottom: 22px;
-}
-
-.section-heading h2 {
-  margin: 6px 0 0;
-  font-size: 25px;
-  letter-spacing: -0.025em;
-}
-
-.section-heading > span {
-  font-size: 11px;
-  opacity: 0.5;
-}
-
-/* =========================================================
-   LESSON
-========================================================= */
-
-.lesson-content {
-  white-space: pre-wrap;
-  font-size: 16px;
-  line-height: 1.9;
-  opacity: 0.82;
-}
-
-.content-placeholder {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  padding: 25px;
-  border-radius: 16px;
-  background: rgba(127, 127, 127, 0.05);
-}
-
-.placeholder-number {
-  flex: 0 0 auto;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(127, 127, 127, 0.2);
-  border-radius: 50%;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.content-placeholder h3 {
-  margin: 2px 0 6px;
-}
-
-.content-placeholder p {
-  margin: 0;
-  line-height: 1.65;
-  opacity: 0.58;
-}
-
-.section-footer,
-.notes-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 18px;
-  margin-top: 25px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(127, 127, 127, 0.12);
-}
-
-.section-footer > span,
-.notes-footer > span {
-  max-width: 520px;
-  font-size: 11px;
-  line-height: 1.5;
-  opacity: 0.5;
-}
-
-.done-badge {
-  color: inherit;
-  font-size: 11px !important;
-  font-weight: 700;
-}
-
-.completed-state {
-  font-size: 12px;
-  font-weight: 700;
-  opacity: 0.7;
-}
-
-/* =========================================================
-   VISUALS
-========================================================= */
-
-.visual-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.visual-card {
-  overflow: hidden;
-  border: 1px solid rgba(127, 127, 127, 0.15);
-  border-radius: 16px;
-}
-
-.visual-card img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-}
-
-.visual-card > div {
-  padding: 15px;
-}
-
-.visual-card h3 {
-  margin: 0 0 5px;
-}
-
-.visual-card p {
-  margin: 0;
-  line-height: 1.55;
-  font-size: 12px;
-  opacity: 0.55;
-}
-
-.visual-empty {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 25px;
-  border: 1px dashed rgba(127, 127, 127, 0.25);
-  border-radius: 16px;
-}
-
-.empty-symbol {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 50%;
-  font-size: 20px;
-}
-
-.empty-copy {
-  flex: 1;
-}
-
-.empty-copy strong {
-  display: block;
-}
-
-.empty-copy p {
-  margin: 5px 0 0;
-  font-size: 12px;
-  line-height: 1.55;
-  opacity: 0.55;
-}
-
-/* =========================================================
-   PROMPT
-========================================================= */
-
-.prompt-panel {
-  margin-top: 16px;
-  padding: 20px;
-  border-radius: 16px;
-  background: rgba(127, 127, 127, 0.05);
-}
-
-.prompt-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.prompt-header h3 {
-  margin: 5px 0 0;
-}
-
-.prompt-panel textarea,
-.personal-note,
-.knowledge-preview textarea,
-.knowledge-preview input {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(127, 127, 127, 0.2);
-  border-radius: 12px;
-  background: transparent;
-  color: inherit;
-  padding: 14px;
-  outline: none;
-  resize: vertical;
-  font: inherit;
-  line-height: 1.6;
-}
-
-.prompt-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 9px;
-  margin-top: 12px;
-}
-
-.prompt-panel small {
-  display: block;
-  margin-top: 12px;
-  opacity: 0.45;
-}
-
-/* =========================================================
-   REFERENCES
-========================================================= */
-
-.reference-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.reference-row {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  text-align: left;
-  padding: 16px;
-  border: 1px solid rgba(127, 127, 127, 0.14);
-  border-radius: 14px;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease;
-}
-
-.reference-row:hover {
-  transform: translateY(-1px);
-  background: rgba(127, 127, 127, 0.04);
-}
-
-.reference-icon {
-  width: 36px;
-  height: 36px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: 800;
-}
-
-.reference-content {
-  min-width: 0;
-  flex: 1;
-}
-
-.reference-content > span {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.45;
-}
-
-.reference-content h3 {
-  margin: 4px 0;
-}
-
-.reference-content p {
-  margin: 0;
-  font-size: 12px;
-  opacity: 0.55;
-}
-
-.reference-arrow {
-  opacity: 0.45;
-}
-
-/* =========================================================
-   CHECK / ACTION CARDS
-========================================================= */
-
-.action-card {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 24px;
-  border-radius: 16px;
-  background: rgba(127, 127, 127, 0.05);
-}
-
-.action-card-icon {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(127, 127, 127, 0.2);
-  border-radius: 50%;
-  font-weight: 800;
-}
-
-.action-card-copy {
-  flex: 1;
-}
-
-.action-card-copy h3 {
-  margin: 0 0 5px;
-}
-
-.action-card-copy p {
-  margin: 0;
-  font-size: 12px;
-  opacity: 0.55;
-}
-
-.quiz-placeholder {
-  padding: 28px;
-  border-radius: 16px;
-  background: rgba(127, 127, 127, 0.05);
-}
-
-.quiz-placeholder h3 {
-  margin: 8px 0;
-}
-
-.quiz-placeholder p {
-  margin: 0 0 18px;
-  opacity: 0.55;
-}
-
-.success-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 20px;
-  border: 1px solid rgba(127, 127, 127, 0.15);
-  border-radius: 14px;
-}
-
-.success-card > div {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.success-card p {
-  margin: 0;
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-/* =========================================================
-   NOTES
-========================================================= */
-
-.personal-note {
-  min-height: 170px;
-}
-
-.notes-footer {
-  border-top: 0;
-  padding-top: 10px;
-}
-
-/* =========================================================
-   KNOWLEDGE
-========================================================= */
-
-.knowledge-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.knowledge-card {
-  padding: 18px;
-  border: 1px solid rgba(127, 127, 127, 0.15);
-  border-radius: 14px;
-}
-
-.knowledge-card > span {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.45;
-}
-
-.knowledge-card h3 {
-  margin: 7px 0;
-}
-
-.knowledge-card p {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.6;
-  opacity: 0.55;
-}
-
-/* =========================================================
-   APPLICATION
-========================================================= */
-
-.section-description {
-  margin: -8px 0 22px;
-  max-width: 650px;
-  font-size: 13px;
-  line-height: 1.7;
-  opacity: 0.55;
-}
-
-/* =========================================================
-   ASSESSMENT
-========================================================= */
-
-.assessment-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.assessment-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px;
-  border: 1px solid rgba(127, 127, 127, 0.14);
-  border-radius: 14px;
-}
-
-.assessment-row > div:first-child {
-  min-width: 0;
-}
-
-.assessment-row span {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.45;
-}
-
-.assessment-row h3 {
-  margin: 5px 0;
-}
-
-.assessment-row p {
-  margin: 0;
-  font-size: 12px;
-  opacity: 0.55;
-}
-
-.assessment-side {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.assessment-side strong {
-  font-size: 20px;
-}
-
-.assessment-side small {
-  opacity: 0.45;
-}
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-.sidebar-card {
-  padding: 20px;
-  border: 1px solid rgba(127, 127, 127, 0.15);
-  border-radius: 18px;
-}
-
-.sidebar-label,
-.sidebar-card-title {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.5;
-}
-
-.sidebar-progress-number {
-  margin: 8px 0;
-  font-size: 38px;
-  font-weight: 700;
-}
-
-.sidebar-meta {
-  margin-top: 10px;
-  font-size: 10px;
-  opacity: 0.55;
-}
-
-.sidebar-meta strong {
-  text-transform: capitalize;
-}
-
-/* =========================================================
-   STEPS
-========================================================= */
-
-.step-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-top: 13px;
-}
-
-.step-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 7px;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.step-item:hover,
-.step-item.active {
-  background: rgba(127, 127, 127, 0.06);
-}
-
-.step-number {
-  width: 25px;
-  height: 25px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 50%;
-  font-size: 9px;
-}
-
-.step-item.completed .step-number {
-  font-weight: 800;
-}
-
-.step-copy {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.step-copy strong {
-  font-size: 11px;
-}
-
-.step-copy small {
-  font-size: 9px;
-  opacity: 0.45;
-}
-
-/* =========================================================
-   AI / FINISH
-========================================================= */
-
-.ai-card h3,
-.source-content{white-space:pre-wrap;text-align:left;max-height:500px;overflow:auto;background:#0b1220;padding:15px;border-radius:10px;color:#cbd5e1}.source-ready{display:block}.chat-modal{max-width:760px}.chat-messages{max-height:360px;overflow:auto;display:grid;gap:10px;margin:15px 0}.chat-message{padding:10px 12px;border-radius:10px;background:#111827}.chat-message.user{background:#172554}.chat-message p{white-space:pre-wrap;margin:5px 0}.chat-form{display:flex;gap:8px}.chat-form input{flex:1;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:8px;padding:10px}.finish-card h3 {
-  margin: 7px 0;
-}
-
-.ai-card p,
-.finish-card p {
-  font-size: 12px;
-  line-height: 1.6;
-  opacity: 0.55;
-}
-
-.finish-card {
-  position: relative;
-}
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.primary-button,
-.secondary-button {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  min-height: 38px;
-  padding: 9px 14px;
-  border-radius: 10px;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
-}
-
-.primary-button {
-  border: 1px solid currentColor;
-  background: currentColor;
-  color: Canvas;
-}
-
-.secondary-button {
-  border: 1px solid rgba(127, 127, 127, 0.22);
-  background: transparent;
-  color: inherit;
-}
-
-.primary-button:hover,
-.secondary-button:hover {
-  transform: translateY(-1px);
-}
-
-.primary-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.35;
-  transform: none;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.icon-button,
-.modal-close {
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(127, 127, 127, 0.18);
-  border-radius: 50%;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-/* =========================================================
-   MODALS
-========================================================= */
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-}
-
-.modal-card {
-  position: relative;
-  width: min(600px, 100%);
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  padding: 30px;
-  border: 1px solid rgba(127, 127, 127, 0.2);
-  border-radius: 22px;
-  background: Canvas;
-  color: CanvasText;
-}
-
-.modal-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-}
-
-.modal-card h2 {
-  margin: 8px 0;
-  font-size: 30px;
-}
-
-.modal-card > p {
-  line-height: 1.7;
-  opacity: 0.6;
-}
-
-.modal-link {
-  margin-top: 15px;
-  text-decoration: none;
-}
-
-.reference-text {
-  margin-top: 18px;
-  white-space: pre-wrap;
-  line-height: 1.8;
-}
-
-.completion-modal {
-  text-align: center;
-}
-
-.completion-symbol {
-  width: 54px;
-  height: 54px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 16px;
-  border: 1px solid rgba(127, 127, 127, 0.2);
-  border-radius: 50%;
-  font-size: 24px;
-}
-
-.completion-list {
-  margin-top: 22px;
-  padding: 15px;
-  text-align: left;
-  border-radius: 14px;
-  background: rgba(127, 127, 127, 0.05);
-}
-
-.completion-list div {
-  padding: 8px 0;
-  font-size: 12px;
-}
-
-.completion-list span {
-  display: inline-block;
-  width: 24px;
-  font-weight: 800;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 9px;
-  margin-top: 22px;
-}
-
-.knowledge-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-top: 20px;
-}
-
-.knowledge-preview label {
-  margin-top: 8px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.5;
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 1050px) {
-  .learning-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .topic-sidebar {
-    position: static;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 850px) {
-  .topic-page {
-    padding: 20px 16px 70px;
-  }
-
-  .topic-hero {
-    grid-template-columns: 1fr;
-    gap: 25px;
-  }
-
-  .visual-grid,
-  .knowledge-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .topic-sidebar {
-    grid-template-columns: 1fr;
-  }
-
-  .next-action,
-  .action-card,
-  .visual-empty,
-  .section-footer,
-  .notes-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .assessment-row {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .assessment-side {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 560px) {
-  .workspace-section {
-    padding: 20px;
-    border-radius: 17px;
-  }
-
-  .hero-main h1 {
-    font-size: 40px;
-  }
-
-  .section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .modal-card {
-    padding: 23px;
-  }
-}
-</style>

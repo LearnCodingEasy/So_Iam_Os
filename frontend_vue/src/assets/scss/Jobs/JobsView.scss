@@ -1,0 +1,55 @@
+/* Page-specific responsive refinements for JobsView; shared primitives live in Jobs/_Jobs.scss. */
+.jobs-page {
+  width: min(100%, 1500px);
+  margin-inline: auto;
+  min-width: 0;
+}
+
+.jobs-page .hero,
+.jobs-page .section-head,
+.jobs-page .job-top {
+  min-width: 0;
+}
+
+.jobs-page .hero-actions,
+.jobs-page .tabs,
+.jobs-page .filters {
+  flex-wrap: wrap;
+}
+
+.jobs-page .filters > * {
+  max-width: 100%;
+}
+
+.jobs-page .p-datatable {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .jobs-page {
+    padding: 12px;
+  }
+
+  .jobs-page .hero h1 {
+    font-size: clamp(1.65rem, 7vw, 2.25rem);
+    overflow-wrap: anywhere;
+  }
+
+  .jobs-page .hero-actions > *,
+  .jobs-page .filters > * {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .jobs-page .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jobs-page .metric-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jobs-page .list-item {
+    flex-direction: column;
+  }
+}

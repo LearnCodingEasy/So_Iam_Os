@@ -6,34 +6,54 @@ from .models import (
 )
 
 
+# backend_django/jobs_opportunity/serializers.py
+from rest_framework import serializers
+from .models import JobOpportunity
+
+
+class JobOpportunitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobOpportunity
+        fields = '__all__'
+
+
 class JobSourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobSource
         fields = "__all__"
-        read_only_fields = ["user", "last_synced_at", "last_sync_status", "last_sync_error", "last_sync_count", "created_at", "updated_at"]
+        read_only_fields = ["user", "last_synced_at", "last_sync_status",
+                            "last_sync_error", "last_sync_count", "created_at", "updated_at"]
 
     def validate(self, attrs):
-        source_type = attrs.get("source_type", getattr(self.instance, "source_type", None))
+        source_type = attrs.get("source_type", getattr(
+            self.instance, "source_type", None))
         if attrs.get("feed_url") and source_type not in {"rss", "api"}:
-            raise serializers.ValidationError({"source_type": "A feed URL requires RSS or API source type."})
+            raise serializers.ValidationError(
+                {"source_type": "A feed URL requires RSS or API source type."})
         if source_type == "scraper":
-            config = attrs.get("config", getattr(self.instance, "config", {})) or {}
+            config = attrs.get("config", getattr(
+                self.instance, "config", {})) or {}
             if not config.get("terms_confirmed"):
-                raise serializers.ValidationError({"config": "Confirm that this source permits scraping before enabling a scraper."})
+                raise serializers.ValidationError(
+                    {"config": "Confirm that this source permits scraping before enabling a scraper."})
             if not (attrs.get("base_url") or getattr(self.instance, "base_url", "")):
-                raise serializers.ValidationError({"base_url": "Scraper sources require a URL."})
+                raise serializers.ValidationError(
+                    {"base_url": "Scraper sources require a URL."})
         return attrs
 
 
 class JobSkillRequirementSerializer(serializers.ModelSerializer):
     skill_name = serializers.CharField(source="skill.name", read_only=True)
+
     class Meta:
         model = JobSkillRequirement
-        fields = ["id", "skill", "skill_name", "required_level", "importance", "requirement_type"]
+        fields = ["id", "skill", "skill_name",
+                  "required_level", "importance", "requirement_type"]
 
 
 class JobOpportunitySerializer(serializers.ModelSerializer):
-    skill_requirements = JobSkillRequirementSerializer(many=True, read_only=True)
+    skill_requirements = JobSkillRequirementSerializer(
+        many=True, read_only=True)
     match = serializers.SerializerMethodField()
     readiness = serializers.SerializerMethodField()
 
@@ -49,18 +69,21 @@ class JobOpportunitySerializer(serializers.ModelSerializer):
             "last_checked_at", "freshness_score", "is_active", "is_expired", "created_at",
             "updated_at", "skill_requirements", "match", "readiness",
         ]
-        read_only_fields = ["user", "created_at", "updated_at", "discovered_at", "normalized_title", "canonical_key", "match", "readiness", "skill_requirements"]
+        read_only_fields = ["user", "created_at", "updated_at", "discovered_at",
+                            "normalized_title", "canonical_key", "match", "readiness", "skill_requirements"]
 
     def validate_source(self, source):
         request = self.context.get("request")
         if source and request and source.user_id != request.user.id:
-            raise serializers.ValidationError("This source does not belong to the current user.")
+            raise serializers.ValidationError(
+                "This source does not belong to the current user.")
         return source
 
     def validate_company_profile(self, value):
         request = self.context.get("request")
         if value and request and value.user_id != request.user.id:
-            raise serializers.ValidationError("This company does not belong to the current user.")
+            raise serializers.ValidationError(
+                "This company does not belong to the current user.")
         return value
 
     def get_match(self, obj):
@@ -80,14 +103,17 @@ class JobOpportunitySerializer(serializers.ModelSerializer):
 
 class JobMatchSerializer(serializers.ModelSerializer):
     job_detail = JobOpportunitySerializer(source="job", read_only=True)
+
     class Meta:
         model = JobMatch
-        fields = ["id", "job", "job_detail", "score", "skill_score", "experience_score", "preference_score", "goal_score", "salary_score", "location_score", "matched_skills", "missing_skills", "reasons", "breakdown", "calculated_at"]
+        fields = ["id", "job", "job_detail", "score", "skill_score", "experience_score", "preference_score", "goal_score",
+                  "salary_score", "location_score", "matched_skills", "missing_skills", "reasons", "breakdown", "calculated_at"]
 
 
 class JobApplicationSerializer(serializers.ModelSerializer):
     job_title = serializers.CharField(source="job.title", read_only=True)
     company = serializers.CharField(source="job.company", read_only=True)
+
     class Meta:
         model = JobApplication
         fields = "__all__"
@@ -96,19 +122,22 @@ class JobApplicationSerializer(serializers.ModelSerializer):
     def validate_resume(self, resume):
         request = self.context.get("request")
         if resume and request and resume.user_id != request.user.id:
-            raise serializers.ValidationError("This resume does not belong to the current user.")
+            raise serializers.ValidationError(
+                "This resume does not belong to the current user.")
         return resume
 
     def validate_cover_letter(self, cover_letter):
         request = self.context.get("request")
         if cover_letter and request and cover_letter.user_id != request.user.id:
-            raise serializers.ValidationError("This cover letter does not belong to the current user.")
+            raise serializers.ValidationError(
+                "This cover letter does not belong to the current user.")
         return cover_letter
 
     def validate_job(self, job):
         request = self.context.get("request")
         if request and job.user_id != request.user.id:
-            raise serializers.ValidationError("This job does not belong to the current user.")
+            raise serializers.ValidationError(
+                "This job does not belong to the current user.")
         return job
 
 
@@ -127,7 +156,8 @@ class JobInterviewSerializer(serializers.ModelSerializer):
     def validate_application(self, application):
         request = self.context.get("request")
         if request and application.user_id != request.user.id:
-            raise serializers.ValidationError("This application does not belong to the current user.")
+            raise serializers.ValidationError(
+                "This application does not belong to the current user.")
         return application
 
 
@@ -149,9 +179,11 @@ class JobCoverLetterSerializer(serializers.ModelSerializer):
         job = attrs.get("job")
         resume = attrs.get("resume")
         if request and job and job.user_id != request.user.id:
-            raise serializers.ValidationError({"job": "Job does not belong to current user."})
+            raise serializers.ValidationError(
+                {"job": "Job does not belong to current user."})
         if request and resume and resume.user_id != request.user.id:
-            raise serializers.ValidationError({"resume": "Resume does not belong to current user."})
+            raise serializers.ValidationError(
+                {"resume": "Resume does not belong to current user."})
         return attrs
 
 
@@ -171,6 +203,7 @@ class JobSavedSearchSerializer(serializers.ModelSerializer):
 
 class JobSkillGapSerializer(serializers.ModelSerializer):
     job_title = serializers.CharField(source="job.title", read_only=True)
+
     class Meta:
         model = JobSkillGap
         fields = "__all__"
@@ -179,6 +212,7 @@ class JobSkillGapSerializer(serializers.ModelSerializer):
 
 class JobReadinessSerializer(serializers.ModelSerializer):
     job_title = serializers.CharField(source="job.title", read_only=True)
+
     class Meta:
         model = JobReadiness
         fields = "__all__"
@@ -187,6 +221,7 @@ class JobReadinessSerializer(serializers.ModelSerializer):
 
 class JobRecommendationSerializer(serializers.ModelSerializer):
     job_detail = JobOpportunitySerializer(source="job", read_only=True)
+
     class Meta:
         model = JobRecommendation
         fields = "__all__"
@@ -204,7 +239,8 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
         fields = "__all__"
-        read_only_fields = ["user", "created_at", "updated_at", "normalized_name"]
+        read_only_fields = ["user", "created_at",
+                            "updated_at", "normalized_name"]
 
 
 class JobAnalyticsSnapshotSerializer(serializers.ModelSerializer):

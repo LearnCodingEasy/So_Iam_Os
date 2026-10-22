@@ -20,6 +20,7 @@ from .models import (
 logger = logging.getLogger(__name__)
 
 
+
 class JobMatchingService:
     LEVELS = {"beginner": 1, "intermediate": 2, "advanced": 3, "expert": 4}
 

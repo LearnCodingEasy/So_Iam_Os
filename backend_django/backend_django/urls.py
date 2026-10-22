@@ -9,8 +9,10 @@ urlpatterns = [
     # Keep the Build workspace endpoints explicit at the project URL layer as well
     # as in codex.urls. This makes the expected public API contract unambiguous and
     # avoids deployment configurations accidentally omitting the nested Codex URLs.
-    path("api/codex/build/workspace/", BuildWorkspaceView.as_view(), name="codex-build-workspace"),
-    path("api/codex/build/manifest/", BuildManifestView.as_view(), name="codex-build-manifest"),
+    path("api/codex/build/workspace/", BuildWorkspaceView.as_view(),
+         name="codex-build-workspace"),
+    path("api/codex/build/manifest/", BuildManifestView.as_view(),
+         name="codex-build-manifest"),
     path("api/codex/", include("codex.urls")),
     # 3️⃣ django-allauth [Allauth]
     path("accounts/", include("allauth.urls")),
@@ -34,6 +36,10 @@ urlpatterns = [
     path(
         "api/learning/",
         include("learning.urls"),
+    ),
+    path(
+        "api/scraper/",
+        include("scraper.urls"),
     ),
     path(
         "api/ai/",

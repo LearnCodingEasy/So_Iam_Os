@@ -15,6 +15,7 @@
     </header>
 
     <Message v-if="error" severity="error" closable @close="error = ''">{{ error }}</Message>
+    <Message v-if="notice" severity="success" closable @close="notice = ''">{{ notice }}</Message>
 
     <section class="stats" v-if="dashboard">
       <Card v-for="item in statCards" :key="item.label" class="stat-card">
@@ -87,6 +88,7 @@
         </template>
       </Card>
 
+      <Message v-if="loading" severity="info" :closable="false">جاري تحميل الوظائف...</Message>
       <div class="job-grid" v-if="jobs.length">
         <Card v-for="job in jobs" :key="job.id" class="job-card">
           <template #content>
@@ -132,16 +134,20 @@
                 text
                 :loading="generatingLetterFor === job.id"
                 @click="generateLetter(job)"
-              /><Button
-                icon="pi pi-check"
-                label="Apply"
-                @click="applyJob(job)"
-              /><a v-if="job.url" :href="job.url" target="_blank" rel="noopener">Open ↗</a>
+              /><Button icon="pi pi-check" label="Apply" @click="applyJob(job)" /><a
+                v-if="job.url"
+                :href="job.url"
+                target="_blank"
+                rel="noopener"
+                >Open ↗</a
+              >
             </div>
           </template>
         </Card>
       </div>
-      <div v-else class="empty">مفيش وظائف مطابقة حاليًا. أضف وظيفة أو اعمل Sync للمصادر.</div>
+      <div v-else-if="!loading" class="empty">
+        مفيش وظائف مطابقة حاليًا. أضف وظيفة أو اعمل Sync للمصادر.
+      </div>
     </section>
 
     <!-- RECOMMENDATIONS -->
@@ -290,10 +296,24 @@
                 </p>
               </div>
               <div class="item-actions">
-                <Button icon="pi pi-play" text @click="syncSourceNow(source)" /><Button
+                <Button
+                  icon="pi pi-play"
+                  text
+                  v-tooltip.top="'Sync source'"
+                  @click="syncSourceNow(source)"
+                />
+                <Button
                   icon="pi pi-check-circle"
                   text
+                  v-tooltip.top="'Test source'"
                   @click="testSourceNow(source)"
+                />
+                <Button
+                  v-if="source.source_type === 'scraper'"
+                  icon="pi pi-eye"
+                  text
+                  v-tooltip.top="'Preview scraper'"
+                  @click="previewSourceNow(source)"
                 />
               </div>
             </article></div></template
@@ -369,20 +389,51 @@
     </section>
 
     <!-- AI COVER LETTER -->
-    <Dialog v-model:visible="letterDialog" modal header="AI Cover Letter" :style="{ width: '760px', maxWidth: '95vw' }">
-      <p v-if="generatedLetter" class="helper-note">تم إنشاء الخطاب باستخدام مزود الذكاء الاصطناعي المضبوط في إعدادات AI. راجعه وعدّله قبل الإرسال.</p>
-      <Textarea v-model="generatedLetter" rows="16" autoResize class="letter-editor" placeholder="سيظهر الخطاب هنا..." />
+    <Dialog
+      v-model:visible="letterDialog"
+      modal
+      header="AI Cover Letter"
+      :style="{ width: '760px', maxWidth: '95vw' }"
+    >
+      <p v-if="generatedLetter" class="helper-note">
+        تم إنشاء الخطاب باستخدام مزود الذكاء الاصطناعي المضبوط في إعدادات AI. راجعه وعدّله قبل
+        الإرسال.
+      </p>
+      <Textarea
+        v-model="generatedLetter"
+        rows="16"
+        autoResize
+        class="letter-editor"
+        placeholder="سيظهر الخطاب هنا..."
+      />
       <template #footer>
         <Button label="نسخ الخطاب" icon="pi pi-copy" text @click="copyLetter" />
         <Button label="إغلاق" @click="letterDialog = false" />
       </template>
     </Dialog>
 
-    <Dialog v-model:visible="helpDialog" modal header="شرح مطابقة الوظائف وخطاب التقديم" :style="{ width: '600px', maxWidth: '95vw' }">
+    <Dialog
+      v-model:visible="helpDialog"
+      modal
+      header="شرح مطابقة الوظائف وخطاب التقديم"
+      :style="{ width: '600px', maxWidth: '95vw' }"
+    >
       <div class="jobs-help-content">
-        <h3>Resume / Job Matching</h3><p>يعتمد التوافق على بيانات المهارات والتفضيلات والوظيفة المتاحة في حسابك. النتيجة مؤشر مساعد وليست ضمانًا لقبولك.</p>
-        <h3>Cover Letter</h3><p>يتم إرسال وصف الوظيفة ومحتوى السيرة الذاتية المختارة إلى مزود AI الذي ضبطته في إعدادات التطبيق. الخطاب الناتج يُحفظ في سجل خطاباتك؛ راجعه للتأكد من دقته قبل استخدامه.</p>
-        <h3>بيانات الطلب</h3><p>المسار يستخدم معرّف الوظيفة، واختياريًا resume_id وcontext. الوصول محصور في الوظائف والسير الذاتية التابعة لحسابك.</p>
+        <h3>Resume / Job Matching</h3>
+        <p>
+          يعتمد التوافق على بيانات المهارات والتفضيلات والوظيفة المتاحة في حسابك. النتيجة مؤشر مساعد
+          وليست ضمانًا لقبولك.
+        </p>
+        <h3>Cover Letter</h3>
+        <p>
+          يتم إرسال وصف الوظيفة ومحتوى السيرة الذاتية المختارة إلى مزود AI الذي ضبطته في إعدادات
+          التطبيق. الخطاب الناتج يُحفظ في سجل خطاباتك؛ راجعه للتأكد من دقته قبل استخدامه.
+        </p>
+        <h3>بيانات الطلب</h3>
+        <p>
+          المسار يستخدم معرّف الوظيفة، واختياريًا resume_id وcontext. الوصول محصور في الوظائف والسير
+          الذاتية التابعة لحسابك.
+        </p>
       </div>
     </Dialog>
 
@@ -473,6 +524,7 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
+import '@/assets/scss/Jobs/JobsView.scss'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Message from 'primevue/message'
@@ -520,6 +572,7 @@ const busy = ref(false)
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
+const notice = ref('')
 const dialog = ref(false)
 const sourceDialog = ref(false)
 const timelineDialog = ref(false)
@@ -663,7 +716,24 @@ function applicationsByStage(stage) {
   return applications.value.filter((x) => x.status === stage)
 }
 function showError(e, fallback) {
-  error.value = e?.response?.data?.detail || fallback
+  const data = e?.response?.data
+  if (typeof data === 'string') {
+    error.value = data || fallback
+    return
+  }
+  if (data?.detail) {
+    error.value = data.detail
+    return
+  }
+  if (data && typeof data === 'object') {
+    const messages = Object.entries(data).flatMap(([field, value]) => {
+      const values = Array.isArray(value) ? value : [value]
+      return values.map((message) => `${field}: ${String(message)}`)
+    })
+    error.value = messages.join(' · ') || fallback
+    return
+  }
+  error.value = fallback
 }
 
 async function loadJobs() {
@@ -682,7 +752,7 @@ async function loadDashboard() {
   dashboard.value = await getDashboard()
 }
 async function loadAll() {
-  await Promise.all([
+  const results = await Promise.allSettled([
     loadJobs(),
     loadDashboard(),
     loadSources(),
@@ -693,6 +763,8 @@ async function loadAll() {
     loadApplications(),
     loadRecommendations(),
   ])
+  const failed = results.find((result) => result.status === 'rejected')
+  if (failed) showError(failed.reason, 'تعذر تحميل بعض بيانات مساحة الوظائف.')
 }
 async function loadSources() {
   sources.value = await listSources()
@@ -785,18 +857,33 @@ async function analyzeJobNow(job) {
   }
 }
 async function analyzeVisibleJobs() {
-  for (const job of jobs.value) {
-    try {
-      await analyzeJob(job.id)
-    } catch {}
+  if (!jobs.value.length) return
+  busy.value = true
+  let failedCount = 0
+  try {
+    for (const job of jobs.value) {
+      try {
+        await analyzeJob(job.id)
+      } catch (e) {
+        failedCount += 1
+        showError(e, `تعذر تحليل الوظيفة: ${job.title || job.id}`)
+      }
+    }
+    await loadJobs()
+    if (failedCount === 0) error.value = ''
+    else
+      error.value = `تعذر تحليل ${failedCount} من ${jobs.value.length} وظيفة. راجع الأخطاء المعروضة وأعد المحاولة.`
+  } finally {
+    busy.value = false
   }
-  await loadJobs()
 }
 async function applyJob(job) {
   try {
     await fetchApply(job.id)
     await loadApplications()
     await loadDashboard()
+    notice.value = `تم تسجيل التقديم على: ${job.title}.`
+    error.value = ''
   } catch (e) {
     showError(e, 'تعذر تسجيل التقديم.')
   }
@@ -846,7 +933,11 @@ async function showTimeline(app) {
 }
 async function syncSourceNow(source) {
   try {
-    await syncSource(source.id)
+    const result = await syncSource(source.id)
+    notice.value = result.queued
+      ? `تم وضع مزامنة ${source.name} في قائمة التنفيذ.`
+      : `تم تنفيذ مزامنة ${source.name}.`
+    error.value = ''
     await loadSources()
   } catch (e) {
     showError(e, 'تعذر تشغيل الـ sync.')
@@ -856,14 +947,20 @@ async function previewSourceNow(source) {
   try {
     const { previewSource } = await import('@/services/jobs')
     const result = await previewSource(source.id)
-    alert(`Preview: ${result.items?.length || 0} jobs`)
+    notice.value = `اكتملت معاينة المصدر ${source.name}: ${result.items?.length || 0} وظيفة.`
+    error.value = ''
   } catch (e) {
     showError(e, 'تعذر معاينة المصدر.')
   }
 }
 async function testSourceNow(source) {
   try {
-    await testSource(source.id)
+    const result = await testSource(source.id)
+    error.value = result.ok
+      ? ''
+      : result.message || 'فشل اختبار المصدر؛ راجع إعداداته وصلاحية الوصول.'
+    notice.value = result.ok ? `اجتاز المصدر ${source.name} اختبار الاتصال.` : ''
+    if (!result.ok) return
   } catch (e) {
     showError(e, 'المصدر غير جاهز.')
   }
@@ -951,6 +1048,8 @@ async function saveJob() {
   try {
     await createJob(form)
     dialog.value = false
+    notice.value = 'تمت إضافة الوظيفة بنجاح.'
+    error.value = ''
     await loadJobs()
     await loadDashboard()
   } catch (e) {

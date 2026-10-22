@@ -721,7 +721,8 @@ class LearningNoteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = get_request_user(self)
-
+        # منع التكرار إذا وجد
+        validated_data.pop('user', None)
         return LearningNote.objects.create(
             user=user,
             **validated_data,
@@ -2042,7 +2043,8 @@ class LearningTopicDetailSerializer(
         }
 
     def get_next_topic(self, obj):
-        topic = obj.path.topics.filter(order__gt=obj.order).exclude(status=LearningTopic.Status.SKIPPED).order_by("order", "id").first()
+        topic = obj.path.topics.filter(order__gt=obj.order).exclude(
+            status=LearningTopic.Status.SKIPPED).order_by("order", "id").first()
         if not topic:
             return None
         return {"id": topic.id, "title": topic.title, "order": topic.order, "status": topic.status}

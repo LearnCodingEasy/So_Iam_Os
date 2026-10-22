@@ -127,13 +127,18 @@ SOCIALACCOUNT_ADAPTER = (
 # Redirects follow the configured frontend origin rather than hard-coded localhost URLs.
 _FRONTEND_REDIRECT_BASE = config(
     "FRONTEND_URL",
-    default=("https://app.example.com" if ENVIRONMENT == "production" else "http://localhost:5173"),
+    default=("https://app.example.com" if ENVIRONMENT ==
+             "production" else "http://localhost:5173"),
 ).rstrip("/")
-LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/auth/callback")
+LOGIN_REDIRECT_URL = config(
+    "LOGIN_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/auth/callback")
 LOGOUT_REDIRECT_URL = config("LOGOUT_REDIRECT_URL", default="/accounts/login/")
-ACCOUNT_LOGOUT_REDIRECT_URL = config("ACCOUNT_LOGOUT_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/login")
-ACCOUNT_SIGNUP_REDIRECT_URL = config("ACCOUNT_SIGNUP_REDIRECT_URL", default=_FRONTEND_REDIRECT_BASE)
-SOCIALACCOUNT_LOGIN_REDIRECT_URL = config("SOCIALACCOUNT_LOGIN_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/auth-callback/")
+ACCOUNT_LOGOUT_REDIRECT_URL = config(
+    "ACCOUNT_LOGOUT_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/login")
+ACCOUNT_SIGNUP_REDIRECT_URL = config(
+    "ACCOUNT_SIGNUP_REDIRECT_URL", default=_FRONTEND_REDIRECT_BASE)
+SOCIALACCOUNT_LOGIN_REDIRECT_URL = config(
+    "SOCIALACCOUNT_LOGIN_REDIRECT_URL", default=f"{_FRONTEND_REDIRECT_BASE}/auth-callback/")
 
 # 📧 Development Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -190,7 +195,8 @@ CORS_ALLOWED_ORIGINS = [
 AUTH_USER_MODEL = "users_accounts.User"
 ALLOWED_HOSTS = [h.strip() for h in config(
     "ALLOWED_HOSTS",
-    default=("" if ENVIRONMENT == "production" else "localhost,127.0.0.1,192.168.1.5,172.23.232.133"),
+    default=("" if ENVIRONMENT ==
+             "production" else "localhost,127.0.0.1,192.168.1.5,172.23.232.133"),
 ).split(",") if h.strip()]
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in config(
     "CSRF_TRUSTED_ORIGINS",
@@ -231,17 +237,22 @@ if ENVIRONMENT == "production":
     if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:
         raise ImproperlyConfigured("Set explicit production ALLOWED_HOSTS.")
     if not CORS_ALLOWED_ORIGINS:
-        raise ImproperlyConfigured("Set explicit production CORS_ALLOWED_ORIGINS.")
+        raise ImproperlyConfigured(
+            "Set explicit production CORS_ALLOWED_ORIGINS.")
     if any(not origin.startswith("https://") for origin in CORS_ALLOWED_ORIGINS):
         raise ImproperlyConfigured("Production CORS origins must use HTTPS.")
     if not CSRF_TRUSTED_ORIGINS or any(not origin.startswith("https://") for origin in CSRF_TRUSTED_ORIGINS):
-        raise ImproperlyConfigured("Set explicit HTTPS production CSRF_TRUSTED_ORIGINS.")
+        raise ImproperlyConfigured(
+            "Set explicit HTTPS production CSRF_TRUSTED_ORIGINS.")
     if CORS_ALLOW_ALL_ORIGINS:
-        raise ImproperlyConfigured("CORS_ALLOW_ALL_ORIGINS must be False in production.")
+        raise ImproperlyConfigured(
+            "CORS_ALLOW_ALL_ORIGINS must be False in production.")
     if not SECURE_SSL_REDIRECT or not CSRF_COOKIE_SECURE or not SESSION_COOKIE_SECURE:
-        raise ImproperlyConfigured("Production SSL redirect and secure cookies must be enabled.")
+        raise ImproperlyConfigured(
+            "Production SSL redirect and secure cookies must be enabled.")
     if SECURE_HSTS_SECONDS < 1:
-        raise ImproperlyConfigured("Production requires a positive SECURE_HSTS_SECONDS value.")
+        raise ImproperlyConfigured(
+            "Production requires a positive SECURE_HSTS_SECONDS value.")
 
 # 0️⃣ channels
 
@@ -372,7 +383,6 @@ INSTALLED_APPS = [
     # ================================================
     # 📚 Apps
     # ================================================
-
     "ai",
     "automation",
     "challenges",
@@ -386,6 +396,7 @@ INSTALLED_APPS = [
     "notification",
     "personal_finance",
     "projects",
+    "scraper",
     "social",
     "tasks",
     "users_accounts",
@@ -537,5 +548,3 @@ CACHES = {
         "TIMEOUT": 300,
     }
 }
-
-

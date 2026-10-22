@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from django.conf import settings
 from django.db import models
 
@@ -147,3 +148,45 @@ class AIMessage(models.Model):
 
     def __str__(self):
         return f"{self.role}: {self.content[:50]}"
+
+
+# backend_django/ai/models.py
+
+
+class AIProviderConfig(models.Model):
+    PROVIDER_TYPES = [
+        ('ollama', 'Ollama (Local)'),
+        ('openai', 'OpenAI'),
+        ('gemini', 'Google Gemini'),
+        ('deepseek', 'DeepSeek'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=50, unique=True)
+    provider_type = models.CharField(max_length=20, choices=PROVIDER_TYPES)
+    api_key_encrypted = models.TextField(blank=True, null=True)
+    api_base_url = models.URLField(blank=True, null=True)
+    model_name = models.CharField(max_length=100, default="default")
+    priority = models.IntegerField(default=1)
+    is_active = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def set_api_key(self, raw_key):
+        fernet = Fernet(settings.ENCRYPTION_KEY.encode() if hasattr(
+            settings, 'ENCRYPTION_KEY') else Fernet.generate_key())
+        self.api_key_encrypted = fernet.encrypt(raw_key.encode()).decode()
+
+    def get_api_key(self):
+        if not self.api_key_encrypted:
+            return None
+        fernet = Fernet(settings.ENCRYPTION_KEY.encode())
+        return fernet.decrypt(self.api_key_encrypted.encode()).decode()
+
+    @property
+    def api_key(self):
+        return self.get_api_key()
+
+    def __str__(self):
+        return f"{self.name} ({self.provider_type})"

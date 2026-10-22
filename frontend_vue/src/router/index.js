@@ -13,6 +13,8 @@ import LearningView from '../views/learning/LearningView.vue'
 
 import Dashboard from '../views/Dashboard/DashboardView.vue'
 
+import ScraperView from '@/views/Scraper/ScraperView.vue'
+
 import AIChat from '@/views/AI/AIChat.vue'
 import AIControl from '@/views/AI/AI.vue'
 import SettingsView from '@/views/Settings/Settings.vue'
@@ -160,6 +162,12 @@ const router = createRouter({
       path: '/jobs',
       name: 'jobs',
       component: JobsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/scraper',
+      name: 'scraper',
+      component: ScraperView,
       meta: { requiresAuth: true },
     },
     {

@@ -10,6 +10,102 @@ from .learning_actions import looks_like_learning_request, AILearningActionServi
 from .prompts import build_system_prompt
 
 
+# backend_django/ai/services.py
+import logging
+import requests
+from django.conf import settings
+from .models import AIProviderConfig
+
+logger = logging.getLogger(__name__)
+
+
+class AIFallbackChainService:
+    """
+    Manages automatic fallback execution across multiple AI providers 
+    (Ollama, OpenAI, Gemini, DeepSeek).
+    """
+
+    @staticmethod
+    def generate_completion(prompt, user=None, preferred_provider=None):
+        providers = AIFallbackChainService._get_provider_order(
+            user, preferred_provider)
+
+        for provider in providers:
+            try:
+                logger.info(
+                    f"Attempting AI completion with provider: {provider.name}")
+                response = AIFallbackChainService._dispatch(provider, prompt)
+                if response:
+                    return {
+                        "provider": provider.name,
+                        "content": response
+                    }
+            except Exception as e:
+                logger.warning(
+                    f"Provider {provider.name} failed: {str(e)}. Cascading to next provider...")
+                continue
+
+        raise RuntimeError(
+            "All configured AI providers in the fallback chain have failed.")
+
+    @staticmethod
+    def _get_provider_order(user, preferred):
+        # Fetch user-configured providers or defaults from database / settings
+        if preferred:
+            primary = AIProviderConfig.objects.filter(
+                name=preferred, is_active=True).first()
+            if primary:
+                fallbacks = AIProviderConfig.objects.filter(
+                    is_active=True).exclude(id=primary.id)
+                return [primary] + list(fallbacks)
+
+        return list(AIProviderConfig.objects.filter(is_active=True).order_by('priority'))
+
+    @staticmethod
+    def _dispatch(provider, prompt):
+        if provider.provider_type == 'ollama':
+            return AIFallbackChainService._call_ollama(provider, prompt)
+        elif provider.provider_type == 'openai':
+            return AIFallbackChainService._call_openai(provider, prompt)
+        elif provider.provider_type == 'gemini':
+            return AIFallbackChainService._call_gemini(provider, prompt)
+        elif provider.provider_type == 'deepseek':
+            return AIFallbackChainService._call_deepseek(provider, prompt)
+        return None
+
+    @staticmethod
+    def _call_ollama(provider, prompt):
+        url = provider.api_base_url or "http://localhost:11434/api/generate"
+        payload = {"model": provider.model_name or "llama3",
+                   "prompt": prompt, "stream": False}
+        res = requests.post(url, json=payload, timeout=30)
+        res.raise_for_status()
+        return res.json().get("response")
+
+    @staticmethod
+    def _call_openai(provider, prompt):
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {"Authorization": f"Bearer {provider.api_key}",
+                   "Content-Type": "application/json"}
+        payload = {
+            "model": provider.model_name or "gpt-4o-mini",
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        res = requests.post(url, json=payload, headers=headers, timeout=30)
+        res.raise_for_status()
+        return res.json()["choices"][0]["message"]["content"]
+
+    @staticmethod
+    def _call_gemini(provider, prompt):
+        # Implement Gemini API wrapper or SDK call here
+        pass
+
+    @staticmethod
+    def _call_deepseek(provider, prompt):
+        # Implement DeepSeek API wrapper here
+        pass
+
+
 class AIContextBuilder:
     def __init__(self, user, max_items=20):
         self.user = user
@@ -58,17 +154,20 @@ class AIContextBuilder:
             context["learning_paths"] = []
         try:
             from memory.models import MemoryItem
-            context["memory"] = [{"id": x.id, "type": x.type, "key": x.key, "content": x.content[:1000], "importance": x.importance} for x in MemoryItem.objects.filter(user=self.user, is_active=True).order_by("-importance","-updated_at")[:self.max_items]]
+            context["memory"] = [{"id": x.id, "type": x.type, "key": x.key, "content": x.content[:1000], "importance": x.importance}
+                                 for x in MemoryItem.objects.filter(user=self.user, is_active=True).order_by("-importance", "-updated_at")[:self.max_items]]
         except Exception:
             context["memory"] = []
         try:
             from jobs_opportunity.models import JobOpportunity
-            context["job_opportunities"] = [{"id": x.id, "title": x.title, "company": x.company, "location": x.location, "remote": x.is_remote} for x in JobOpportunity.objects.filter(user=self.user, is_active=True).order_by("-published_at")[:10]]
+            context["job_opportunities"] = [{"id": x.id, "title": x.title, "company": x.company, "location": x.location, "remote": x.is_remote}
+                                            for x in JobOpportunity.objects.filter(user=self.user, is_active=True).order_by("-published_at")[:10]]
         except Exception:
             context["job_opportunities"] = []
         try:
             from projects.models import Project
-            context["projects"] = [{"id": x.id, "title": x.title, "status": x.status, "description": x.description[:500]} for x in Project.objects.filter(user=self.user).order_by("-updated_at")[:10]]
+            context["projects"] = [{"id": x.id, "title": x.title, "status": x.status, "description": x.description[:500]}
+                                   for x in Project.objects.filter(user=self.user).order_by("-updated_at")[:10]]
         except Exception:
             context["projects"] = []
         return context

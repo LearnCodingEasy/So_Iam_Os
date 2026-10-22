@@ -195,13 +195,6 @@ const learningTracks = ref([
   },
 ])
 
-const taskStatuses = ref([
-  { label: 'Completed', count: 91, pct: '64%', color: '#006c4a' },
-  { label: 'In Progress', count: 31, pct: '22%', color: '#4f46e5' },
-  { label: 'Backlog', count: 14, pct: '10%', color: '#004c76' },
-  { label: 'Blocked', count: 6, pct: '4%', color: '#ba1a1a' },
-])
-
 const habits = ref([
   { name: 'Deep Work (4h+)', status: ['✓', '✓', '★', '✓', '✓', '—', '—'] },
   { name: 'Code Kata & Refactor', status: ['✓', '✓', '✓', '✓', '✓', '✓', '—'] },
@@ -239,52 +232,46 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="w-full bg-background min-h-screen px-6 py-6 text-on-surface antialiased font-sans">
+  <div class="w-full min-h-screen px-6 py-6 antialiased font-sans dashboard-page">
     <div class="flex flex-col w-full gap-6 pb-8">
-      <!-- ================= ERROR NOTIFICATION ================= -->
+      <!-- ========= ERROR NOTIFICATION ========= -->
       <div
         v-if="error"
-        class="p-4 bg-red-100 text-red-700 rounded-xl border border-red-200 flex items-center justify-between"
+        class="p-4 rounded-xl border flex items-center justify-between error-banner"
       >
         <span><strong>Dashboard API Error:</strong> {{ error }}</span>
         <Button label="Try again" @click="loadDashboard" severity="danger" size="small" />
       </div>
 
-      <!-- ================= TOP HEADER / ACTION BAR ================= -->
+      <!-- ======= TOP HEADER / ACTION BAR ======= -->
       <div
-        class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/20"
+        class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 p-6 rounded-xl shadow-sm border header-card"
       >
         <div class="flex flex-col gap-1 max-w-2xl">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-2xl font-semibold text-on-surface tracking-tight">
-              {{ greeting }}, {{ userName }} 👋
-            </h1>
+            <h1 class="text-2xl font-semibold tracking-tight">{{ greeting }}, {{ userName }} 👋</h1>
             <span
-              class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container font-mono text-[11px] font-semibold"
+              class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full font-mono text-[11px] font-semibold system-badge"
             >
-              <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-              System Active • SO_Iam_OS v2.4
+              <span class="w-2 h-2 rounded-full animate-pulse status-dot"></span>
+              System Active • SO Iam OS v2.4
             </span>
           </div>
-          <p class="text-sm text-on-surface-variant">
+          <p class="text-sm">
             Your goals, projects, and active database telemetry synthesis in real-time.
           </p>
         </div>
 
         <!-- Controls & Actions -->
         <div class="flex flex-wrap items-center gap-3">
-          <div
-            class="flex items-center p-1 bg-surface-container-low rounded-lg gap-1 border border-outline-variant/20"
-          >
+          <div class="flex items-center p-1 rounded-lg gap-1 border control-group">
             <button
               v-for="tf in timeframes"
               :key="tf"
               @click="selectedTimeframe = tf"
               :class="[
-                'px-3 py-1 rounded-md text-xs transition-all font-medium',
-                selectedTimeframe === tf
-                  ? 'bg-primary text-on-primary shadow-sm font-semibold'
-                  : 'text-on-surface-variant hover:text-on-surface',
+                'px-3 py-1 rounded-md text-xs transition-all font-medium timeframe-btn',
+                selectedTimeframe === tf ? 'active' : '',
               ]"
             >
               {{ tf }}
@@ -303,7 +290,7 @@ onBeforeUnmount(() => {
               <Button
                 label="Ask AI Assistant"
                 icon="pi pi-sparkles"
-                class="!text-xs !py-1.5 !px-3 !bg-primary !border-primary"
+                class="!text-xs !py-1.5 !px-3"
               />
             </RouterLink>
           </div>
@@ -316,29 +303,27 @@ onBeforeUnmount(() => {
           v-for="stat in statsList"
           :key="stat.title"
           :to="stat.route"
-          class="flex flex-col justify-between p-5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow border border-outline-variant/20 group"
+          class="flex flex-col justify-between p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border group stat-card"
         >
-          <div class="flex items-center justify-between text-on-surface-variant mb-2">
-            <span class="text-xs uppercase tracking-wider font-semibold text-on-surface-variant">{{
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs uppercase tracking-wider font-semibold stat-title">{{
               stat.title
             }}</span>
             <div
-              class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
+              class="w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform icon-wrapper"
             >
               <i :class="[stat.icon, 'text-base']"></i>
             </div>
           </div>
           <div class="flex items-baseline justify-between mt-1">
-            <span class="text-3xl font-semibold text-on-surface tracking-tight font-mono">
+            <span class="text-3xl font-semibold tracking-tight font-mono stat-value">
               {{ loading ? '...' : stat.value }}
             </span>
             <Tag :value="stat.tagValue" :severity="stat.tagSeverity" class="!text-[11px] !py-0.5" />
           </div>
-          <div
-            class="mt-3 flex items-center justify-between text-on-surface-variant font-mono text-[11px]"
-          >
+          <div class="mt-3 flex items-center justify-between font-mono text-[11px] stat-footer">
             <span>{{ stat.activeText }}</span>
-            <span class="text-secondary font-semibold">{{ stat.completedText }}</span>
+            <span class="font-semibold secondary-text">{{ stat.completedText }}</span>
           </div>
         </RouterLink>
       </div>
@@ -346,48 +331,38 @@ onBeforeUnmount(() => {
       <!-- ================= BENTO SECTION 1: MOMENTUM CHART + LEARNING MATRIX ================= -->
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         <!-- Bento Card 1: Productivity Momentum Chart (8 cols) -->
-        <div
-          class="xl:col-span-8 flex flex-col bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20"
-        >
+        <div class="xl:col-span-8 flex flex-col rounded-xl p-6 shadow-sm border bento-card">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div class="flex flex-col gap-0.5">
               <div class="flex items-center gap-2">
-                <h2 class="text-lg font-semibold text-on-surface">
-                  Productivity & Velocity Momentum
-                </h2>
+                <h2 class="text-lg font-semibold">Productivity & Velocity Momentum</h2>
                 <span
-                  class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-mono text-[11px] font-semibold"
+                  class="px-2 py-0.5 rounded font-mono text-[11px] font-semibold telemetry-badge"
                   >Telemetry V2</span
                 >
               </div>
-              <p class="text-xs text-on-surface-variant">
-                Focus Hours (Area) mapped against Task Delivery Velocity (Line)
-              </p>
+              <p class="text-xs">Focus Hours (Area) mapped against Task Delivery Velocity (Line)</p>
             </div>
 
             <div class="flex items-center gap-4 flex-wrap">
               <div class="flex items-center gap-3 font-mono text-xs">
                 <div class="flex items-center gap-1.5">
-                  <span class="w-3 h-3 rounded-sm bg-primary/80"></span>
-                  <span class="text-on-surface-variant text-[11px]">Focus Hours</span>
+                  <span class="w-3 h-3 rounded-sm legend-box focus-box"></span>
+                  <span class="text-[11px]">Focus Hours</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <span class="w-3 h-1 rounded-full bg-secondary"></span>
-                  <span class="text-on-surface-variant text-[11px]">Task Velocity</span>
+                  <span class="w-3 h-1 rounded-full legend-line velocity-line"></span>
+                  <span class="text-[11px]">Task Velocity</span>
                 </div>
               </div>
-              <div
-                class="flex items-center p-0.5 bg-surface-container-low rounded-lg gap-0.5 border border-outline-variant/20"
-              >
+              <div class="flex items-center p-0.5 rounded-lg gap-0.5 border view-toggle">
                 <button
                   v-for="v in chartViews"
                   :key="v"
                   @click="selectedChartView = v"
                   :class="[
-                    'px-2 py-0.5 rounded text-[11px] font-medium transition-all',
-                    selectedChartView === v
-                      ? 'bg-surface-container-lowest text-on-surface shadow-sm font-semibold'
-                      : 'text-on-surface-variant',
+                    'px-2 py-0.5 rounded text-[11px] font-medium transition-all view-btn',
+                    selectedChartView === v ? 'active' : '',
                   ]"
                 >
                   {{ v }}
@@ -399,18 +374,18 @@ onBeforeUnmount(() => {
           <!-- Interactive SVG Chart -->
           <div class="relative w-full h-72 sm:h-80 select-none">
             <svg
-              class="w-full h-full overflow-visible"
+              class="w-full h-full overflow-visible chart-svg"
               viewBox="0 0 760 300"
               preserveAspectRatio="none"
             >
               <defs>
                 <linearGradient id="focusGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.28" />
-                  <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.0" />
+                  <stop offset="0%" class="stop-focus-top" />
+                  <stop offset="100%" class="stop-focus-bottom" />
                 </linearGradient>
                 <linearGradient id="velocityLineGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stop-color="#006c4a" />
-                  <stop offset="100%" stop-color="#00714e" />
+                  <stop offset="0%" class="stop-velocity-start" />
+                  <stop offset="100%" class="stop-velocity-end" />
                 </linearGradient>
               </defs>
 
@@ -421,11 +396,11 @@ onBeforeUnmount(() => {
                 :y1="y"
                 x2="740"
                 :y2="y"
-                stroke="#eaedff"
+                class="grid-line"
                 stroke-dasharray="4 4"
                 stroke-width="1"
               />
-              <line x1="40" y1="270" x2="740" y2="270" stroke="#dae2fd" stroke-width="1" />
+              <line x1="40" y1="270" x2="740" y2="270" class="baseline-line" stroke-width="1" />
 
               <path
                 d="M75,270 L75,136 Q130,110 180,94 T290,64 T400,106 T510,73 T620,157 T720,175 L720,270 Z"
@@ -434,7 +409,7 @@ onBeforeUnmount(() => {
               <path
                 d="M75,136 Q130,110 180,94 T290,64 T400,106 T510,73 T620,157 T720,175"
                 fill="none"
-                stroke="#4f46e5"
+                class="focus-path"
                 stroke-width="2.5"
               />
               <path
@@ -444,19 +419,25 @@ onBeforeUnmount(() => {
                 stroke-width="2.75"
               />
 
-              <circle cx="290" cy="52" r="5" fill="#006c4a" stroke="#ffffff" stroke-width="2.5" />
-              <circle cx="290" cy="64" r="5" fill="#4f46e5" stroke="#ffffff" stroke-width="2.5" />
+              <circle
+                cx="290"
+                cy="52"
+                r="5"
+                class="chart-point point-secondary"
+                stroke-width="2.5"
+              />
+              <circle cx="290" cy="64" r="5" class="chart-point point-primary" stroke-width="2.5" />
 
               <text
                 v-for="(day, idx) in daysLabels"
                 :key="idx"
                 :x="day.x"
                 y="290"
-                fill="#777587"
                 font-family="monospace"
                 font-size="11"
                 text-anchor="middle"
                 :font-weight="day.active ? 'bold' : 'normal'"
+                class="chart-label"
               >
                 {{ day.text }}
               </text>
@@ -466,13 +447,13 @@ onBeforeUnmount(() => {
 
         <!-- Bento Card 2: Learning Matrix Progress (4 cols) -->
         <div
-          class="xl:col-span-4 flex flex-col justify-between bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20"
+          class="xl:col-span-4 flex flex-col justify-between rounded-xl p-6 shadow-sm border bento-card"
         >
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex flex-col">
-                <h2 class="text-lg font-semibold text-on-surface">Learning Matrix</h2>
-                <span class="text-xs text-on-surface-variant">Active competencies Q4</span>
+                <h2 class="text-lg font-semibold">Learning Matrix</h2>
+                <span class="text-xs muted-text">Active competencies Q4</span>
               </div>
               <RouterLink to="/learning">
                 <Button
@@ -480,7 +461,7 @@ onBeforeUnmount(() => {
                   icon="pi pi-arrow-right"
                   iconPos="right"
                   text
-                  class="!text-xs !p-0 !text-primary"
+                  class="!text-xs !p-0"
                 />
               </RouterLink>
             </div>
@@ -489,14 +470,12 @@ onBeforeUnmount(() => {
               <div
                 v-for="track in learningTracks"
                 :key="track.title"
-                class="flex flex-col gap-1.5 p-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors"
+                class="flex flex-col gap-1.5 p-3 rounded-lg track-item transition-colors"
               >
                 <div class="flex items-start justify-between gap-2">
                   <div class="flex flex-col">
-                    <span class="text-sm font-semibold text-on-surface">{{ track.title }}</span>
-                    <span class="font-mono text-[11px] text-on-surface-variant">{{
-                      track.subtitle
-                    }}</span>
+                    <span class="text-sm font-semibold">{{ track.title }}</span>
+                    <span class="font-mono text-[11px] muted-text">{{ track.subtitle }}</span>
                   </div>
                   <Tag
                     :value="track.tag"
@@ -507,11 +486,9 @@ onBeforeUnmount(() => {
                 <ProgressBar
                   :value="track.progress"
                   :showValue="false"
-                  class="!h-2 !bg-surface-container-high"
+                  class="!h-2 custom-progressbar"
                 />
-                <div
-                  class="flex items-center justify-between text-[11px] font-mono text-on-surface-variant"
-                >
+                <div class="flex items-center justify-between text-[11px] font-mono muted-text">
                   <span>Progress: {{ track.progress }}%</span>
                   <span>Target: {{ track.target }}</span>
                 </div>
@@ -525,46 +502,46 @@ onBeforeUnmount(() => {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-6 items-stretch">
         <!-- Bento Card 3: Real Database Tasks (4 cols) -->
         <div
-          class="xl:col-span-4 flex flex-col justify-between bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20"
+          class="xl:col-span-4 flex flex-col justify-between rounded-xl p-6 shadow-sm border bento-card"
         >
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex flex-col">
-                <h2 class="text-lg font-semibold text-on-surface">Today's Tasks</h2>
-                <span class="text-xs text-on-surface-variant">Fetched directly from database</span>
+                <h2 class="text-lg font-semibold">Today's Tasks</h2>
+                <span class="text-xs muted-text">Fetched directly from database</span>
               </div>
-              <RouterLink to="/tasks" class="text-xs text-primary font-semibold hover:underline"
+              <RouterLink to="/tasks" class="text-xs font-semibold hover:underline link-action"
                 >View all →</RouterLink
               >
             </div>
 
             <div class="flex flex-col gap-2 max-h-64 overflow-y-auto">
-              <div v-if="loading" class="text-xs text-on-surface-variant p-4 text-center font-mono">
+              <div v-if="loading" class="text-xs muted-text p-4 text-center font-mono">
                 Loading tasks...
               </div>
               <div
                 v-else-if="tasks.length === 0"
-                class="text-xs text-on-surface-variant p-4 text-center font-mono"
+                class="text-xs muted-text p-4 text-center font-mono"
               >
                 No tasks for today.
-                <RouterLink to="/tasks" class="text-primary underline">Create one</RouterLink>
+                <RouterLink to="/tasks" class="link-action underline">Create one</RouterLink>
               </div>
               <div
                 v-for="task in tasks"
                 :key="task.id || task.title"
-                class="flex items-center gap-3 p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors"
+                class="flex items-center gap-3 p-2.5 rounded-lg task-item transition-colors"
               >
                 <span
                   :class="[
-                    'w-4 h-4 rounded flex items-center justify-center text-[10px]',
-                    task.completed ? 'bg-secondary text-white' : 'border border-outline-variant',
+                    'w-4 h-4 rounded flex items-center justify-center text-[10px] task-checkbox',
+                    task.completed ? 'completed' : '',
                   ]"
                 >
                   <span v-if="task.completed">✓</span>
                 </span>
                 <span
                   :class="[
-                    'text-xs text-on-surface font-medium truncate',
+                    'text-xs font-medium truncate task-title',
                     task.completed ? 'line-through opacity-60' : '',
                   ]"
                 >
@@ -575,10 +552,10 @@ onBeforeUnmount(() => {
           </div>
 
           <div
-            class="mt-4 pt-3 border-t border-surface-container-high flex justify-between items-center text-xs font-mono text-on-surface-variant"
+            class="mt-4 pt-3 border-t flex justify-between items-center text-xs font-mono card-footer"
           >
             <span>Total pending tasks</span>
-            <span class="text-primary font-bold"
+            <span class="font-bold link-action"
               >{{ tasks.filter((t) => !t.completed).length }} remaining</span
             >
           </div>
@@ -586,21 +563,19 @@ onBeforeUnmount(() => {
 
         <!-- Bento Card 4: Habits & Energy Matrix (5 cols) -->
         <div
-          class="xl:col-span-5 flex flex-col justify-between bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20"
+          class="xl:col-span-5 flex flex-col justify-between rounded-xl p-6 shadow-sm border bento-card"
         >
           <div class="flex items-center justify-between mb-2">
             <div class="flex flex-col">
-              <h2 class="text-lg font-semibold text-on-surface">Habits & Energy Architecture</h2>
-              <span class="text-xs text-on-surface-variant"
-                >Weekly cognitive stamina & ritual execution</span
-              >
+              <h2 class="text-lg font-semibold">Habits & Energy Architecture</h2>
+              <span class="text-xs muted-text">Weekly cognitive stamina & ritual execution</span>
             </div>
             <Tag value="Score: 89/100" severity="success" class="!text-[11px] !py-0.5" />
           </div>
 
           <div class="flex flex-col gap-2 my-2 overflow-x-auto">
             <div
-              class="grid grid-cols-8 text-center font-mono text-[11px] text-on-surface-variant pb-1 border-b border-surface-container-high min-w-[360px]"
+              class="grid grid-cols-8 text-center font-mono text-[11px] pb-1 border-b habits-header min-w-[360px]"
             >
               <span class="text-left font-semibold">Ritual Protocol</span>
               <span v-for="d in ['M', 'T', 'W', 'T', 'F', 'S', 'S']" :key="d">{{ d }}</span>
@@ -608,15 +583,13 @@ onBeforeUnmount(() => {
             <div
               v-for="habit in habits"
               :key="habit.name"
-              class="grid grid-cols-8 items-center text-center font-mono text-xs py-1 hover:bg-surface-container-low rounded transition-colors min-w-[360px]"
+              class="grid grid-cols-8 items-center text-center font-mono text-xs py-1 habit-row rounded transition-colors min-w-[360px]"
             >
-              <span class="text-left text-on-surface truncate pr-1 font-sans text-xs">{{
-                habit.name
-              }}</span>
+              <span class="text-left truncate pr-1 font-sans text-xs">{{ habit.name }}</span>
               <span
                 v-for="(val, idx) in habit.status"
                 :key="idx"
-                :class="val === '—' ? 'text-on-surface-variant/40' : 'text-secondary font-bold'"
+                :class="val === '—' ? 'muted-symbol' : 'active-symbol font-bold'"
               >
                 {{ val }}
               </span>
@@ -626,25 +599,25 @@ onBeforeUnmount(() => {
 
         <!-- Bento Card 5: Recent Knowledge Database Items (3 cols) -->
         <div
-          class="xl:col-span-3 flex flex-col justify-between bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20"
+          class="xl:col-span-3 flex flex-col justify-between rounded-xl p-6 shadow-sm border bento-card"
         >
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="flex flex-col">
-                <h2 class="text-lg font-semibold text-on-surface">Recent Knowledge</h2>
-                <span class="text-xs text-on-surface-variant">Synced repository</span>
+                <h2 class="text-lg font-semibold">Recent Knowledge</h2>
+                <span class="text-xs muted-text">Synced repository</span>
               </div>
-              <RouterLink to="/knowledge" class="text-xs text-primary font-semibold hover:underline"
+              <RouterLink to="/knowledge" class="text-xs font-semibold hover:underline link-action"
                 >View all →</RouterLink
               >
             </div>
 
-            <div v-if="loading" class="text-xs text-on-surface-variant text-center py-4">
+            <div v-if="loading" class="text-xs muted-text text-center py-4">
               Loading knowledge...
             </div>
             <div
               v-else-if="recentKnowledge.length === 0"
-              class="text-xs text-on-surface-variant text-center py-4"
+              class="text-xs muted-text text-center py-4"
             >
               No knowledge files yet.
             </div>
@@ -653,11 +626,10 @@ onBeforeUnmount(() => {
                 v-for="item in recentKnowledge"
                 :key="item.id"
                 to="/knowledge"
-                class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-xs transition-colors"
+                class="flex items-center justify-between p-2 rounded-lg knowledge-item text-xs transition-colors"
               >
-                <span class="font-medium text-on-surface truncate">{{ item.title }}</span>
-                <span
-                  class="font-mono text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded"
+                <span class="font-medium truncate">{{ item.title }}</span>
+                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded badge-count"
                   >{{ item.files_count || 0 }} files</span
                 >
               </RouterLink>
@@ -665,7 +637,7 @@ onBeforeUnmount(() => {
           </div>
 
           <div
-            class="mt-4 pt-3 border-t border-surface-container-high text-center font-mono text-[11px] text-secondary"
+            class="mt-4 pt-3 border-t text-center font-mono text-[11px] card-footer secondary-text"
           >
             System Database Connected
           </div>
@@ -673,36 +645,30 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- ================= LOGS & TELEMETRY FEED ================= -->
-      <div
-        class="flex flex-col bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20"
-      >
+      <div class="flex flex-col rounded-xl p-6 shadow-sm border bento-card">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div class="flex items-center gap-3">
-            <div
-              class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
-            >
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center icon-wrapper">
               <i class="pi pi-code text-base"></i>
             </div>
             <div>
-              <h2 class="text-lg font-semibold text-on-surface">Executive Telemetry Feed</h2>
-              <span class="text-xs text-on-surface-variant"
+              <h2 class="text-lg font-semibold">Executive Telemetry Feed</h2>
+              <span class="text-xs muted-text"
                 >Live chronological logs of system synchronization and state transitions</span
               >
             </div>
           </div>
-          <span class="font-mono text-[11px] text-on-surface-variant"
-            >Stream: Latency 14ms • OK</span
-          >
+          <span class="font-mono text-[11px] muted-text">Stream: Latency 14ms • OK</span>
         </div>
 
-        <DataTable :value="telemetryLogs" class="p-datatable-sm font-mono text-xs">
-          <Column field="timestamp" header="Timestamp" class="!text-on-surface-variant"></Column>
+        <DataTable :value="telemetryLogs" class="p-datatable-sm font-mono text-xs custom-table">
+          <Column field="timestamp" header="Timestamp" class="col-timestamp"></Column>
           <Column
             field="component"
             header="Component"
-            class="!font-semibold !text-primary"
+            class="!font-semibold col-component"
           ></Column>
-          <Column field="context" header="Session Context" class="!text-on-surface"></Column>
+          <Column field="context" header="Session Context" class="col-context"></Column>
           <Column field="score" header="Efficiency Score">
             <template #body="slotProps">
               <Tag :value="slotProps.data.score" severity="success" class="!text-[11px]" />
@@ -710,7 +676,7 @@ onBeforeUnmount(() => {
           </Column>
           <Column field="status" header="Status" class="text-right">
             <template #body="slotProps">
-              <span class="font-bold text-secondary">{{ slotProps.data.status }}</span>
+              <span class="font-bold secondary-text">{{ slotProps.data.status }}</span>
             </template>
           </Column>
         </DataTable>

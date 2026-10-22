@@ -16,9 +16,9 @@ from learning.models import (
 )
 
 
-# ============================================================
+# ====================================================
 # 🧠 Application Service
-# ============================================================
+# ====================================================
 
 class ApplicationService:
     """
@@ -104,9 +104,9 @@ class ApplicationService:
         return submission
 
 
-# ============================================================
+# ====================================================
 # 🤖 Application Review Service
-# ============================================================
+# ====================================================
 
 class ApplicationReviewService:
     """
@@ -404,9 +404,9 @@ class ApplicationReviewService:
         return "mastered"
 
 
-# ============================================================
+# ====================================================
 # 🧪 Assessment Service
-# ============================================================
+# ====================================================
 
 class AssessmentService:
     """
@@ -506,9 +506,9 @@ class AssessmentService:
         return attempt
 
 
-# ============================================================
+# ====================================================
 # 🛣️ Learning Service
-# ============================================================
+# ====================================================
 
 class LearningService:
     """
@@ -817,18 +817,21 @@ class ProgressService:
 
         if progress_percent >= 100:
             topic.status = (
-                LearningTopic.STATUS_COMPLETED
-            )
+                getattr(LearningTopic, 'Status',
+                        None) and LearningTopic.Status.COMPLETED
+            ) or 'completed'
 
         elif progress_percent > 0:
             topic.status = (
-                LearningTopic.STATUS_IN_PROGRESS
-            )
+                getattr(LearningTopic, 'Status',
+                        None) and LearningTopic.Status.IN_PROGRESS
+            ) or 'in_progress'
 
         else:
             topic.status = (
-                LearningTopic.STATUS_PENDING
-            )
+                getattr(LearningTopic, 'Status',
+                        None) and LearningTopic.Status.PENDING
+            ) or 'pending'
 
         topic.save(
             update_fields=[
