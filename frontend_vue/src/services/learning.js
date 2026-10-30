@@ -107,6 +107,14 @@ export async function skipLearningTopic(topicId) {
   return response.data
 }
 
+export async function generateLearningGoals(payload = {}) {
+  return (await api.post(endpoints.learning.goalsGenerate, payload)).data
+}
+
+export async function getLearningGoalDashboard(params = {}) {
+  return (await api.get(endpoints.learning.goalDashboard, { params })).data
+}
+
 // ===================================================
 // Learning Path
 // ===================================================
@@ -201,6 +209,10 @@ export async function updateLearningProgress(payload) {
   return response.data
 }
 
+export async function getLearningProgressSummary(params = {}) {
+  return (await api.get(endpoints.learning.progressSummary, { params })).data
+}
+
 // ===================================================
 // AI Topic Content
 // ===================================================
@@ -209,6 +221,14 @@ export async function generateLearningTopicContent(topicId, payload = {}) {
   const response = await api.post(endpoints.learning.topicGenerateContent(topicId), payload)
 
   return response.data
+}
+
+export async function getLearningSessions(params = {}) {
+  return normalizeList((await api.get(endpoints.learning.sessions, { params })).data)
+}
+
+export async function getLearningSession(sessionId) {
+  return (await api.get(endpoints.learning.session(sessionId))).data
 }
 
 // ===================================================
@@ -232,6 +252,10 @@ export async function finishLearningSession(sessionId, payload = {}) {
   return response.data
 }
 
+export async function deleteLearningSession(sessionId) {
+  await api.delete(endpoints.learning.session(sessionId))
+}
+
 // ===================================================
 // Lessons
 // ===================================================
@@ -248,6 +272,22 @@ export async function getLearningLesson(lessonId) {
   return response.data
 }
 
+export async function createLearningLesson(payload) {
+  return (await api.post(endpoints.learning.lessons, payload)).data
+}
+
+export async function updateLearningLesson(lessonId, payload) {
+  return (await api.patch(endpoints.learning.lesson(lessonId), payload)).data
+}
+
+export async function deleteLearningLesson(lessonId) {
+  await api.delete(endpoints.learning.lesson(lessonId))
+}
+
+export async function markLearningLessonComplete(lessonId) {
+  return (await api.post(endpoints.learning.lessonMarkComplete(lessonId))).data
+}
+
 // ===================================================
 // Resources
 // ===================================================
@@ -262,6 +302,18 @@ export async function getLearningResource(resourceId) {
   const response = await api.get(endpoints.learning.resource(resourceId))
 
   return response.data
+}
+
+export async function createLearningResource(payload) {
+  return (await api.post(endpoints.learning.resources, payload)).data
+}
+
+export async function updateLearningResource(resourceId, payload) {
+  return (await api.patch(endpoints.learning.resource(resourceId), payload)).data
+}
+
+export async function deleteLearningResource(resourceId) {
+  await api.delete(endpoints.learning.resource(resourceId))
 }
 
 // ===================================================
@@ -288,6 +340,10 @@ export async function updateLearningNote(noteId, payload) {
 
 export async function deleteLearningNote(noteId) {
   await api.delete(endpoints.learning.note(noteId))
+}
+
+export async function getLearningNote(noteId) {
+  return (await api.get(endpoints.learning.note(noteId))).data
 }
 
 // ===================================================
@@ -322,6 +378,22 @@ export async function submitAssessment(assessmentId, payload = {}) {
   return response.data
 }
 
+export async function createAssessment(payload) {
+  return (await api.post(endpoints.learning.assessments, payload)).data
+}
+
+export async function updateAssessment(assessmentId, payload) {
+  return (await api.patch(endpoints.learning.assessment(assessmentId), payload)).data
+}
+
+export async function deleteAssessment(assessmentId) {
+  await api.delete(endpoints.learning.assessment(assessmentId))
+}
+
+export async function getAssessmentAnalytics(assessmentId) {
+  return (await api.get(endpoints.learning.assessmentAnalytics(assessmentId))).data
+}
+
 // ===================================================
 // Assessment Questions
 // ===================================================
@@ -340,6 +412,30 @@ export async function getAssessmentChoices(params = {}) {
   const response = await api.get(endpoints.learning.assessmentChoices, { params })
 
   return normalizeList(response.data)
+}
+
+export async function createAssessmentQuestion(payload) {
+  return (await api.post(endpoints.learning.assessmentQuestions, payload)).data
+}
+
+export async function updateAssessmentQuestion(questionId, payload) {
+  return (await api.patch(endpoints.learning.assessmentQuestion(questionId), payload)).data
+}
+
+export async function deleteAssessmentQuestion(questionId) {
+  await api.delete(endpoints.learning.assessmentQuestion(questionId))
+}
+
+export async function createAssessmentChoice(payload) {
+  return (await api.post(endpoints.learning.assessmentChoices, payload)).data
+}
+
+export async function updateAssessmentChoice(choiceId, payload) {
+  return (await api.patch(endpoints.learning.assessmentChoice(choiceId), payload)).data
+}
+
+export async function deleteAssessmentChoice(choiceId) {
+  await api.delete(endpoints.learning.assessmentChoice(choiceId))
 }
 
 // ===================================================
@@ -366,6 +462,18 @@ export async function updateAssessmentResponse(responseId, payload) {
   const response = await api.patch(endpoints.learning.assessmentResponse(responseId), payload)
 
   return response.data
+}
+
+export async function getAssessmentResponses(params = {}) {
+  return normalizeList((await api.get(endpoints.learning.assessmentResponses, { params })).data)
+}
+
+export async function getAssessmentResponse(responseId) {
+  return (await api.get(endpoints.learning.assessmentResponse(responseId))).data
+}
+
+export async function deleteAssessmentResponse(responseId) {
+  await api.delete(endpoints.learning.assessmentResponse(responseId))
 }
 
 // ===================================================
@@ -421,6 +529,10 @@ export async function getApplicationSubmission(submissionId) {
   return response.data
 }
 
+export async function getApplicationHistory(applicationId) {
+  return (await api.get(endpoints.learning.applicationHistory(applicationId))).data
+}
+
 // ===================================================
 // AI Review
 // ===================================================
@@ -467,6 +579,18 @@ export async function updateLearningRevision(revisionId, payload) {
   const response = await api.patch(`/learning/revisions/${revisionId}/`, payload)
 
   return response.data
+}
+
+export async function startLearningRevision(revisionId) {
+  return (await api.post(endpoints.learning.revisionStart(revisionId))).data
+}
+
+export async function completeLearningRevision(revisionId) {
+  return (await api.post(endpoints.learning.revisionComplete(revisionId))).data
+}
+
+export async function skipLearningRevision(revisionId) {
+  return (await api.post(endpoints.learning.revisionSkip(revisionId))).data
 }
 
 // ===================================================

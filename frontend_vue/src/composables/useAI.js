@@ -1,4 +1,3 @@
-// composables/useAI.js
 import { ref } from 'vue'
 import AIService from '@/services/AIService'
 
@@ -6,42 +5,48 @@ export function useAI() {
   const response = ref('')
   const isLoading = ref(false)
   const error = ref(null)
+  const conversationId = ref(null)
+  let activeController = null
 
-  async function chatStream(messages, model = 'phi') {
+  async function chatStream(messages, model = '', options = {}) {
     response.value = ''
     isLoading.value = true
     error.value = null
+    activeController = new AbortController()
 
     try {
-      await AIService.chatStream(messages, model, (fullText) => {
-        // 1. نقسم النص لأسطر
-        const lines = fullText.split('\n')
-        let combinedContent = ''
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const dataStr = line.slice(6).trim()
-            if (dataStr === '[DONE]') continue
-
-            try {
-              const parsed = JSON.parse(dataStr)
-              if (parsed.token) combinedContent += parsed.token
-              if (parsed.error) throw new Error(parsed.error)
-            } catch (e) {
-              console.log('e: ', e)
-              // تجاهل الأسطر غير المكتملة في الـ Stream
-            }
-          }
-        }
-        response.value = combinedContent
+      const result = await AIService.chat(messages, model, {
+        conversationId: conversationId.value,
+        systemPrompt: options.systemPrompt || '',
+        temperature: options.temperature,
+        signal: activeController.signal,
       })
+      conversationId.value = result.conversation_id ?? conversationId.value
+      response.value = result.message?.content || ''
+      return result
     } catch (e) {
-      error.value = e.response?.data?.error || e.message
-      console.error('AI Error:', e)
+      if (e?.name === 'CanceledError' || e?.code === 'ERR_CANCELED') {
+        error.value = 'Request cancelled in the browser. The server may still finish processing it.'
+      } else {
+        error.value = e?.response?.data?.error || e?.response?.data?.detail || e.message || 'AI request failed.'
+      }
+      return null
     } finally {
       isLoading.value = false
+      activeController = null
     }
   }
 
-  return { response, isLoading, error, chatStream }
+  function stopStream() {
+    if (activeController) activeController.abort()
+  }
+
+  function resetConversation() {
+    stopStream()
+    conversationId.value = null
+    response.value = ''
+    error.value = null
+  }
+
+  return { response, isLoading, error, conversationId, chatStream, stopStream, resetConversation }
 }

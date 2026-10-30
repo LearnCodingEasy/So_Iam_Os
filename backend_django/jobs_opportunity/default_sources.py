@@ -25,9 +25,9 @@ DEFAULT_JOB_SOURCES = [
      "base_url": "https://www.python.org/jobs/feed/rss/", "adapter": "rss", "enabled": True},
 
     # --- مصادر العمل الحر ومنصات التوظيف (Manual / HTML Scraper / APIs) ---
-    {"name": "Mostaql Projects (Arabic Freelance - Web & Python)", "source_type": "html_scraper",
+    {"name": "Mostaql Projects (Arabic Freelance - Web & Python)", "source_type": "scraper",
      "base_url": "https://mostaql.com/projects?category=development&sort=latest", "adapter": "html_scraper", "enabled": True},
-    {"name": "Khamsat Services / Python (Arabic Micro-tasks)", "source_type": "html_scraper",
+    {"name": "Khamsat Services / Python (Arabic Micro-tasks)", "source_type": "scraper",
      "base_url": "https://khamsat.com/programming", "adapter": "html_scraper", "enabled": True},
     {"name": "Baibars / Regional Remote Tech Jobs", "source_type": "manual",
         "base_url": "https://www.bayt.com/en/arabic/jobs/python-developer-jobs/", "adapter": "manual", "enabled": False}

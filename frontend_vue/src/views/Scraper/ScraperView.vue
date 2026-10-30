@@ -54,11 +54,21 @@
         <article v-for="run in runs" :key="run.id" class="run-row">
           <div><strong>{{ run.website_name }}</strong><span>{{ formatDate(run.started_at) }}</span></div>
           <span class="status-chip" :class="run.status">{{ run.status }}</span>
-          <span>{{ run.items_scraped }} items</span>
+          <span>{{ run.items_scraped }} items · {{ run.items_created || 0 }} jobs added</span>
+          <button class="small-button" type="button" @click="viewRunResults(run)">View results</button>
           <small v-if="run.error_message" class="row-error">{{ run.error_message }}</small>
         </article>
       </div>
     </section>
+
+    <div v-if="resultsDialogOpen" class="modal-backdrop" @click.self="resultsDialogOpen = false">
+      <section class="source-dialog results-dialog" role="dialog" aria-modal="true" aria-label="Scraper run results">
+        <div class="panel-heading"><div><h2>Run results</h2><p>{{ selectedRun?.website_name }} · {{ selectedRun?.status }}</p></div><button type="button" class="icon-button" @click="resultsDialogOpen = false">×</button></div>
+        <p v-if="resultsLoading" class="empty-state">Loading results…</p>
+        <p v-else-if="!runResults.length" class="empty-state">No stored items for this run.</p>
+        <div v-else class="table-wrap"><table><thead><tr><th>Title</th><th>Company</th><th>Location</th><th>Source</th></tr></thead><tbody><tr v-for="item in runResults" :key="item.id"><td>{{ item.data?.title || '—' }}</td><td>{{ item.data?.company || '—' }}</td><td>{{ item.data?.location || '—' }}</td><td><a v-if="item.data?.url || item.source_url" :href="item.data?.url || item.source_url" target="_blank" rel="noopener noreferrer">Open job</a><span v-else>—</span></td></tr></tbody></table></div>
+      </section>
+    </div>
 
     <div v-if="dialogOpen" class="modal-backdrop" @click.self="dialogOpen = false">
       <form class="source-dialog" @submit.prevent="saveSource">
@@ -66,12 +76,15 @@
         <label>Source name<input v-model.trim="form.name" required maxlength="200" /></label>
         <label>Public URL<input v-model.trim="form.base_url" required type="url" placeholder="https://example.org/feed.json" /></label>
         <label>Connector type<select v-model="form.source_type"><option value="json">JSON / REST API</option><option value="rss">RSS / Atom</option><option value="html">Public HTML</option></select></label>
-        <label>Description<textarea v-model="form.description" rows="2" /></label>
+        <label>Description<textarea v-model="form.description" rows="2"></textarea></label>
         <label v-if="form.source_type === 'json'">Items path (optional)<input v-model="form.config.items_path" placeholder="data.results" /></label>
         <template v-if="form.source_type === 'html'">
           <label>CSS selector for each item<input v-model="form.config.item_selector" placeholder=".job-card" /></label>
-          <p class="form-help">Optional fields map: enter JSON in Advanced config only if you know the source markup.</p>
+          <label class="checkbox-label"><input v-model="form.config.terms_confirmed" type="checkbox" /> I confirm this site permits automated collection</label>
+          <label>Field mapping (JSON)<textarea v-model="form.config.fields_json" rows="6" spellcheck="false" placeholder='{"title":{"selector":"h2"},"company":{"selector":".company"},"url":{"selector":"a","attribute":"href"},"description":{"selector":".description"}}'></textarea></label>
+          <p class="form-help">Map each field to a CSS selector. Link fields can use an attribute such as href. Use only sources that permit automated access.</p>
         </template>
+        <label class="checkbox-label"><input v-model="form.config.ai_analyze_on_import" type="checkbox" /> Analyze each imported job with AI (uses configured provider quota)</label>
         <label class="checkbox-label"><input v-model="form.is_active" type="checkbox" /> Source enabled</label>
         <div class="dialog-actions"><button type="button" class="secondary-button" @click="dialogOpen = false">Cancel</button><button class="primary-button" type="submit" :disabled="saving">{{ saving ? 'Saving…' : 'Save source' }}</button></div>
       </form>
@@ -93,7 +106,11 @@ const error = ref('')
 const message = ref('')
 const dialogOpen = ref(false)
 const editingId = ref(null)
-const form = reactive({ name: '', base_url: '', description: '', source_type: 'json', is_active: true, config: { items_path: '', item_selector: '' } })
+const form = reactive({ name: '', base_url: '', description: '', source_type: 'json', is_active: true, config: { items_path: '', item_selector: '', fields_json: '{}', ai_analyze_on_import: false, terms_confirmed: false } })
+const resultsDialogOpen = ref(false)
+const resultsLoading = ref(false)
+const selectedRun = ref(null)
+const runResults = ref([])
 let refreshTimer
 
 function normalizeList(data) { return Array.isArray(data) ? data : (data?.results || []) }
@@ -112,19 +129,29 @@ async function refresh() {
 }
 function openCreate() {
   editingId.value = null
-  Object.assign(form, { name: '', base_url: '', description: '', source_type: 'json', is_active: true, config: { items_path: '', item_selector: '' } })
+  Object.assign(form, { name: '', base_url: '', description: '', source_type: 'json', is_active: true, config: { items_path: '', item_selector: '', fields_json: '{}', ai_analyze_on_import: false, terms_confirmed: false } })
   dialogOpen.value = true
 }
 function editSource(source) {
   editingId.value = source.id
-  Object.assign(form, { ...source, config: { items_path: source.config?.items_path || '', item_selector: source.config?.item_selector || '' } })
+  Object.assign(form, { ...source, config: { items_path: source.config?.items_path || '', item_selector: source.config?.item_selector || '', fields_json: JSON.stringify(source.config?.fields || {}, null, 2), ai_analyze_on_import: Boolean(source.config?.ai_analyze_on_import), terms_confirmed: Boolean(source.config?.terms_confirmed) } })
   dialogOpen.value = true
 }
 async function saveSource() {
   saving.value = true; clearMessages()
-  const config = {}
+  const config = { ai_analyze_on_import: Boolean(form.config.ai_analyze_on_import) }
   if (form.source_type === 'json' && form.config.items_path.trim()) config.items_path = form.config.items_path.trim()
-  if (form.source_type === 'html' && form.config.item_selector.trim()) config.item_selector = form.config.item_selector.trim()
+  if (form.source_type === 'html') {
+    if (form.is_active && !form.config.terms_confirmed) { error.value = 'Confirm that this HTML source permits automated collection.'; saving.value = false; return }
+    if (!form.config.item_selector.trim()) { error.value = 'A CSS item selector is required for HTML sources.'; saving.value = false; return }
+    config.item_selector = form.config.item_selector.trim()
+    config.terms_confirmed = Boolean(form.config.terms_confirmed)
+    try {
+      const fields = JSON.parse(form.config.fields_json || '{}')
+      if (!fields || Array.isArray(fields) || typeof fields !== 'object') throw new Error('Field mapping must be a JSON object.')
+      config.fields = fields
+    } catch (parseError) { error.value = parseError.message || 'Field mapping JSON is invalid.'; saving.value = false; return }
+  }
   const payload = { name: form.name, base_url: form.base_url, description: form.description, source_type: form.source_type, is_active: form.is_active, config }
   try {
     if (editingId.value) await scraperApi.updateSource(editingId.value, payload)
@@ -136,7 +163,7 @@ async function saveSource() {
 }
 async function testSource(source) {
   busyId.value = source.id; clearMessages()
-  try { const result = await scraperApi.testSource(source.id); message.value = `Connection succeeded (${result.status_code}; ${result.bytes} bytes).` }
+  try { const result = await scraperApi.testSource(source.id); message.value = `Connection succeeded (${result.status_code}; ${result.items_found ?? 0} items detected; ${result.bytes} bytes).` }
   catch (e) { error.value = e?.response?.data?.error || e?.response?.data?.detail || 'Connection test failed.' }
   finally { busyId.value = null }
 }
@@ -151,6 +178,15 @@ async function removeSource(source) {
   clearMessages()
   try { await scraperApi.deleteSource(source.id); message.value = 'Source deleted or disabled.'; await refresh() }
   catch (e) { error.value = e?.response?.data?.detail || 'Could not delete source.' }
+}
+async function viewRunResults(run) {
+  selectedRun.value = run
+  resultsDialogOpen.value = true
+  resultsLoading.value = true
+  runResults.value = []
+  try { runResults.value = await scraperApi.runResults(run.id) }
+  catch (e) { error.value = e?.response?.data?.detail || 'Could not load this run results.' }
+  finally { resultsLoading.value = false }
 }
 function formatDate(value) { return value ? new Date(value).toLocaleString() : '—' }
 onMounted(() => { refresh(); refreshTimer = window.setInterval(refresh, 20000) })

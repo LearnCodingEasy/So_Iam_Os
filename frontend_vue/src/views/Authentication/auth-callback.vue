@@ -5,16 +5,13 @@
 </template>
 
 <script>
-import axios from 'axios'
+import api from '@/services/api'
 
 export default {
   name: 'AuthCallback',
   async mounted() {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/user/', {
-        withCredentials: true,
-      })
-      console.log('✅ User Data:', response.data)
+      const response = await api.get('/users/me/')
       this.$router.push('/dashboard')
     } catch (error) {
       console.error('❌ Login failed:', error)

@@ -12,5 +12,13 @@ export const deleteTask = async (id) => { await api.delete(endpoints.tasks.detai
 export const completeTask = async (id, actual_minutes) => (await api.post(endpoints.tasks.complete(id), { actual_minutes })).data
 export const postponeTask = async (id, until) => (await api.post(endpoints.tasks.postpone(id), { until })).data
 export const generateTodayTasks = async (payload={}) => (await api.post(endpoints.tasks.generate, payload)).data
+export const startTask = async (id) => (await api.post(endpoints.tasks.start(id))).data
+export const cancelTask = async (id) => (await api.post(endpoints.tasks.cancel(id))).data
+export const reopenTask = async (id) => (await api.post(endpoints.tasks.reopen(id))).data
+export const getTaskStats = async () => (await api.get(endpoints.tasks.stats)).data
+export const getTaskProgress = async () => (await api.get(endpoints.tasks.progress)).data
+export const getTaskCalendar = async (params = {}) => (await api.get(endpoints.tasks.calendar, { params })).data
+export const getOverdueTasks = async (params = {}) => unwrap((await api.get(endpoints.tasks.overdue, { params })).data)
+export const getTaskGenerationStatus = async (taskId) => (await api.get(endpoints.tasks.generationStatus(taskId))).data
 
-export default { listTasks, listTodayTasks, getTask, createTask, updateTask, deleteTask, completeTask, postponeTask }
+export default { listTasks, listTodayTasks, getTask, createTask, updateTask, deleteTask, completeTask, postponeTask, generateTodayTasks, startTask, cancelTask, reopenTask, getTaskStats, getTaskProgress, getTaskCalendar, getOverdueTasks, getTaskGenerationStatus }

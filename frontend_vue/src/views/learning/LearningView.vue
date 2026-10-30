@@ -1,9 +1,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { getLearningDashboard, updateLearningProgress } from '@/services/learning'
+import { getLearningDashboard, updateLearningProgress, pauseLearningGoal, resumeLearningGoal } from '@/services/learning'
 import LearningPathEditor from '@/components/learning/LearningPathEditor.vue'
-import axios from 'axios'
 
 // ==================================================
 // STATE
@@ -150,19 +149,19 @@ const refreshDashboard = async () => {
 // Goal Controls (Actions API Integration)
 const pauseGoal = async (goalId) => {
   try {
-    await axios.post(`/goals/${goalId}/pause/`)
-    refreshDashboard()
+    await pauseLearningGoal(goalId)
+    await refreshDashboard()
   } catch (e) {
-    console.error(e)
+    error.value = e?.response?.data?.detail || 'Unable to pause this goal.'
   }
 }
 
 const resumeGoal = async (goalId) => {
   try {
-    await axios.post(`/goals/${goalId}/resume/`)
-    refreshDashboard()
+    await resumeLearningGoal(goalId)
+    await refreshDashboard()
   } catch (e) {
-    console.error(e)
+    error.value = e?.response?.data?.detail || 'Unable to resume this goal.'
   }
 }
 

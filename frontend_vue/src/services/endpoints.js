@@ -36,6 +36,14 @@ export const endpoints = {
     complete: (id) => `/tasks/${id}/complete/`,
     postpone: (id) => `/tasks/${id}/postpone/`,
     generate: '/tasks/generate/',
+    start: (id) => `/tasks/${id}/start/`,
+    cancel: (id) => `/tasks/${id}/cancel/`,
+    reopen: (id) => `/tasks/${id}/reopen/`,
+    stats: '/tasks/stats/',
+    progress: '/tasks/progress/',
+    calendar: '/tasks/calendar/',
+    overdue: '/tasks/overdue/',
+    generationStatus: (taskId) => `/tasks/generation-status/${taskId}/`,
   },
 
   learning: {
@@ -64,6 +72,7 @@ export const endpoints = {
 
     lessons: '/learning/lessons/',
     lesson: (id) => `/learning/lessons/${id}/`,
+    lessonMarkComplete: (id) => `/learning/lessons/${id}/mark-complete/`,
     resources: '/learning/resources/',
     resource: (id) => `/learning/resources/${id}/`,
     notes: '/learning/notes/',
@@ -71,6 +80,7 @@ export const endpoints = {
 
     progress: '/learning/progress/',
     progressUpdate: '/learning/progress/update-progress/',
+    progressSummary: '/learning/progress/summary/',
     sessions: '/learning/sessions/',
     session: (id) => `/learning/sessions/${id}/`,
     sessionFinish: (id) => `/learning/sessions/${id}/finish/`,
@@ -80,8 +90,11 @@ export const endpoints = {
     assessmentLearner: (id) => `/learning/assessments/${id}/learner/`,
     assessmentStart: (id) => `/learning/assessments/${id}/start/`,
     assessmentSubmit: (id) => `/learning/assessments/${id}/submit/`,
+    assessmentAnalytics: (id) => `/learning/assessments/${id}/analytics/`,
     assessmentQuestions: '/learning/assessment-questions/',
+    assessmentQuestion: (id) => `/learning/assessment-questions/${id}/`,
     assessmentChoices: '/learning/assessment-choices/',
+    assessmentChoice: (id) => `/learning/assessment-choices/${id}/`,
     assessmentAttempts: '/learning/assessment-attempts/',
     assessmentResponses: '/learning/assessment-responses/',
     assessmentResponse: (id) => `/learning/assessment-responses/${id}/`,
@@ -119,10 +132,27 @@ export const endpoints = {
     learningSettings: '/core/learning-settings/',
   },
 
+  scraper: {
+    sources: '/scraper/sources/',
+    source: (id) => `/scraper/sources/${id}/`,
+    stats: '/scraper/sources/stats/',
+    testSource: (id) => `/scraper/sources/${id}/test_connection/`,
+    runSource: (id) => `/scraper/sources/${id}/run/`,
+    selectors: '/scraper/selectors/',
+    selector: (id) => `/scraper/selectors/${id}/`,
+    configs: '/scraper/configs/',
+    config: (id) => `/scraper/configs/${id}/`,
+    runs: '/scraper/runs/',
+    run: (id) => `/scraper/runs/${id}/`,
+    runResults: (id) => `/scraper/runs/${id}/results/`,
+  },
+
   jobs: {
     sources: '/jobs/sources/',
     source: (id) => `/jobs/sources/${id}/`,
     sourceTest: (id) => `/jobs/sources/${id}/test/`,
+    sourcePreview: (id) => `/jobs/sources/${id}/preview/`,
+    sourcesSyncAll: '/jobs/sources/sync-all/',
     sourceSync: (id) => `/jobs/sources/${id}/sync/`,
     opportunities: '/jobs/opportunities/',
     opportunity: (id) => `/jobs/opportunities/${id}/`,
@@ -275,6 +305,7 @@ export const endpoints = {
     learningAsync: '/ai/learning/async/',
     taskStatus: (id) => `/ai/tasks/${id}/`,
     topicChat: '/ai/topic-chat/',
+    agentPlan: '/ai/agents/plan/',
   },
 }
 

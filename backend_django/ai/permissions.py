@@ -1,9 +1,2 @@
-from rest_framework.permissions import IsAuthenticated
-
-
-class AIAuthenticatedPermission(IsAuthenticated):
-    """
-    Base permission for AI endpoints.
-    """
-
-    pass
+"""Backward-compatible import shim; implementation lives in ai.services.permissions."""
+from .services.permissions import *  # noqa: F401,F403

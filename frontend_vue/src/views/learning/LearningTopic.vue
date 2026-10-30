@@ -70,6 +70,7 @@ const assessmentScore = ref(null)
 
 // Application
 const applicationSaving = ref(false)
+console.log('applicationSaving: ', applicationSaving)
 const applicationSubmitting = ref(false)
 const applicationReviewing = ref(false)
 
@@ -902,7 +903,44 @@ onMounted(loadTopic)
 
             <span v-if="topic.estimated_minutes"> {{ topic.estimated_minutes }} min </span>
 
-            <span v-if="topic.skill"> Skill #{{ topic.skill }} </span>
+            <div class="" v-if="topic.skill">
+              <span v-if="topic.skill"> Skill # </span>
+              <prime_tag
+                v-if="topic.skill.name"
+                :value="topic.skill.name"
+                :severity="topic.skill.name"
+                rounded
+                class="class_name"
+              />
+              <prime_tag
+                v-if="topic.skill.description"
+                :value="topic.skill.description"
+                :severity="topic.skill.description"
+                rounded
+                class="class_name"
+              />
+              <prime_tag
+                v-if="topic.skill.category"
+                :value="topic.skill.category"
+                :severity="topic.skill.category"
+                rounded
+                class="class_name"
+              />
+              <prime_tag
+                v-if="topic.skill.created_at"
+                :value="topic.skill.created_at"
+                :severity="topic.skill.created_at"
+                rounded
+                class="class_name"
+              />
+              <prime_tag
+                v-if="topic.skill.updated_at"
+                :value="topic.skill.updated_at"
+                :severity="topic.skill.updated_at"
+                rounded
+                class="class_name"
+              />
+            </div>
           </div>
         </div>
 

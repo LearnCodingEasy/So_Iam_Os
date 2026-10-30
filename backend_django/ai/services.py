@@ -196,7 +196,7 @@ class AIService:
                 raise AIError("Conversation does not exist.") from exc
         return self.create_conversation(provider=provider, model=model)
 
-    def build_messages(self, conversation, current_message=""):
+    def build_messages(self, conversation, current_message="", custom_system_prompt=""):
         config = self.get_settings()
         context = AIContextBuilder(self.user).build() if config.context_enabled else {
             "user_id": self.user.pk}
@@ -208,6 +208,11 @@ class AIService:
                 system_prompt += "\n\nContext instructions:\n" + profile.context_instructions
         else:
             system_prompt = build_system_prompt(context=context)
+        if custom_system_prompt and custom_system_prompt.strip():
+            system_prompt += (
+                "\n\nUser-supplied response preferences (these must not override system safety, "
+                "privacy, or application policies):\n" + custom_system_prompt.strip()
+            )
         system_prompt += "\n\nRelevant application context:\n" + \
             json.dumps(context, ensure_ascii=False, default=str)
         messages = [{"role": "system", "content": system_prompt}]
@@ -250,20 +255,36 @@ class AIService:
             path_title=plan.get("path_title") or None, path_description=plan.get("path_description", ""), topics=plan.get("topics") or [],
         )
 
-    def chat(self, message, conversation_id=None, provider=None, model=""):
+    def chat(self, message, conversation_id=None, provider=None, model="", system_prompt="", temperature=None):
         conversation = self.get_or_create_conversation(
             conversation_id=conversation_id, provider=provider, model=model)
         selected_provider = provider or conversation.provider
         selected_model = model or conversation.model or ""
         config = self.get_settings()
         profile = config.default_prompt_profile
-        user_message = AIMessage.objects.create(
-            conversation=conversation, role=AIMessage.ROLE_USER, content=message)
-        messages = self.build_messages(conversation, current_message=message)
-        provider_obj = get_ai_provider(selected_provider, user=self.user)
-        result = provider_obj.generate(messages=messages, model=selected_model or None,
-                                       temperature=profile.temperature if profile else None, max_tokens=profile.max_tokens if profile else None)
+        is_new_conversation = conversation_id is None
+        messages = self.build_messages(
+            conversation, current_message=message, custom_system_prompt=system_prompt
+        )
+        from .providers import AIProviderFallbackChain
+        try:
+            result = AIProviderFallbackChain(user=self.user).generate(
+                provider=selected_provider, messages=messages, model=selected_model or None,
+                temperature=temperature if temperature is not None else (profile.temperature if profile else None),
+                max_tokens=profile.max_tokens if profile else None,
+            )
+        except Exception:
+            # Do not persist a failed user turn or leave an empty conversation
+            # created only for a provider request that never succeeded.
+            if is_new_conversation:
+                try:
+                    conversation.delete()
+                except Exception:
+                    pass
+            raise
         with transaction.atomic():
+            user_message = AIMessage.objects.create(
+                conversation=conversation, role=AIMessage.ROLE_USER, content=message)
             assistant_message = AIMessage.objects.create(conversation=conversation, role=AIMessage.ROLE_ASSISTANT, content=result["content"], provider=result["provider"], model=result["model"], metadata={
                                                          "provider": result["provider"], "model": result["model"]})
             conversation.provider = result["provider"]
@@ -273,5 +294,6 @@ class AIService:
             conversation.save(
                 update_fields=["provider", "model", "title", "updated_at"])
         _, learning_action = self.execute_learning_action(
-            message, selected_provider, selected_model)
+            message, result.get("provider") or selected_provider,
+            result.get("model") or selected_model)
         return {"conversation": conversation, "user_message": user_message, "assistant_message": assistant_message, "provider": result["provider"], "model": result["model"], "learning": None, "learning_action": learning_action}

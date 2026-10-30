@@ -52,27 +52,27 @@ def fetch_public(url, timeout=15):
                  "Accept": "application/json, application/rss+xml, application/atom+xml, text/html;q=0.9, */*;q=0.5"},
         allow_redirects=False, stream=True,
     )
-    if 300 <= response.status_code < 400:
-        response.close()
-        raise ValueError(
-            "Redirects are disabled for safety. Configure the source with its final public URL.")
-    response.raise_for_status()
-    length = response.headers.get("Content-Length")
-    if length and int(length) > 5 * 1024 * 1024:
-        response.close()
-        raise ValueError("Source response exceeds the 5 MB limit.")
-    chunks, size = [], 0
-    for chunk in response.iter_content(65536):
-        size += len(chunk)
-        if size > 5 * 1024 * 1024:
-            response.close()
+    try:
+        if 300 <= response.status_code < 400:
+            raise ValueError(
+                "Redirects are disabled for safety. Configure the source with its final public URL.")
+        response.raise_for_status()
+        length = response.headers.get("Content-Length")
+        if length and int(length) > 5 * 1024 * 1024:
             raise ValueError("Source response exceeds the 5 MB limit.")
-        chunks.append(chunk)
-    content = b"".join(chunks)
-    content_type = response.headers.get("Content-Type", "").lower()
-    final_url = response.url
-    response.close()
-    return content, content_type, final_url, response.status_code
+        chunks, size = [], 0
+        for chunk in response.iter_content(65536):
+            size += len(chunk)
+            if size > 5 * 1024 * 1024:
+                raise ValueError("Source response exceeds the 5 MB limit.")
+            chunks.append(chunk)
+        content = b"".join(chunks)
+        content_type = response.headers.get("Content-Type", "").lower()
+        final_url = response.url
+        status_code = response.status_code
+        return content, content_type, final_url, status_code
+    finally:
+        response.close()
 
 
 def _text(value):
@@ -110,7 +110,7 @@ def parse_source(website, content, content_type=""):
             payload, (website.config or {}).get("items_path", ""))
         if isinstance(items, dict):
             items = items.get("items", items.get(
-                "results", items.get("data", [items])))
+                "jobs", items.get("results", items.get("data", [items]))))
         if not isinstance(items, list):
             items = [items] if isinstance(items, dict) else []
         return [dict(item) for item in items if isinstance(item, dict)]
@@ -190,19 +190,26 @@ def normalize_item(item, base_url=""):
         for key in keys:
             val = item.get(key)
             if val not in (None, ""):
+                if isinstance(val, dict):
+                    val = val.get("name") or val.get("value") or val.get("label") or val
                 return _text(val)
         return ""
-    url = first("url", "link", "job_url", "apply_url", "guid", "id")
-    if url.startswith("/"):
+
+    url = first("url", "link", "job_url", "apply_url", "applyUrl", "hostedUrl", "absolute_url")
+    if url and not url.lower().startswith(("http://", "https://")):
         url = urljoin(base_url, url)
+    description = first("description", "summary", "content", "details", "descriptionPlain")
+    if description:
+        # Remove markup from common job-board HTML fields before persistence/AI analysis.
+        description = BeautifulSoup(description, "html.parser").get_text(" ", strip=True)
     return {
         "title": first("title", "name", "position", "job_title")[:255],
         "company": first("company", "company_name", "employer", "organization")[:255],
-        "description": first("description", "summary", "content", "details"),
-        "url": url[:200],
+        "description": description[:30000],
+        "url": url[:500],
         "location": first("location", "job_location", "city")[:255],
-        "published_at": first("published", "pubdate", "published_at", "date"),
-        "external_id": first("id", "guid", "external_id"),
+        "published_at": first("published", "pubdate", "published_at", "first_published", "date", "updated_at"),
+        "external_id": first("external_id", "id", "guid"),
         "raw": item,
     }
 
@@ -212,8 +219,8 @@ class ScrapingService:
     def test_connection(website):
         content, content_type, final_url, status = fetch_public(
             website.base_url, website.request_timeout)
-        parse_source(website, content, content_type)
-        return {"ok": True, "status_code": status, "content_type": content_type, "bytes": len(content)}
+        items = parse_source(website, content, content_type)
+        return {"ok": True, "status_code": status, "content_type": content_type, "bytes": len(content), "items_found": len(items), "final_url": final_url}
 
     @staticmethod
     def start_scraping_job(job_id, use_playwright=False, show_browser=False):
@@ -242,12 +249,53 @@ class ScrapingService:
                 from jobs_opportunity.models import JobOpportunity, JobSource
                 source_type = {"json": "api", "rss": "rss", "html": "scraper"}.get(
                     website.source_type, "scraper")
-                job_source, _ = JobSource.objects.get_or_create(
+                raw_config = website.config or {}
+                mirrored_config = {
+                    "managed_by": "scraper",
+                    "website_id": str(website.pk),
+                    "items_path": raw_config.get("items_path", ""),
+                    "adapter": "rss" if website.source_type == "rss" else "generic",
+                    "ai_analyze_on_import": bool(raw_config.get("ai_analyze_on_import", False)),
+                    "terms_confirmed": bool(raw_config.get("terms_confirmed", False)),
+                }
+                if website.source_type == "html":
+                    def _job_field_rule(field_name):
+                        rule = (raw_config.get("fields") or {}).get(field_name, {})
+                        if isinstance(rule, str):
+                            rule = {"selector": rule}
+                        if not isinstance(rule, dict):
+                            rule = {}
+                        result = {"selector": rule.get("selector", ""), "selector_type": "css"}
+                        if rule.get("attribute"):
+                            result["attribute"] = rule["attribute"]
+                        if field_name == "url":
+                            result["base_url"] = website.base_url
+                        return result
+                    mirrored_config.update({
+                        "robots_required": True,
+                        "rate_limit_seconds": 1,
+                        "card": {"selector": raw_config.get("item_selector", ""), "selector_type": "css"},
+                        "title": _job_field_rule("title"),
+                        "company": _job_field_rule("company"),
+                        "location": _job_field_rule("location"),
+                        "description": _job_field_rule("description"),
+                        "url": _job_field_rule("url"),
+                    })
+                job_source, source_created = JobSource.objects.get_or_create(
                     user=owner, name=website.name,
                     defaults={"source_type": source_type, "base_url": website.base_url,
-                              "feed_url": website.base_url, "enabled": website.is_active,
-                              "config": {"managed_by": "scraper", "website_id": str(website.pk)}},
+                              "feed_url": website.base_url if source_type in ("api", "rss") else "",
+                              "enabled": website.is_active, "config": mirrored_config},
                 )
+                # Keep only sources managed by this Scraper website in sync; do not
+                # overwrite a separately configured Jobs source with the same name.
+                if not source_created and (job_source.config or {}).get("managed_by") == "scraper":
+                    job_source.source_type = source_type
+                    job_source.base_url = website.base_url
+                    job_source.feed_url = website.base_url if source_type in ("api", "rss") else ""
+                    job_source.enabled = website.is_active
+                    job_source.config = mirrored_config
+                    job_source.save(update_fields=["source_type", "base_url", "feed_url", "enabled", "config", "updated_at"])
                 with transaction.atomic():
                     if records:
                         ScrapedData.objects.bulk_create(records)
@@ -275,9 +323,22 @@ class ScrapingService:
                                 existing.save()
                                 updated_count += 1
                         else:
-                            JobOpportunity.objects.create(
+                            existing = JobOpportunity.objects.create(
                                 user=owner, source=job_source, external_id=external_id, **defaults)
                             created_count += 1
+                            from jobs_opportunity.services import JobParserService, JobMatchingService
+                            JobParserService.analyze(
+                                existing, user=owner,
+                                use_ai=bool(mirrored_config.get("ai_analyze_on_import", False)),
+                            )
+                            JobMatchingService.calculate(owner, existing)
+                            continue
+                        from jobs_opportunity.services import JobParserService, JobMatchingService
+                        JobParserService.analyze(
+                            existing, user=owner,
+                            use_ai=bool(mirrored_config.get("ai_analyze_on_import", False)),
+                        )
+                        JobMatchingService.calculate(owner, existing)
                     job_source.last_synced_at = timezone.now()
                     job_source.last_sync_status = "success"
                     job_source.last_sync_count = len(records)

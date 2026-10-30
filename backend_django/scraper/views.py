@@ -66,6 +66,8 @@ class WebsiteViewSet(viewsets.ModelViewSet):
         website = self.get_object()
         if not website.is_active:
             return Response({"detail": "Source is disabled."}, status=status.HTTP_400_BAD_REQUEST)
+        if website.source_type == "html" and not (website.config or {}).get("terms_confirmed"):
+            return Response({"detail": "Confirm that this HTML source permits automated collection before running it."}, status=status.HTTP_400_BAD_REQUEST)
         running = website.scrapingjob_set.filter(status="running").exists()
         if running:
             return Response({"detail": "A run is already in progress for this source."}, status=status.HTTP_409_CONFLICT)
@@ -145,7 +147,7 @@ class ScrapingConfigViewSet(viewsets.ModelViewSet):
 class ScrapingJobViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ScrapingJobSerializer
     permission_classes = [IsAuthenticated]
-    queryset = ScrapingJob.objects.select_related("website").all()
+    queryset = ScrapingJob.objects.select_related("website").order_by("-started_at")
     def get_queryset(self):
         qs = super().get_queryset()
         return qs if self.request.user.is_staff else qs.filter(website__created_by=self.request.user)

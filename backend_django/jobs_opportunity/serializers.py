@@ -6,17 +6,6 @@ from .models import (
 )
 
 
-# backend_django/jobs_opportunity/serializers.py
-from rest_framework import serializers
-from .models import JobOpportunity
-
-
-class JobOpportunitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = JobOpportunity
-        fields = '__all__'
-
-
 class JobSourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobSource
@@ -30,6 +19,11 @@ class JobSourceSerializer(serializers.ModelSerializer):
         if attrs.get("feed_url") and source_type not in {"rss", "api"}:
             raise serializers.ValidationError(
                 {"source_type": "A feed URL requires RSS or API source type."})
+        base_url = attrs.get("base_url", getattr(self.instance, "base_url", ""))
+        feed_url = attrs.get("feed_url", getattr(self.instance, "feed_url", ""))
+        enabled = attrs.get("enabled", getattr(self.instance, "enabled", True))
+        if enabled and source_type in {"rss", "api", "scraper"} and not (base_url or feed_url):
+            raise serializers.ValidationError({"base_url": "An enabled source needs a public URL."})
         if source_type == "scraper":
             config = attrs.get("config", getattr(
                 self.instance, "config", {})) or {}

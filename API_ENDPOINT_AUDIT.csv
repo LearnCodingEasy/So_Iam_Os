@@ -1,0 +1,397 @@
+﻿app,route_pattern,methods,backend_viewset_or_view,route_kind,frontend_service,verification_status
+ai,/api/ai/agents/plan/,See view,AIAgentPlanView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/topic-chat/,See view,AITopicChatView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/chat/,See view,AIChatView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/conversations/,See view,AIConversationListCreateView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/conversations/<int:pk>/,See view,AIConversationDetailView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/settings/,See view,AISettingsView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/credentials/,See view,AIProviderCredentialListCreateView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/credentials/<str:provider>/,See view,AIProviderCredentialDetailView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/providers/<str:provider>/models/,See view,AIProviderModelsView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/prompts/,See view,AIPromptProfileListCreateView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/prompts/<int:pk>/,See view,AIPromptProfileDetailView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/learning/preview/,See view,AILearningPlanPreviewView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/learning/approve/,See view,AILearningPlanApproveView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/learning/async/,See view,AILearningPlanAsyncView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+ai,/api/ai/tasks/<str:task_id>/,See view,AITaskStatusView.as_view(),Explicit path,frontend_vue/src/services/ai.js + AIService.js + composables/useAI.js,Static route from urls.py; runtime not tested
+automation,/api/automation/programs/,"GET, POST",ProgramViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/programs/<pk>/,"GET, PATCH, PUT, DELETE",ProgramViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/programs/<pk>/open/,POST,ProgramViewSet.open,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/programs/<pk>/close/,POST,ProgramViewSet.close,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/programs/<pk>/status/,GET,ProgramViewSet.status,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/programs/<pk>/focus/,POST,ProgramViewSet.focus,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/programs/<pk>/maximize/,POST,ProgramViewSet.maximize,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/programs/<pk>/scan_elements/,POST,ProgramViewSet.scan_elements,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/program-elements/,"GET, POST",ProgramElementViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/program-elements/<pk>/,"GET, PATCH, PUT, DELETE",ProgramElementViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/workflows/,"GET, POST",WorkflowViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/workflows/<pk>/,"GET, PATCH, PUT, DELETE",WorkflowViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/workflows/<pk>/run/,POST,WorkflowViewSet.run,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/workflows/<pk>/full_events/,GET,WorkflowViewSet.full_events,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/workflows/<pk>/save_all/,POST,WorkflowViewSet.save_all,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/workflow-nodes/,"GET, POST",WorkflowNodeViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/workflow-nodes/<pk>/,"GET, PATCH, PUT, DELETE",WorkflowNodeViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/workflow-nodes/<pk>/run/,POST,WorkflowNodeViewSet.run,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/workflow-nodes/<pk>/full_events/,GET,WorkflowNodeViewSet.full_events,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/workflow-edges/,"GET, POST",WorkflowEdgeViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/workflow-edges/<pk>/,"GET, PATCH, PUT, DELETE",WorkflowEdgeViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/actions/,"GET, POST",ActionViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/actions/<pk>/,"GET, PATCH, PUT, DELETE",ActionViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/actions/<pk>/update_type/,PATCH,ActionViewSet.update_type,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/actions/<pk>/execute/,POST,ActionViewSet.execute,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/actions/templates_by_program/,GET,ActionViewSet.templates_by_program,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/tasks/,"GET, POST",TaskViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/tasks/<pk>/,"GET, PATCH, PUT, DELETE",TaskViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/task-runs/,"GET, POST",TaskRunViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/task-runs/<pk>/,"GET, PATCH, PUT, DELETE",TaskRunViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/screen-states/,"GET, POST",ScreenStateViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/screen-states/<pk>/,"GET, PATCH, PUT, DELETE",ScreenStateViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/screen-states/bulk_create/,POST,ScreenStateViewSet.bulk_create,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/screen-states/by_task_run/,GET,ScreenStateViewSet.by_task_run,ViewSet action,frontend_vue/src/services/AutomationService.js + workflowService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+automation,/api/automation/delays/,GET,DelayViewSet,list/create,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/delays/<pk>/,GET,DelayViewSet,retrieve/update/delete,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from router; runtime not tested
+automation,/api/automation/get_open_windows/,See view,get_open_windows,Explicit path,frontend_vue/src/services/AutomationService.js + workflowService.js,Static route from urls.py; runtime not tested
+challenges,/api/challenges/challenges/,"GET, POST",ChallengeViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/challenges/<pk>/,"GET, PATCH, PUT, DELETE",ChallengeViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/steps/,"GET, POST",ChallengeStepViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/steps/<pk>/,"GET, PATCH, PUT, DELETE",ChallengeStepViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/attempts/,"GET, POST",ChallengeAttemptViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/attempts/<pk>/,"GET, PATCH, PUT, DELETE",ChallengeAttemptViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/progress/,"GET, POST",ChallengeProgressViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+challenges,/api/challenges/progress/<pk>/,"GET, PATCH, PUT, DELETE",ChallengeProgressViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+codex,/api/codex/projects/,GET,ProjectViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/projects/<pk>/,GET,ProjectViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/features/,"GET, POST",FeatureViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/features/<pk>/,"GET, PATCH, PUT, DELETE",FeatureViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/files/,GET,FileViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/files/<pk>/,GET,FileViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/apis/,GET,APIEndpointViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/apis/<pk>/,GET,APIEndpointViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/protected/,"GET, POST",ProtectedFeatureViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/protected/<pk>/,"GET, PATCH, PUT, DELETE",ProtectedFeatureViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/changes/,"GET, POST",ChangeSetViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/changes/<pk>/,"GET, PATCH, PUT, DELETE",ChangeSetViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/snapshots/,GET,SnapshotViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/snapshots/<pk>/,GET,SnapshotViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/feature-definitions/,"GET, POST",FeatureDefinitionViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/feature-definitions/<pk>/,"GET, PATCH, PUT, DELETE",FeatureDefinitionViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/tool-definitions/,"GET, POST",ToolDefinitionViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/tool-definitions/<pk>/,"GET, PATCH, PUT, DELETE",ToolDefinitionViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/agent-definitions/,"GET, POST",AgentDefinitionViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/agent-definitions/<pk>/,"GET, PATCH, PUT, DELETE",AgentDefinitionViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/protected-items/,"GET, POST",ProtectedItemViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/protected-items/<pk>/,"GET, PATCH, PUT, DELETE",ProtectedItemViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/workflow-steps/,"GET, POST",WorkflowStepViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/workflow-steps/<pk>/,"GET, PATCH, PUT, DELETE",WorkflowStepViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/local-ai-job-records/,GET,LocalAIJobViewSet,list/create,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/local-ai-job-records/<pk>/,GET,LocalAIJobViewSet,retrieve/update/delete,frontend_vue/src/services/codex.js,Static route from router; runtime not tested
+codex,/api/codex/build/workspace/,See view,BuildWorkspaceView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/build/manifest/,See view,BuildManifestView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/overview/,See view,OverviewView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/ai/,See view,OpenAICodexView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/scan/,See view,ScanView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/context/,See view,ContextView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/changes/plan/,See view,PlanChangeView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/snapshots/create/,See view,CreateSnapshotView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/bootstrap/,See view,IntelligenceBootstrapView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/search/,See view,SearchView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/graph/,See view,GraphView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/impact/,See view,ImpactView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/security/,See view,SecurityScanView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/duplicates/,See view,DuplicateScanView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/review/,See view,CodeReviewView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/test-plan/,See view,TestPlanView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/agent/plan/,See view,AgentPlanView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/agent/runs/,See view,AgentRunView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/policy/,See view,PolicyView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/tools/,See view,ToolsView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/audit/,See view,AuditView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/commands/,See view,SafeCommandsView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/automation/intent/,See view,AutomationIntentView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/changes/apply/,See view,ApplyChangesView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/changes/<int:changeset_id>/rollback/,See view,RollbackView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/explain/,See view,ExplainFeatureView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/debug/,See view,DebugView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/intelligence/docs/,See view,DocumentationView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/features/,See view,CapabilityFeaturesView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/tools/,See view,CapabilityToolsView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/agents/,See view,CapabilityAgentsView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/summary/,See view,CapabilitySummaryView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/health/,See view,CapabilityHealthView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/bootstrap/,See view,CapabilityBootstrapView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/validate/,See view,CapabilityValidateView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/runs/,See view,CapabilityRunsView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/tools/<str:key>/execute/,See view,CapabilityToolExecuteView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/registry/agents/<str:key>/execute/,See view,CapabilityAgentExecuteView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/context/export/,See view,ProjectContextExportView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/files/<int:file_id>/content/,See view,FileContentView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/governance/protected-items/,See view,ProtectedRegistryView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/governance/manifest/,See view,ProtectedManifestView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/workflow/,See view,WorkflowView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/local-ai/jobs/,See view,LocalAIJobsView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/local-ai/jobs/<int:job_id>/,See view,LocalAIJobDetailView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/prompts/generate/,See view,PromptGeneratorView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/markdown/navigation/,See view,MarkdownNavigationView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/files/open-local/,See view,LocalFileOpenView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/architecture/analyze/,See view,ArchitectureModuleAnalyzerView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+codex,/api/codex/files/context/,See view,SelectedFilesContextView.as_view(),Explicit path,frontend_vue/src/services/codex.js,Static route from urls.py; runtime not tested
+core,/api/core/health/,See view,CoreHealthView.as_view(),Explicit path,frontend_vue/src/services/ecosystemApi.js + settings.js,Static route from urls.py; runtime not tested
+core,/api/core/dashboard/,See view,DashboardView.as_view(),Explicit path,frontend_vue/src/services/ecosystemApi.js + settings.js,Static route from urls.py; runtime not tested
+core,/api/core/learning-settings/,See view,UserLearningSettingsView.as_view(),Explicit path,frontend_vue/src/services/ecosystemApi.js + settings.js,Static route from urls.py; runtime not tested
+goals,/api/goals/,"GET, POST",GoalViewSet,list/create,frontend_vue/src/services/goals.js,Static route from router; runtime not tested
+goals,/api/goals/<pk>/,"GET, PATCH, PUT, DELETE",GoalViewSet,retrieve/update/delete,frontend_vue/src/services/goals.js,Static route from router; runtime not tested
+goals,/api/goals/<pk>/complete/,POST,GoalViewSet.complete,ViewSet action,frontend_vue/src/services/goals.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+goals,/api/goals/<pk>/pause/,POST,GoalViewSet.pause,ViewSet action,frontend_vue/src/services/goals.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+goals,/api/goals/<pk>/resume/,POST,GoalViewSet.resume,ViewSet action,frontend_vue/src/services/goals.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+goals,/api/goals/<pk>/progress/,POST,GoalViewSet.progress,ViewSet action,frontend_vue/src/services/goals.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/sources/,"GET, POST",JobSourceViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/sources/<pk>/,"GET, PATCH, PUT, DELETE",JobSourceViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/sources/sync-all/,POST,JobSourceViewSet.sync_all,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/sources/<pk>/sync/,POST,JobSourceViewSet.sync,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/sources/<pk>/test/,POST,JobSourceViewSet.test,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/sources/<pk>/preview/,POST,JobSourceViewSet.preview,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/,"GET, POST",JobOpportunityViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/,"GET, PATCH, PUT, DELETE",JobOpportunityViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/refresh_match/,POST,JobOpportunityViewSet.refresh_match,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/analyze/,POST,JobOpportunityViewSet.analyze,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/readiness/,GET,JobOpportunityViewSet.readiness,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/similar/,GET,JobOpportunityViewSet.similar,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/compare/,GET,JobOpportunityViewSet.compare,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/generate_cover_letter/,POST,JobOpportunityViewSet.generate_cover_letter,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/opportunities/<pk>/apply/,POST,JobOpportunityViewSet.apply,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/matches/,GET,JobMatchViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/matches/<pk>/,GET,JobMatchViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/matches/refresh/,POST,JobMatchViewSet.refresh,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/applications/,"GET, POST",JobApplicationViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/applications/<pk>/,"GET, PATCH, PUT, DELETE",JobApplicationViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/applications/<pk>/timeline/,GET,JobApplicationViewSet.timeline,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/applications/<pk>/event/,POST,JobApplicationViewSet.event,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/companies/,"GET, POST",CompanyProfileViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/companies/<pk>/,"GET, PATCH, PUT, DELETE",CompanyProfileViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/companies/<pk>/toggle_follow/,POST,CompanyProfileViewSet.toggle_follow,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/companies/<pk>/toggle_blacklist/,POST,CompanyProfileViewSet.toggle_blacklist,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/interviews/,"GET, POST",JobInterviewViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/interviews/<pk>/,"GET, PATCH, PUT, DELETE",JobInterviewViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/resumes/,"GET, POST",JobResumeViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/resumes/<pk>/,"GET, PATCH, PUT, DELETE",JobResumeViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/resumes/<pk>/make_default/,POST,JobResumeViewSet.make_default,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/cover-letters/,"GET, POST",JobCoverLetterViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/cover-letters/<pk>/,"GET, PATCH, PUT, DELETE",JobCoverLetterViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/preferences/,"GET, POST",JobPreferenceViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/preferences/<pk>/,"GET, PATCH, PUT, DELETE",JobPreferenceViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/preferences/update_preferences/,"PATCH, PUT",JobPreferenceViewSet.update_preferences,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/saved-searches/,"GET, POST",JobSavedSearchViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/saved-searches/<pk>/,"GET, PATCH, PUT, DELETE",JobSavedSearchViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/saved-searches/<pk>/run/,POST,JobSavedSearchViewSet.run,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/skill-gaps/,"GET, POST",JobSkillGapViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/skill-gaps/<pk>/,"GET, PATCH, PUT, DELETE",JobSkillGapViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/skill-gaps/<pk>/start_learning/,POST,JobSkillGapViewSet.start_learning,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/readiness/,GET,JobReadinessViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/readiness/<pk>/,GET,JobReadinessViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/readiness/refresh/,POST,JobReadinessViewSet.refresh,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/recommendations/,"GET, POST",JobRecommendationViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/recommendations/<pk>/,"GET, PATCH, PUT, DELETE",JobRecommendationViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/recommendations/refresh/,POST,JobRecommendationViewSet.refresh,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/recommendations/<pk>/seen/,POST,JobRecommendationViewSet.seen,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/recommendations/<pk>/save/,POST,JobRecommendationViewSet.save,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/recommendations/<pk>/dismiss/,POST,JobRecommendationViewSet.dismiss,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/alerts/,"GET, POST",JobAlertViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/alerts/<pk>/,"GET, PATCH, PUT, DELETE",JobAlertViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/alerts/<pk>/read/,POST,JobAlertViewSet.read,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/analytics/,GET,JobAnalyticsSnapshotViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/analytics/<pk>/,GET,JobAnalyticsSnapshotViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/workspace/,"GET, POST",JobsWorkspaceViewSet,list/create,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/workspace/<pk>/,"GET, PATCH, PUT, DELETE",JobsWorkspaceViewSet,retrieve/update/delete,frontend_vue/src/services/jobs.js,Static route from router; runtime not tested
+jobs_opportunity,/api/jobs/workspace/dashboard/,GET,JobsWorkspaceViewSet.dashboard,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/workspace/features/,GET,JobsWorkspaceViewSet.features,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/workspace/refresh_all/,POST,JobsWorkspaceViewSet.refresh_all,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+jobs_opportunity,/api/jobs/workspace/compare/,GET,JobsWorkspaceViewSet.compare,ViewSet action,frontend_vue/src/services/jobs.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/,"GET, POST",KnowledgeItemViewSet,list/create,frontend_vue/src/services/knowledge.js,Static route from router; runtime not tested
+knowledge,/api/knowledge/items/<pk>/,"GET, PATCH, PUT, DELETE",KnowledgeItemViewSet,retrieve/update/delete,frontend_vue/src/services/knowledge.js,Static route from router; runtime not tested
+knowledge,/api/knowledge/items/<pk>/extract-metadata/,POST,KnowledgeItemViewSet.extract_metadata_action,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/<pk>/archive/,POST,KnowledgeItemViewSet.archive,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/<pk>/restore/,POST,KnowledgeItemViewSet.restore,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/<pk>/connect-topic/,POST,KnowledgeItemViewSet.connect_topic,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/<pk>/disconnect-topic/,POST,KnowledgeItemViewSet.disconnect_topic,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/<pk>/files/,GET,KnowledgeItemViewSet.files,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/<pk>/upload-file/,POST,KnowledgeItemViewSet.upload_file,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/items/archive-all/,POST,KnowledgeItemViewSet.archive_all,ViewSet action,frontend_vue/src/services/knowledge.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+knowledge,/api/knowledge/files/,"GET, POST",KnowledgeFileViewSet,list/create,frontend_vue/src/services/knowledge.js,Static route from router; runtime not tested
+knowledge,/api/knowledge/files/<pk>/,"GET, PATCH, PUT, DELETE",KnowledgeFileViewSet,retrieve/update/delete,frontend_vue/src/services/knowledge.js,Static route from router; runtime not tested
+learning,/api/learning/skills/,GET,SkillViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/skills/<pk>/,GET,SkillViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/goals/,"GET, POST",LearningGoalViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/goals/<pk>/,"GET, PATCH, PUT, DELETE",LearningGoalViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/goals/generate/,POST,LearningGoalViewSet.generate,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/goals/dashboard/,GET,LearningGoalViewSet.dashboard,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/goals/<pk>/complete/,POST,LearningGoalViewSet.complete,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/goals/<pk>/pause/,POST,LearningGoalViewSet.pause,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/goals/<pk>/resume/,POST,LearningGoalViewSet.resume,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/goals/<pk>/certificate/,GET,LearningGoalViewSet.certificate,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/goals/<pk>/export-plan/,POST,LearningGoalViewSet.export_plan,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/paths/,"GET, POST",LearningPathViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/paths/<pk>/,"GET, PATCH, PUT, DELETE",LearningPathViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/paths/<pk>/start/,POST,LearningPathViewSet.start,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/paths/<pk>/complete/,POST,LearningPathViewSet.complete,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/paths/<pk>/pause/,POST,LearningPathViewSet.pause,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/paths/<pk>/analytics/,GET,LearningPathViewSet.analytics,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/paths/<pk>/reorder-topics/,POST,LearningPathViewSet.reorder_topics,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/topics/,"GET, POST",LearningTopicViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/topics/<pk>/,"GET, PATCH, PUT, DELETE",LearningTopicViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/topics/<pk>/start/,POST,LearningTopicViewSet.start,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/topics/<pk>/complete/,POST,LearningTopicViewSet.complete,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/topics/<pk>/skip/,POST,LearningTopicViewSet.skip,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/topics/<pk>/bookmark/,POST,LearningTopicViewSet.bookmark,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/topics/<pk>/generate-content/,POST,LearningTopicViewSet.generate_content,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/lessons/,"GET, POST",LessonViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/lessons/<pk>/,"GET, PATCH, PUT, DELETE",LessonViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/lessons/<pk>/mark-complete/,POST,LessonViewSet.mark_complete,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/resources/,"GET, POST",LearningResourceViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/resources/<pk>/,"GET, PATCH, PUT, DELETE",LearningResourceViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/notes/,"GET, POST",LearningNoteViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/notes/<pk>/,"GET, PATCH, PUT, DELETE",LearningNoteViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/progress/,"GET, POST",LearningProgressViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/progress/<pk>/,"GET, PATCH, PUT, DELETE",LearningProgressViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/progress/update-progress/,POST,LearningProgressViewSet.update_progress,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/progress/summary/,GET,LearningProgressViewSet.summary,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/sessions/,"GET, POST",LearningSessionViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/sessions/<pk>/,"GET, PATCH, PUT, DELETE",LearningSessionViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/sessions/<pk>/finish/,POST,LearningSessionViewSet.finish,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/assessments/,"GET, POST",AssessmentViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessments/<pk>/,"GET, PATCH, PUT, DELETE",AssessmentViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessments/<pk>/learner/,GET,AssessmentViewSet.learner,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/assessments/<pk>/analytics/,GET,AssessmentViewSet.analytics,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/assessments/<pk>/start/,POST,AssessmentViewSet.start,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/assessments/<pk>/submit/,POST,AssessmentViewSet.submit,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/assessment-questions/,"GET, POST",AssessmentQuestionViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-questions/<pk>/,"GET, PATCH, PUT, DELETE",AssessmentQuestionViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-choices/,"GET, POST",AssessmentChoiceViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-choices/<pk>/,"GET, PATCH, PUT, DELETE",AssessmentChoiceViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-attempts/,GET,AssessmentAttemptViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-attempts/<pk>/,GET,AssessmentAttemptViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-responses/,"GET, POST",AssessmentResponseViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/assessment-responses/<pk>/,"GET, PATCH, PUT, DELETE",AssessmentResponseViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/applications/,"GET, POST",KnowledgeApplicationViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/applications/<pk>/,"GET, PATCH, PUT, DELETE",KnowledgeApplicationViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/applications/<pk>/submit/,POST,KnowledgeApplicationViewSet.submit,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/applications/<pk>/review/,POST,KnowledgeApplicationViewSet.review,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/applications/<pk>/request-peer-review/,POST,KnowledgeApplicationViewSet.request_peer_review,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/applications/<pk>/submit-peer-review/,POST,KnowledgeApplicationViewSet.submit_peer_review,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/applications/<pk>/history/,GET,KnowledgeApplicationViewSet.history,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/application-submissions/,"GET, POST",ApplicationSubmissionViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/application-submissions/<pk>/,"GET, PATCH, PUT, DELETE",ApplicationSubmissionViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/application-reviews/,GET,ApplicationReviewViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/application-reviews/<pk>/,GET,ApplicationReviewViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/revisions/,"GET, POST",LearningRevisionViewSet,list/create,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/revisions/<pk>/,"GET, PATCH, PUT, DELETE",LearningRevisionViewSet,retrieve/update/delete,frontend_vue/src/services/learning.js,Static route from router; runtime not tested
+learning,/api/learning/revisions/<pk>/start/,POST,LearningRevisionViewSet.start,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/revisions/<pk>/complete/,POST,LearningRevisionViewSet.complete,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/revisions/<pk>/snooze/,POST,LearningRevisionViewSet.snooze,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+learning,/api/learning/revisions/<pk>/skip/,POST,LearningRevisionViewSet.skip,ViewSet action,frontend_vue/src/services/learning.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+memory,/api/memory/items/,"GET, POST",MemoryItemViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+memory,/api/memory/items/<pk>/,"GET, PATCH, PUT, DELETE",MemoryItemViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+notification,/api/notifications/,"GET, POST",NotificationViewSet,list/create,frontend_vue/src/services/notifications.js,Static route from router; runtime not tested
+notification,/api/notifications/<pk>/,"GET, PATCH, PUT, DELETE",NotificationViewSet,retrieve/update/delete,frontend_vue/src/services/notifications.js,Static route from router; runtime not tested
+notification,/api/notifications/<pk>/read/,POST,NotificationViewSet.read,ViewSet action,frontend_vue/src/services/notifications.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+notification,/api/notifications/read-all/,POST,NotificationViewSet.read_all,ViewSet action,frontend_vue/src/services/notifications.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+notification,/api/notifications/unread-count/,GET,NotificationViewSet.unread_count,ViewSet action,frontend_vue/src/services/notifications.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+notification,/api/notifications/<pk>/archive/,POST,NotificationViewSet.archive,ViewSet action,frontend_vue/src/services/notifications.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/categories/,"GET, POST",CategoryViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/categories/<pk>/,"GET, PATCH, PUT, DELETE",CategoryViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/transactions/,"GET, POST",TransactionViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/transactions/<pk>/,"GET, PATCH, PUT, DELETE",TransactionViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/transactions/summary/,GET,TransactionViewSet.summary,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/transactions/dashboard/,GET,TransactionViewSet.dashboard,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/transactions/insights/,GET,TransactionViewSet.insights,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/transactions/history/,GET,TransactionViewSet.history,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/transactions/spending/,GET,TransactionViewSet.spending,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/transactions/ai_insights/,POST,TransactionViewSet.ai_insights,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/budgets/,"GET, POST",BudgetViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/budgets/<pk>/,"GET, PATCH, PUT, DELETE",BudgetViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/debts/,"GET, POST",DebtViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/debts/<pk>/,"GET, PATCH, PUT, DELETE",DebtViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/debts/<pk>/payments/,GET,DebtViewSet.payments,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/debts/<pk>/pay/,POST,DebtViewSet.pay,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/savings-goals/,"GET, POST",SavingsGoalViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/savings-goals/<pk>/,"GET, PATCH, PUT, DELETE",SavingsGoalViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/savings-goals/<pk>/plan/,"GET, POST",SavingsGoalViewSet.plan,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/subscriptions/,"GET, POST",SubscriptionViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/subscriptions/<pk>/,"GET, PATCH, PUT, DELETE",SubscriptionViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/debt-payments/,"GET, POST",DebtPaymentViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/debt-payments/<pk>/,"GET, PATCH, PUT, DELETE",DebtPaymentViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/loans/,"GET, POST",LendingBorrowingViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/loans/<pk>/,"GET, PATCH, PUT, DELETE",LendingBorrowingViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/loans/<pk>/pay/,POST,LendingBorrowingViewSet.pay,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/loan-payments/,"GET, POST",LoanPaymentViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/loan-payments/<pk>/,"GET, PATCH, PUT, DELETE",LoanPaymentViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/recurring-cashflows/,"GET, POST",RecurringCashflowViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/recurring-cashflows/<pk>/,"GET, PATCH, PUT, DELETE",RecurringCashflowViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/profile/,"GET, POST",FinancialProfileViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/profile/<pk>/,"GET, PATCH, PUT, DELETE",FinancialProfileViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/habits/,"GET, POST",FinancialHabitViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/habits/<pk>/,"GET, PATCH, PUT, DELETE",FinancialHabitViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/alerts/,"GET, POST",FinancialAlertViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/alerts/<pk>/,"GET, PATCH, PUT, DELETE",FinancialAlertViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/alerts/<pk>/mark_read/,POST,FinancialAlertViewSet.mark_read,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+personal_finance,/api/finance/scenarios/,"GET, POST",FinancialScenarioViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/scenarios/<pk>/,"GET, PATCH, PUT, DELETE",FinancialScenarioViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+personal_finance,/api/finance/health/,See view,health,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/forecast/,See view,forecast_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/forecast/scenario/,See view,scenario_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/daily-summary/,See view,daily_summary_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/reports/<str:period>/,See view,report_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/ai/coach/,See view,coach_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/alerts/refresh/,See view,refresh_alerts_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/ecosystem/,See view,ecosystem_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+personal_finance,/api/finance/contract/,See view,api_contract_view,Explicit path,frontend_vue/src/services/ecosystemApi.js,Static route from urls.py; runtime not tested
+projects,/api/projects/projects/,"GET, POST",ProjectViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+projects,/api/projects/projects/<pk>/,"GET, PATCH, PUT, DELETE",ProjectViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+projects,/api/projects/projects/<pk>/context/,"GET, PUT, PATCH",ProjectViewSet.context,ViewSet action,frontend_vue/src/services/ecosystemApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+projects,/api/projects/members/,"GET, POST",ProjectMemberViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+projects,/api/projects/members/<pk>/,"GET, PATCH, PUT, DELETE",ProjectMemberViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+projects,/api/projects/contexts/,GET,ProjectContextViewSet,list/create,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+projects,/api/projects/contexts/<pk>/,GET,ProjectContextViewSet,retrieve/update/delete,frontend_vue/src/services/ecosystemApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/sources/,"GET, POST",WebsiteViewSet,list/create,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/sources/<pk>/,"GET, PATCH, PUT, DELETE",WebsiteViewSet,retrieve/update/delete,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/sources/<pk>/test_connection/,POST,WebsiteViewSet.test_connection,ViewSet action,frontend_vue/src/services/scraperApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+scraper,/api/scraper/sources/<pk>/run/,POST,WebsiteViewSet.run,ViewSet action,frontend_vue/src/services/scraperApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+scraper,/api/scraper/sources/stats/,GET,WebsiteViewSet.stats,ViewSet action,frontend_vue/src/services/scraperApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+scraper,/api/scraper/selectors/,"GET, POST",ParentSelectorViewSet,list/create,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/selectors/<pk>/,"GET, PATCH, PUT, DELETE",ParentSelectorViewSet,retrieve/update/delete,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/configs/,"GET, POST",ScrapingConfigViewSet,list/create,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/configs/<pk>/,"GET, PATCH, PUT, DELETE",ScrapingConfigViewSet,retrieve/update/delete,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/runs/,GET,ScrapingJobViewSet,list/create,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/runs/<pk>/,GET,ScrapingJobViewSet,retrieve/update/delete,frontend_vue/src/services/scraperApi.js,Static route from router; runtime not tested
+scraper,/api/scraper/runs/<pk>/results/,GET,ScrapingJobViewSet.results,ViewSet action,frontend_vue/src/services/scraperApi.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+social,/api/social/recommendations/,See view,api.recommendations,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+social,/api/social/profile/,See view,api.my_profile,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+social,/api/social/friends/suggested/,See view,api.my_friendship_suggestions,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+social,/api/social/friends/<uuid:pk>/,See view,api.friends,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+social,/api/social/friends/<uuid:pk>/request/,See view,api.send_friendship_request,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+social,/api/social/friends/<uuid:pk>/<str:action>/,See view,api.handle_request,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+social,/api/social/friends/<uuid:pk>/unfriend/,See view,api.unfriend,Explicit path,frontend_vue/src/services/social.js + ecosystemApi.js,Static route from urls.py; runtime not tested
+tasks,/api/tasks/,"GET, POST",TaskViewSet,list/create,frontend_vue/src/services/tasks.js + taskService.js,Static route from router; runtime not tested
+tasks,/api/tasks/<pk>/,"GET, PATCH, PUT, DELETE",TaskViewSet,retrieve/update/delete,frontend_vue/src/services/tasks.js + taskService.js,Static route from router; runtime not tested
+tasks,/api/tasks/today/,GET,TaskViewSet.today,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/generate/,POST,TaskViewSet.generate,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/<pk>/complete/,POST,TaskViewSet.complete,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/<pk>/postpone/,POST,TaskViewSet.postpone,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/<pk>/start/,POST,TaskViewSet.start,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/<pk>/cancel/,POST,TaskViewSet.cancel,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/<pk>/reopen/,POST,TaskViewSet.reopen,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/stats/,GET,TaskViewSet.stats,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/progress/,GET,TaskViewSet.progress,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/calendar/,GET,TaskViewSet.calendar,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/overdue/,GET,TaskViewSet.overdue,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+tasks,/api/tasks/generation-status/(?P<task_id>[^/.]+)/,GET,TaskViewSet.generation_status,ViewSet action,frontend_vue/src/services/tasks.js + taskService.js,Static action; confirm payload in ViewSet/serializer; runtime not tested
+users_accounts,/api/users/me/,See view,api.me,Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+users_accounts,/api/users/signup/,See view,api.signup,Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+users_accounts,/api/users/login/,See view,TokenObtainPairView.as_view(),Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+users_accounts,/api/users/refresh/,See view,TokenRefreshView.as_view(),Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+users_accounts,/api/users/profile/<uuid:id>/,See view,api.profile,Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+users_accounts,/api/users/editprofile/,See view,api.editprofile,Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+users_accounts,/api/users/editpassword/,See view,api.editpassword,Explicit path,frontend_vue/src/services/usersAccounts.js + stores/user.js,Static route from urls.py; runtime not tested
+codex,/api/codex/build/workspace/,GET/POST as declared by explicit view,BuildWorkspaceView.as_view(),Project-level explicit route,frontend_vue/src/services/codex.js,Duplicate path also appears under codex.urls; verify resolver order
+codex,/api/codex/build/manifest/,GET/POST as declared by explicit view,BuildManifestView.as_view(),Project-level explicit route,frontend_vue/src/services/codex.js,Duplicate path also appears under codex.urls; verify resolver order
+mcp,/api/mcp/*,various,No include found in root urls.py,frontend_vue/src/services/mcpService.js,Not wired: no backend route include found,
+explain,/api/explain/*,various,No include found in root urls.py,frontend_vue/src/services/explainsService.js,Not wired: no backend route include found,

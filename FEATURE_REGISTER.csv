@@ -1,0 +1,252 @@
+﻿application,feature_number,feature,status_before,status_after,verification,notes
+knowledge,1,عارض Markdown مباشر مع تنسيق المحتوى وتلوين الأكواد.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,2,استخراج البيانات الوصفية تلقائيًا، بما يشمل العناوين والكلمات المفتاحية والملخصات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,3,استيراد PDF وMD وTXT وJSON وDOCX وتحويل المحتوى إلى نص قابل للبحث.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,4,مجلدات متداخلة لتنظيم المعرفة في شجرة ملفات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,5,محرر غني للنصوص والأكواد مع المعاينة الفورية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,6,تصدير ونسخ احتياطي لمحتوى المعرفة في ملفات Markdown مضغوطة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,7,بحث دلالي في محتوى الملفات، وليس عناوينها فقط.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,8,سجل إصدارات للملفات وتتبع التعديلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,9,حفظ روابط المصادر الخارجية ومزامنة المحتوى وفق قواعد آمنة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,10,تصنيف وأرشفة ذكية حسب التقنية أو اللغة أو المجال.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,11,تحويل الملاحظات إلى موضوعات ومسارات تعليم في `learning`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,12,مطابقة المعرفة والمهارات مع متطلبات الوظائف في `jobs_opportunity`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,13,توليد Prompts قابلة للاستخدام في `codex` من الملفات والمقالات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,14,استخراج المهام من المستندات وإرسالها إلى `tasks`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,15,حساب مؤشر نضج المهارة بناءً على أدلة تعلم قابلة للقياس.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,16,ربط المعرفة بالأهداف في `goals`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,17,التحكم في المحتوى العام والخاص.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,18,تصدير سياق معرفي منظم إلى `PROJECT_CONTEXT`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,19,تتبع حالة قراءة الملفات ومراجعتها.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,20,استيراد ملفات التوثيق من GitHub وفق الصلاحيات وشروط الاستخدام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,21,مساعد Knowledge AI Tutor يجيب اعتمادًا على الملفات المصرح بها فقط.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,22,تلخيص الملفات الطويلة تلقائيًا.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,23,إنشاء اختبارات وأسئلة من المحتوى.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,24,اكتشاف التعارضات بين المستندات مع إظهار الأدلة والمصادر.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,25,ترجمة التوثيق التقني مع المحافظة على المصطلحات البرمجية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,26,اقتراح روابط بين المستندات المتشابهة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,27,إنشاء Tags ذكية للمحتوى.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,28,فحص الأمثلة البرمجية وتحديد الأخطاء المحتملة دون تعديل المصدر تلقائيًا.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,29,إنشاء خرائط ذهنية تفاعلية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,30,دعم البحث النصي والصوتي عند توافر خدمات التعرف على الصوت.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,31,لوحة إحصائية للملفات والتصنيفات والتقدم.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,32,التبديل بين Grid View وList View.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,33,نوافذ مساعدة توضيحية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,34,دعم الوضعين الفاتح والداكن وفق ثيمات النظام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,35,رفع الملفات بالسحب والإفلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,36,فلاتر متعددة حسب النوع والوسوم والتاريخ والأهمية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,37,Breadcrumbs للمجلدات المتداخلة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,38,إشعارات عند اكتمال معالجة الملفات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,39,مقارنة ملفين جنبًا إلى جنب.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,40,تخصيص ألوان وأيقونات التصنيفات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,41,قفل عناصر المعرفة المعتمدة وحمايتها من التعديل غير المصرح به.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,42,معالجة الملفات الثقيلة في الخلفية باستخدام Celery عند توفره.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,43,Redis Cache عند توفر Redis وتهيئته بصورة صحيحة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,44,فحص الروابط التالفة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,45,Audit Trail لتسجيل النشاطات والتعديلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,46,تصدير تقارير PDF أو HTML.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,47,صلاحيات مستقلة للقراءة والتعديل والمشاركة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,48,نسخ احتياطي قابل للاستعادة والتحقق.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,49,توافق كامل بين Models وSerializers وViews وURLs وAxios Services.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+knowledge,50,Release Validator لاختبارات السلامة قبل النشر.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,1,شجرة هرمية تربط الرؤية بالأهداف والنتائج الرئيسية والمهام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,2,قوالب جاهزة للأهداف في مجالات متعددة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,3,نظام OKRs متكامل.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,4,حساب KPIs آليًا وفق قواعد واضحة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,5,تقييم SMART للأهداف قبل اعتمادها.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,6,تقسيم الأهداف إلى Milestones.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,7,دورة حياة تشمل المسودة والتنفيذ والتعليق والإكمال والأرشفة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,8,أهداف يومية وأسبوعية وشهرية وفصلية وسنوية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,9,التنبؤ بالمخاطر واحتمالات التأخير.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,10,أرشيف للأهداف المكتملة وتقارير الإنجاز.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,11,تحويل النتائج الرئيسية إلى مهام في `tasks`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,12,ربط الأهداف بمسارات `learning`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,13,إرفاق المعرفة والملفات من `knowledge`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,14,ربط الأهداف المهنية بالوظائف في `jobs_opportunity`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,15,ربط أهداف التطوير البرمجي بـ `codex` وBuild Flow.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,16,توليد خطط عمل تفصيلية بالذكاء الاصطناعي.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,17,احتساب مؤشر التقدم العام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,18,ربط العادات اليومية بالأهداف.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,19,إرسال تنبيهات استباقية عبر `notification`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,20,تصدير سياق الأهداف إلى `PROJECT_CONTEXT`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,21,Goal AI Coach.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,22,توقع تاريخ إتمام الأهداف اعتمادًا على البيانات التاريخية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,23,اقتراح إعادة جدولة المواعيد عند تعارض الأولويات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,24,تحليل أسباب تعثر الأهداف السابقة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,25,توليد أسئلة للتقييم الذاتي.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,26,اقتراح أهداف جديدة ملائمة للسياق.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,27,تفكيك الأهداف المعقدة إلى Micro-steps.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,28,تحليل الملاحظات النصية بصورة اختيارية وشفافة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,29,حساب ROI وImpact Score وفق معايير معلنة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,30,إنشاء ملخص أسبوعي نصي أو صوتي عند توافر الإمكانات اللازمة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,31,Dashboard تفاعلية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,32,Kanban Board لإدارة حالات الأهداف.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,33,Visual Goal Tree.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,34,نوافذ المساعدة التوضيحية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,35,ملف `GoalsView.scss` متوافق مع AppLayout.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,36,مؤشرات تقدم خطية ودائرية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,37,فلاتر متعددة المعايير.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,38,إعادة ترتيب الأهداف بالسحب والإفلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,39,تنبيهات فورية عند إكمال المعالم.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,40,مقارنة الأداء بين الفترات الزمنية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,41,قفل الأهداف المكتملة مع مسار مراجعة وتعديل مصرح به.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,42,معالجة الحسابات الثقيلة عبر Celery عند الحاجة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,43,تخزين مؤقت باستخدام Redis عند إعداده.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,44,سجل تدقيق شامل.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,45,تصدير تقارير PDF أو HTML.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,46,التحكم في خصوصية الأهداف ومشاركتها.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,47,نسخ احتياطي واستعادة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,48,توافق API وSerializers.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,49,Release Validation.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+goals,50,التكامل الكامل مع منظومة SO_IAM_OS.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,1,Subtasks وقوائم تحقق متداخلة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,2,Eisenhower Matrix.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,3,Time Tracking وPomodoro Timer.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,4,Recurring Tasks Engine.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,5,Task Dependencies.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,6,مستويات أولوية ديناميكية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,7,Smart Tags.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,8,تقدير الجهد وStory Points.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,9,أرشيف للمهام المكتملة مع إمكانية استعادتها وفق الصلاحيات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,10,Custom Status Workflow.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,11,ربط المهام بنتائج الأهداف.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,12,إرفاق الملفات والملاحظات من `knowledge`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,13,تحويل الدروس والتمارين من `learning` إلى مهام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,14,إدارة مهام التقديم للوظائف والمقابلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,15,ربط المهام بمراحل التطوير في `codex`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,16,تقسيم المهام باستخدام AI Task Decomposition.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,17,احتساب الإنتاجية اليومية من بيانات فعلية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,18,دمج العادات مع المهام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,19,تنبيهات المواعيد الحرجة والمتأخرة عبر `notification`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,20,تصدير سياق المهام إلى `PROJECT_CONTEXT`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,21,Task AI Scheduler.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,22,ملخص يومي للمهام المنجزة والمطلوبة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,23,تفكيك المشروعات والأهداف إلى مهام صغيرة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,24,التنبؤ بالتأخير.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,25,اقتراح مهام مناسبة للفترات الزمنية المتاحة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,26,تحسين صياغة المهام تلقائيًا.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,27,Velocity Analytics.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,28,استخراج المهام من محادثات Codex والملاحظات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,29,توزيع المهام على الوكلاء المصرح لهم.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,30,اقتراح تحسينات يومية للجدول.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,31,Kanban تفاعلي.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,32,Calendar وTimeline وGantt وفق الإمكانات المتوافرة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,33,Analytics Dashboard.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,34,نوافذ المساعدة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,35,ملف `TasksView.scss`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,36,DataTable متقدمة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,37,Focus Mode.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,38,فلاتر حسب الأولوية والتصنيف والحالة والاستحقاق.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,39,اختصارات لوحة المفاتيح.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,40,ألوان وأيقونات مخصصة للتصنيفات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,41,حماية المهام المكتملة من التعديل غير المقصود.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,42,تشغيل العمليات الدورية والثقيلة في Celery عند الحاجة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,43,Redis Cache عند إعداده.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,44,Audit Trail.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,45,تصدير التقارير إلى PDF أو CSV.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,46,صلاحيات القراءة والتعديل والمشاركة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,47,نسخ احتياطي واستعادة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,48,تكامل كامل بين Django REST Framework وVue 3 وAxios.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,49,Release Validator.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+tasks,50,تكامل Tasks مع منظومة SO_IAM_OS.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,1,مسارات تعلم تكيفية بالذكاء الاصطناعي.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,2,اختبارات تشخيصية لتحديد فجوات المهارات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,3,Visual Skill Tree.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,4,Micro-Learning.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,5,Gamification وChallenges.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,6,مسارات مرتبطة بأهداف `goals`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,7,Study Streaks والعادات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,8,أرشيف وتصنيف المقررات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,9,صعوبة ديناميكية للتمارين.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,10,شهادات وإنجازات رقمية قابلة للتحقق.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,11,تحويل المعرفة إلى موضوعات ودروس.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,12,مطابقة المهارات مع الوظائف.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,13,جدولة المهام الدراسية في `tasks`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,14,ربط التعلم بالنتائج الرئيسية في `goals`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,15,ربط تعلم التقنيات بـ `codex`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,16,توليد اختبارات من ملفات التوثيق.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,17,حساب نضج المهارات والتقدم.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,18,استيراد محتوى خارجي بصورة قانونية ومتوافقة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,19,تذكيرات المراجعة بالتكرار المتباعد.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,20,تصدير سياق المهارات إلى `PROJECT_CONTEXT`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,21,AI Tutor داخل الدروس.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,22,شرح تفاعلي خطوة بخطوة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,23,Auto-Grading للتمارين مع معايير تقييم واضحة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,24,تلخيص المقررات والوحدات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,25,اقتراح مسارات بديلة عند التعثر.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,26,توليد Flashcards.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,27,تحليل وتكييف وتيرة التعلم.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,28,تدريبات علاجية مخصصة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,29,Semantic Search.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,30,Mind Maps تفاعلية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,31,بيئة Code Sandbox داخل المتصفح عند توافر تشغيل معزول وآمن.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,32,Analytics Dashboard.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,33,عرض المسارات كخرائط بصرية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,34,نوافذ المساعدة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,35,ملف `LearningView.scss`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,36,تكامل واضح مع مكونات PrimeVue.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,37,Focus Mode.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,38,فلاتر حسب التقنية والحالة والمستوى والأولوية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,39,Grid View وList View.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,40,دعم الثيم الفاتح والداكن.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,41,قفل الوحدات التعليمية المعتمدة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,42,معالجة المحتوى الثقيل باستخدام Celery عند الحاجة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,43,Redis Cache عند إعداده.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,44,سجل تقدم وتعديلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,45,تقارير الإنجاز الدراسي بصيغة PDF.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,46,إدارة خصوصية المسارات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,47,نسخ احتياطي واستعادة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,48,توافق API وSerializers.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,49,Release Validator.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+learning,50,تكامل Learning مع منظومة SO_IAM_OS.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,1,Semantic Skill Matching.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,2,AI Job Recommender.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,3,AI Resume Tailor.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,4,AI Cover Letter Generator.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,5,اكتشاف مؤشرات الاحتيال في الوظائف.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,6,تحليل اتجاهات الرواتب وفق بيانات ومصادر موثوقة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,7,استخراج تفاصيل الوظيفة من الروابط أو الصور عند دعم ذلك.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,8,تلخيص وصف الوظائف إلى نقاط واضحة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,9,Skill Gap Analysis وربط الفجوات بالتعلم.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,10,البحث الصوتي عند توافر خدمة مناسبة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,11,تكامل التقويم لمواعيد المقابلات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,12,توليد مهام التقديم في Tasks.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,13,إشعارات الوظائف المطابقة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,14,جلب الوظائف ومعالجتها في الخلفية باستخدام Celery.,Not Verified,Partially Implemented,"Source worker, safe bounded fetch, source sync API, and UI wiring changed; Celery/Redis runtime not tested.",Run against a configured public source in the project environment; confirm task completion and persisted jobs.
+jobs_opportunity,15,تتبع حالات التقديم من مصادر مصرح بها.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,16,ربط الأهداف المهنية والرواتب المستهدفة مع `goals` وبيانات المالية عند وجود تكامل مصرح به.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,17,تحديث المهارات بناءً على إنجازات `learning`.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,18,استيراد وتصدير JSON وCSV وPDF.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,19,Dynamic Source Manager لإدارة المصادر.,Not Verified,Partially Implemented,Source edit/enable/test/sync-all UI and live source test endpoint changed; runtime not tested.,Default sources remain opt-in; replace template URLs and confirm terms before enabling.
+jobs_opportunity,20,نسخ احتياطي آمن لسجل التقديمات.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,21,Advanced Analytics Dashboard.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,22,تصميم PrimeVue متوافق مع النظام.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,23,Grid View وList View.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,24,فلاتر متعددة للمهارات والموقع والراتب ونوع العمل.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,25,Bookmarks وTags.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,26,ملاحظات خاصة بكل وظيفة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,27,Interview Pipeline تفاعلي.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,28,ملفات SCSS منظمة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,29,Job Detail Drawer.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,30,Application Time Tracker.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,31,AI Mock Interviewer.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,32,Custom Skill Roadmap.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,33,Quick Skill Quizzes.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,34,اقتراح دورات ومصادر تعليمية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,35,Interview Question Bank.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,36,تكامل تحديات البرمجة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,37,Learning Progress Tracker.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,38,AI Career Mentor.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,39,تقييم جودة السيرة الذاتية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,40,Portfolio Project Generator.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,41,حماية بيانات السيرة الذاتية والبيانات الشخصية أثناء النقل والتخزين.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,42,Role-Based Access Control.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,43,دعم معالجة محلية عبر Ollama عند إعداده.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,44,Audit Logs.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,45,تخزين آمن لمفاتيح API والاعتمادات الخارجية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,46,Privacy Masking Mode.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,47,نسخ احتياطي مشفر عند توافر إدارة مفاتيح مناسبة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,48,إدارة الجلسات النشطة إذا كان نظام المصادقة يدعمها.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,49,فحص الملفات المرفقة باستخدام آلية موثوقة.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,50,حذف آمن للبيانات مع احترام متطلبات الاحتفاظ والنسخ الاحتياطية.,Not Verified,Not Verified,No Django runtime available; source audit only,Status intentionally not inferred from feature-list wording alone.
+jobs_opportunity,REGRESSION_FIX,RSS 2.0 and Atom feed parsing (leaf XML fields and Atom link href),Partially Implemented,Implemented (static behavioral checks passed; Django test suite not run),"Direct execution of extracted parser function passed RSS, Atom, and invalid XML cases",Added jobs_opportunity/test_rss_parser.py; full Django test requires project dependencies.

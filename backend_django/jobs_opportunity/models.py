@@ -105,7 +105,7 @@ class JobOpportunity(models.Model):
     responsibilities = models.JSONField(default=list, blank=True)
     benefits = models.JSONField(default=list, blank=True)
     extracted_requirements = models.JSONField(default=list, blank=True)
-    url = models.URLField(blank=True)
+    url = models.URLField(blank=True, max_length=500)
     location = models.CharField(max_length=255, blank=True)
     location_type = models.CharField(max_length=20, choices=LocationType.choices, default=LocationType.UNKNOWN)
     is_remote = models.BooleanField(default=False)

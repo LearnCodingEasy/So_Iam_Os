@@ -41,31 +41,3 @@ onMounted(async () => {
   }
 })
 </script>
-
-<script>
-import axios from 'axios'
-
-export default {
-  name: 'AuthCallback',
-  async mounted() {
-    try {
-      const response = await axios.get('http://localhost:8000/api/auth/google/callback/', {
-        withCredentials: true,
-      })
-
-      const { access, refresh, user } = response.data
-
-      // تخزين التوكن والبيانات
-      localStorage.setItem('access_token', access)
-      localStorage.setItem('refresh_token', refresh)
-      localStorage.setItem('user', JSON.stringify(user))
-
-      // إعادة توجيه المستخدم
-      this.$router.push('/dashboard')
-    } catch (error) {
-      console.error('Error fetching token:', error)
-      alert('Authentication failed, try again!')
-    }
-  },
-}
-</script>

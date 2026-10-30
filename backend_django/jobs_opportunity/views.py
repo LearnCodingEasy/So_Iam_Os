@@ -1,3 +1,4 @@
+import requests
 from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -18,30 +19,6 @@ from .serializers import (
 )
 from .services import JobAnalyticsService, JobGapService, JobMatchingService, JobParserService, JobRecommendationService, JobService, ReadinessService
 
-# backend_django/jobs_opportunity/views.py
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from .models import JobOpportunity
-from .serializers import JobOpportunitySerializer
-from .tasks import run_job_scraper_task
-
-
-class JobOpportunityViewSet(viewsets.ModelViewSet):
-    queryset = JobOpportunity.objects.all().order_by('-created_at')
-    serializer_class = JobOpportunitySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    @action(detail=False, methods=['post'])
-    def trigger_scrape(self, request):
-        """Trigger asynchronous scraping via Celery."""
-        task = run_job_scraper_task.delay()
-        return Response(
-            {"status": "Scraping task queued successfully.", "task_id": task.id},
-            status=status.HTTP_202_ACCEPTED
-        )
-
-
 class UserOwnedViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
@@ -55,32 +32,113 @@ class JobSourceViewSet(UserOwnedViewSet):
     def perform_create(self, serializer): serializer.save(
         user=self.request.user)
 
+    @action(detail=False, methods=["post"], url_path="sync-all")
+    def sync_all(self, request):
+        """Queue syncs for this user's enabled sources; never scrape globally."""
+        sources = self.get_queryset().filter(enabled=True, source_type__in=[JobSource.SourceType.API, JobSource.SourceType.RSS, JobSource.SourceType.SCRAPER]).exclude(base_url="", feed_url="")
+        if not sources.exists():
+            return Response({"detail": "No enabled API, RSS, or Scraper sources with public URLs are configured.", "queued": 0}, status=status.HTTP_400_BAD_REQUEST)
+        from .tasks import sync_job_source
+        queued = []
+        failures = []
+        for source in sources:
+            try:
+                task = sync_job_source.delay(source.pk)
+                queued.append({"source_id": source.pk, "source_name": source.name, "task_id": task.id})
+            except Exception:
+                failures.append({"source_id": source.pk, "source_name": source.name, "error": "Background queue unavailable"})
+        response_status = status.HTTP_202_ACCEPTED if queued else status.HTTP_503_SERVICE_UNAVAILABLE
+        return Response({"queued": len(queued), "sources": queued, "failures": failures}, status=response_status)
+
     @action(detail=True, methods=["post"])
     def sync(self, request, pk=None):
+        source = self.get_object()
+        if not source.enabled:
+            return Response({"detail": "Enable this source after reviewing its URL, configuration, and terms before syncing."}, status=status.HTTP_400_BAD_REQUEST)
+        if source.source_type == JobSource.SourceType.MANUAL:
+            return Response({"detail": "Manual sources are maintained manually and cannot be synced automatically."}, status=status.HTTP_400_BAD_REQUEST)
+        if not (source.feed_url or source.base_url):
+            return Response({"detail": "Configure a public source URL before syncing."}, status=status.HTTP_400_BAD_REQUEST)
         from .tasks import sync_job_source
-        source_id = self.get_object().id
-        if request.data.get("background", True) is True:
-            task = sync_job_source.delay(source_id)
-            return Response({"queued": True, "task_id": task.id}, status=status.HTTP_202_ACCEPTED)
-        return Response(sync_job_source.apply(args=[source_id]).get())
+        try:
+            if request.data.get("background", True) is True:
+                task = sync_job_source.delay(source.id)
+                return Response({"queued": True, "task_id": task.id, "source_id": source.id}, status=status.HTTP_202_ACCEPTED)
+            return Response(sync_job_source.apply(args=[source.id]).get())
+        except Exception:
+            return Response({"detail": "Could not queue or execute the source sync. Verify Celery/Redis configuration."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     @action(detail=True, methods=["post"])
     def test(self, request, pk=None):
         source = self.get_object()
-        if source.source_type == JobSource.SourceType.SCRAPER:
-            from .scraper import check_robots
-            allowed = check_robots(source.base_url)
-            return Response({"ok": allowed, "robots_allowed": allowed, "source_id": source.id})
-        return Response({"ok": bool(source.feed_url or source.base_url), "source_id": source.id, "message": "Source configuration is ready for the sync worker."})
+        url = source.feed_url or source.base_url
+        if source.source_type == JobSource.SourceType.MANUAL:
+            return Response({"ok": False, "source_id": source.id, "detail": "Manual sources do not have an automated connection test."}, status=status.HTTP_400_BAD_REQUEST)
+        if not url:
+            return Response({"ok": False, "source_id": source.id, "detail": "Configure a source URL first."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            from .tasks import _safe_url, _rss_items, _json_path
+            safe_url = _safe_url(url)
+            if source.source_type == JobSource.SourceType.SCRAPER:
+                if not (source.config or {}).get("terms_confirmed"):
+                    return Response({"ok": False, "source_id": source.id, "detail": "Confirm that the source permits scraping before testing it."}, status=status.HTTP_400_BAD_REQUEST)
+                from .scraper import check_robots, fetch_and_extract
+                allowed = check_robots(source.base_url)
+                if not allowed:
+                    return Response({"ok": False, "robots_allowed": False, "source_id": source.id, "detail": "robots.txt disallows this URL."}, status=status.HTTP_400_BAD_REQUEST)
+                items, meta = fetch_and_extract(safe_url, source.config or {}, user_agent="So-IAM-OS-JobScraper/1.0", rate_limit_seconds=0.25)
+                return Response({"ok": True, "robots_allowed": True, "source_id": source.id, "items_found": len(items), "meta": meta})
+
+            import json
+            response = requests.get(safe_url, timeout=15, allow_redirects=False, headers={
+                "User-Agent": "SO_IAM_OS Job Source Test/1.0",
+                "Accept": "application/json,application/rss+xml,application/atom+xml,application/xml,text/xml",
+            }, stream=True)
+            try:
+                if 300 <= response.status_code < 400:
+                    raise ValueError("Redirects are disabled for safety; configure the final public URL.")
+                response.raise_for_status()
+                chunks, size = [], 0
+                for chunk in response.iter_content(65536):
+                    size += len(chunk)
+                    if size > 5 * 1024 * 1024:
+                        raise ValueError("Source response exceeds the 5 MB limit.")
+                    chunks.append(chunk)
+                content = b"".join(chunks)
+                if source.source_type == JobSource.SourceType.RSS:
+                    items = _rss_items(content)
+                else:
+                    data = json.loads(content.decode("utf-8", errors="replace"))
+                    adapter = (source.config or {}).get("adapter")
+                    if adapter == "greenhouse": items = data.get("jobs", []) if isinstance(data, dict) else []
+                    elif adapter == "remotive": items = data.get("jobs", []) if isinstance(data, dict) else []
+                    elif adapter == "arbeitnow": items = data.get("data", []) if isinstance(data, dict) else []
+                    elif adapter == "jobicy": items = data.get("jobs", []) if isinstance(data, dict) else []
+                    elif adapter == "lever": items = data if isinstance(data, list) else []
+                    elif isinstance(data, dict):
+                        configured_items = _json_path(data, (source.config or {}).get("items_path", ""))
+                        if configured_items is not None and (source.config or {}).get("items_path"):
+                            items = configured_items
+                        else:
+                            items = data.get("items") or data.get("jobs") or data.get("results") or data.get("data") or []
+                    else: items = data if isinstance(data, list) else []
+                if isinstance(items, dict):
+                    items = items.get("items") or items.get("jobs") or items.get("results") or [items]
+                return Response({"ok": True, "source_id": source.id, "status_code": response.status_code, "items_found": len(items) if isinstance(items, list) else 0, "bytes": size})
+            finally:
+                response.close()
+        except Exception as exc:
+            return Response({"ok": False, "source_id": source.id, "detail": str(exc)[:500]}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["post"])
     def preview(self, request, pk=None):
         source = self.get_object()
         if source.source_type != JobSource.SourceType.SCRAPER:
             return Response({"detail": "Preview is only available for HTML scraper sources."}, status=400)
+        if not (source.config or {}).get("terms_confirmed"):
+            return Response({"detail": "Confirm that this source permits scraping before previewing it."}, status=400)
         from .scraper import fetch_and_extract
-        items, meta = fetch_and_extract(source.base_url, {
-                                        **(source.config or {}), "terms_confirmed": True}, user_agent="So-IAM-OS-JobScraper/1.0", rate_limit_seconds=0.25)
+        items, meta = fetch_and_extract(source.base_url, source.config or {}, user_agent="So-IAM-OS-JobScraper/1.0", rate_limit_seconds=0.25)
         return Response({"items": items[:25], "meta": meta})
 
 
@@ -133,7 +191,7 @@ class JobOpportunityViewSet(UserOwnedViewSet):
 
     @action(detail=True, methods=["post"])
     def analyze(self, request, pk=None):
-        job = JobParserService.analyze(self.get_object())
+        job = JobParserService.analyze(self.get_object(), user=request.user, use_ai=True)
         JobMatchingService.calculate(request.user, job)
         return Response(self.get_serializer(job).data)
 

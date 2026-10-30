@@ -18,6 +18,23 @@ class ScraperSafetyTests(SimpleTestCase):
         self.assertEqual(result["external_id"], "abc")
         self.assertEqual(result["url"], "https://example.com/jobs/1")
 
+    def test_normalize_greenhouse_style_job(self):
+        result = normalize_item({
+            "id": "gh-123", "title": "Django Engineer",
+            "company_name": "Example Co", "absolute_url": "https://jobs.example/123",
+            "content": "<p>Build APIs</p>", "location": {"name": "Remote"},
+        })
+        self.assertEqual(result["external_id"], "gh-123")
+        self.assertEqual(result["url"], "https://jobs.example/123")
+        self.assertEqual(result["company"], "Example Co")
+        self.assertEqual(result["description"], "Build APIs")
+        self.assertEqual(result["location"], "Remote")
+
+    def test_normalize_does_not_treat_id_as_a_url(self):
+        result = normalize_item({"id": "job-42", "title": "Backend Engineer"})
+        self.assertEqual(result["external_id"], "job-42")
+        self.assertEqual(result["url"], "")
+
     def test_parse_json_items_path(self):
         website = SimpleNamespace(source_type="json", config={"items_path": "data.results"})
         rows = parse_source(website, b'{"data":{"results":[{"title":"A"}]}}', "application/json")

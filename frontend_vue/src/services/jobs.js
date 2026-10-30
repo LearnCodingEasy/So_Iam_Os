@@ -51,7 +51,8 @@ export const deleteSource = async (id) => {
   return true
 }
 export const testSource = async (id) => dataOf(api.post(endpoints.jobs.sourceTest(id)))
-export const previewSource = async (id) => dataOf(api.post(`${endpoints.jobs.source(id)}preview/`))
+export const previewSource = async (id) => dataOf(api.post(endpoints.jobs.sourcePreview(id)))
+export const syncAllSources = async () => dataOf(api.post(endpoints.jobs.sourcesSyncAll))
 export const syncSource = async (id) => dataOf(api.post(endpoints.jobs.sourceSync(id)))
 
 export const getPreferences = async () => dataOf(api.get(endpoints.jobs.preferences))

@@ -138,6 +138,108 @@ class AIProviderModelsView(APIView):
         return Response({"success": True, "provider": provider, "models": result})
 
 
+class AIProviderTestView(APIView):
+    """Perform a real, authenticated connectivity check without exposing credentials."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, provider):
+        try:
+            provider_obj = get_ai_provider(provider, user=request.user)
+            models = provider_obj.list_models()
+            return Response({
+                "success": True,
+                "provider": provider,
+                "connected": True,
+                "models_count": len(models),
+                "models": models[:100],
+            })
+        except AIError as exc:
+            return Response({
+                "success": False,
+                "provider": provider,
+                "connected": False,
+                "error": str(exc),
+                "models": [],
+            }, status=status.HTTP_502_BAD_GATEWAY)
+
+
+class AIProviderListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from .services.provider_manager import ProviderManager
+        return Response({"providers": ProviderManager.list_for_user(request.user)})
+
+
+class AIUsageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from .services.usage_service import UsageService
+        return Response(UsageService.summarize(user=request.user))
+
+
+class AIContextInspectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        from .services.context_inspector import ContextInspector
+        result = ContextInspector.inspect_conversation(
+            user=request.user, conversation_id=pk)
+        if result is None:
+            return Response({"detail": "Conversation not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(result)
+
+
+class AIWorkflowValidateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from .services.workflow_service import WorkflowService
+        result = WorkflowService.validate(request.data)
+        return Response(result, status=status.HTTP_200_OK if result.get("valid") else status.HTTP_400_BAD_REQUEST)
+
+
+class AITaskProposalView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from .services.task_planner import TaskPlanner
+        try:
+            proposal = TaskPlanner.proposal(
+                title=request.data.get("title", ""),
+                description=request.data.get("description", ""),
+                steps=request.data.get("steps") or [],
+                priority=request.data.get("priority", "medium"),
+                due_date=request.data.get("due_date"),
+            )
+        except (TypeError, ValueError) as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(proposal, status=status.HTTP_200_OK)
+
+
+class AIAgentSelectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from .services.agent_selector import AgentSelector
+        try:
+            selection = AgentSelector.select(
+                user=request.user,
+                message=request.data.get("message", ""),
+                provider=request.data.get("provider"),
+                model=request.data.get("model"),
+                task_type=request.data.get("task_type", "chat"),
+            )
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            "provider": selection.provider,
+            "model": selection.model,
+            "reason": selection.reason,
+        })
+
+
 class AIPromptProfileViewSetMixin:
     pass
 

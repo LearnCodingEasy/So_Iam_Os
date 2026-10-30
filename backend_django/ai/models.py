@@ -10,6 +10,8 @@ class AISettings(models.Model):
         OLLAMA = "ollama", "Ollama"
         OPENAI = "openai", "OpenAI"
         OPENROUTER = "openrouter", "OpenRouter"
+        GEMINI = "gemini", "Google Gemini"
+        DEEPSEEK = "deepseek", "DeepSeek"
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -99,11 +101,15 @@ class AIConversation(models.Model):
     PROVIDER_OLLAMA = "ollama"
     PROVIDER_OPENAI = "openai"
     PROVIDER_OPENROUTER = "openrouter"
+    PROVIDER_GEMINI = "gemini"
+    PROVIDER_DEEPSEEK = "deepseek"
 
     PROVIDER_CHOICES = [
         (PROVIDER_OLLAMA, "Ollama"),
         (PROVIDER_OPENAI, "OpenAI"),
         (PROVIDER_OPENROUTER, "OpenRouter"),
+        (PROVIDER_GEMINI, "Google Gemini"),
+        (PROVIDER_DEEPSEEK, "DeepSeek"),
     ]
 
     user = models.ForeignKey(

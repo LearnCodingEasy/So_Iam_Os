@@ -18,7 +18,10 @@ class WebsiteSerializer(serializers.ModelSerializer):
 
     def validate_base_url(self, value):
         from .services import validate_public_url
-        validate_public_url(value)
+        try:
+            validate_public_url(value)
+        except ValueError as exc:
+            raise serializers.ValidationError(str(exc)) from exc
         return value
 
     def validate_config(self, value):
@@ -27,6 +30,16 @@ class WebsiteSerializer(serializers.ModelSerializer):
         if len(str(value)) > 12000:
             raise serializers.ValidationError("config is too large.")
         return value
+
+    def validate(self, attrs):
+        source_type = attrs.get("source_type", getattr(self.instance, "source_type", "html"))
+        is_active = attrs.get("is_active", getattr(self.instance, "is_active", True))
+        config = attrs.get("config", getattr(self.instance, "config", {})) or {}
+        if source_type == "html" and is_active and not config.get("terms_confirmed"):
+            raise serializers.ValidationError({
+                "config": "Confirm that this public HTML source permits automated collection before enabling it."
+            })
+        return attrs
 
 
 class ParentSelectorSerializer(serializers.ModelSerializer):
