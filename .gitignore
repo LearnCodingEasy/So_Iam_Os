@@ -18,3 +18,5 @@ project_docs/
 git rm -r --cached project_docs
 
 scripts/
+/scripts/
+git rm -r --cached scripts
