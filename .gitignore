@@ -14,12 +14,7 @@ backend_django/media/runs/
 
 # Private project documentation
 project_docs/
+/project_docs/
+git rm -r --cached project_docs
 
-Build/
-CODEX_RELEASE_VALIDATION.md
-
-FEATURE_REGISTER.csv
-API_ENDPOINT_AUDIT.csv
-project_manifest.json
-desktop.ini
-PHASE1_RESTRUCTURE_REPORT.md
+scripts/

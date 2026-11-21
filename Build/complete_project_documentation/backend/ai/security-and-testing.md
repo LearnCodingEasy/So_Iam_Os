@@ -1,0 +1,118 @@
+﻿# ai security and testing
+
+## Permission/ownership evidence
+
+- ai/api/views/ai_views.py:L3: from rest_framework.decorators import permission_classes
+- ai/api/views/ai_views.py:L4: from rest_framework.permissions import IsAuthenticated
+- ai/api/views/ai_views.py:L22: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L29: result = AIService(request.user).chat(
+- ai/api/views/ai_views.py:L55: "Unexpected AI error for user %s", request.user.pk)
+- ai/api/views/ai_views.py:L67: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L71: user=request.user, is_active=True, deleted_at__isnull=True).prefetch_related("messages")
+- ai/api/views/ai_views.py:L75: service = AIService(request.user)
+- ai/api/views/ai_views.py:L82: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L85: return AIConversation.objects.prefetch_related("messages").filter(pk=pk, user=request.user).first()
+- ai/api/views/ai_views.py:L125: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L128: obj = AIService(request.user).get_settings()
+- ai/api/views/ai_views.py:L132: obj = AIService(request.user).get_settings()
+- ai/api/views/ai_views.py:L141: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L144: qs = AIProviderCredential.objects.filter(user=request.user)
+- ai/api/views/ai_views.py:L156: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L162: user=request.user, provider=provider
+- ai/api/views/ai_views.py:L168: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L172: result = get_ai_provider(provider, user=request.user).list_models()
+- ai/api/views/ai_views.py:L188: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L195: provider_obj = get_ai_provider(provider, user=request.user)
+- ai/api/views/ai_views.py:L215: user=request.user, provider=provider
+- ai/api/views/ai_views.py:L228: user=request.user, provider=provider
+- ai/api/views/ai_views.py:L257: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L261: return Response({"providers": ProviderManager.list_for_user(request.user)})
+- ai/api/views/ai_views.py:L265: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L269: user=request.user).order_by("-created_at")[:200]
+- ai/api/views/ai_views.py:L274: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L278: user=request.user).order_by("scope", "scope_key")
+- ai/api/views/ai_views.py:L285: user=request.user,
+- ai/api/views/ai_views.py:L294: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L298: queryset = AiAuditLog.objects.filter(user=request.user).order_by("-created_at")[:500]
+- ai/api/views/ai_views.py:L304: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L313: user=request.user,
+- ai/api/views/ai_views.py:L334: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L337: return AIBudgetPolicy.objects.filter(user=request.user, pk=pk).first()
+- ai/api/views/ai_views.py:L357: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L361: user=request.user).order_by("-updated_at")
+- ai/api/views/ai_views.py:L370: user=request.user, name=name
+- ai/api/views/ai_views.py:L372: obj = serializer.save(user=request.user, version=latest_version + 1)
+- ai/api/views/ai_views.py:L377: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L380: return AIWorkflowDefinition.objects.filter(user=request.user, pk=pk).first()
+- ai/api/views/ai_views.py:L406: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L410: user=request.user, pk=pk).first()
+- ai/api/views/ai_views.py:L414: user=request.user, workflow=workflow).order_by("-created_at")[:100]
+- ai/api/views/ai_views.py:L424: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L428: return Response(UsageService.summarize(user=request.user))
+- ai/api/views/ai_views.py:L432: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L437: user=request.user, conversation_id=pk)
+- ai/api/views/ai_views.py:L444: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L453: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L471: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L477: user=request.user,
+- ai/api/views/ai_views.py:L497: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L500: qs = AIPromptProfile.objects.filter(user=request.user)
+- ai/api/views/ai_views.py:L506: obj = serializer.save(user=request.user)
+- ai/api/views/ai_views.py:L508: AIPromptProfile.objects.filter(user=request.user).exclude(
+- ai/api/views/ai_views.py:L510: AISettings.objects.update_or_create(user=request.user, defaults={
+- ai/api/views/ai_views.py:L516: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L519: return AIPromptProfile.objects.filter(pk=pk, user=request.user).first()
+- ai/api/views/ai_views.py:L536: AIPromptProfile.objects.filter(user=request.user).exclude(
+- ai/api/views/ai_views.py:L538: AISettings.objects.update_or_create(user=request.user, defaults={
+- ai/api/views/ai_views.py:L551: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L561: request.user).get_settings().preferred_provider,
+- ai/api/views/ai_views.py:L562: model=request.data.get("model") or AIService(request.user).get_settings().preferred_model, user=request.user,
+- ai/api/views/ai_views.py:L570: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L576: result = AIService(request.user).approve_learning_plan(
+- ai/api/views/ai_views.py:L580: "Learning plan approval failed for user %s", request.user.pk)
+- ai/api/views/ai_views.py:L582: return Response({"success": True, "learning": AIService(request.user).serialize_learning_result(result)}, status=201 if result["created"] else 200)
+- ai/api/views/ai_views.py:L586: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L598: # Create the ownership record before dispatch so a fast worker cannot
+- ai/api/views/ai_views.py:L600: ownership_record = AiAuditLog.objects.create(
+- ai/api/views/ai_views.py:L601: user=request.user,
+- ai/api/views/ai_views.py:L609: request.user.id,
+- ai/api/views/ai_views.py:L617: ownership_record.delete()
+- ai/api/views/ai_views.py:L618: logger.exception("Could not enqueue AI learning task for user %s", request.user.pk)
+- ai/api/views/ai_views.py:L627: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L635: owner_id = info.get("user_id") if isinstance(info, dict) else None
+- ai/api/views/ai_views.py:L636: if owner_id is not None:
+- ai/api/views/ai_views.py:L637: owned = str(owner_id) == str(request.user.id)
+- ai/api/views/ai_views.py:L639: # A PENDING task has no result metadata yet. Verify its owner via
+- ai/api/views/ai_views.py:L643: user=request.user,
+- ai/api/views/ai_views.py:L663: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L671: id=topic_id, path__user=request.user).first()
+- ai/api/views/ai_views.py:L675: user=request.user, topic=topic).first()
+- ai/api/views/ai_views.py:L687: id=conversation_id, user=request.user, is_active=True).first()
+- ai/api/views/ai_views.py:L690: service = AIService(request.user)
+- ai/api/views/ai_views.py:L698: provider_name, model = AIService(request.user).resolve_selection(
+- ai/api/views/ai_views.py:L714: messages=messages, user=request.user,
+- ai/api/views/ai_views.py:L730: "AI topic chat failed for user=%s topic=%s", request.user.pk, topic.pk)
+- ai/api/views/ai_views.py:L754: permission_classes = [IsAuthenticated]
+- ai/api/views/ai_views.py:L779: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L783: return Response(AIDiagnostics(request.user).run())
+- ai/api/views/ai_views.py:L787: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L796: permission_classes = [AIAuthenticatedPermission]
+- ai/api/views/ai_views.py:L812: user=request.user,
+- ai/api/views/ai_views.py:L822: conversation__user=request.user,
+- ai/api/views/ai_views.py:L854: service = AIService(request.user)
+- ai/api/views/ai_views.py:L878: user=request.user,
+- ai/api/views/ai_views.py:L891: user=request.user,
+- ai/api/views/ai_views.py:L980: logger.exception("AI streaming failed for user=%s", request.user.pk)
+
+
+## Tests
+- ai/tests/test_ai.py
+- ai/tests/test_ai_repair_regressions.py
+- ai/tests/test_credential_security.py
+- ai/tests/test_production_architecture.py
+- ai/tests/test_provider_adapters.py
+- ai/tests/test_provider_switching_e2e.py
+- ai/tests/__init__.py
+
+
+Tests were not run. This scan is not a complete authorization/security review. Shared guidance: [authentication and permissions](../../07-authentication-and-permissions.md).

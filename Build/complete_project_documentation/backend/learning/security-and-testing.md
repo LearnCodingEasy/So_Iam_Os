@@ -1,0 +1,139 @@
+﻿# learning security and testing
+
+## Permission/ownership evidence
+
+- learning/api/views/application_review_views.py:L2: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/application_review_views.py:L14: permission_classes = [IsAuthenticated]
+- learning/api/views/application_review_views.py:L16: def get_queryset(self):
+- learning/api/views/application_review_views.py:L20: application__user=self.request.user
+- learning/api/views/application_submission_views.py:L3: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/application_submission_views.py:L17: permission_classes = [IsAuthenticated]
+- learning/api/views/application_submission_views.py:L19: def get_queryset(self):
+- learning/api/views/application_submission_views.py:L23: application__user=self.request.user
+- learning/api/views/application_submission_views.py:L38: if application.user_id != self.request.user.id:
+- learning/api/views/assessment_attempt_views.py:L2: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/assessment_attempt_views.py:L16: permission_classes = [IsAuthenticated]
+- learning/api/views/assessment_attempt_views.py:L18: def get_queryset(self):
+- learning/api/views/assessment_attempt_views.py:L22: user=self.request.user
+- learning/api/views/assessment_choice_views.py:L3: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/assessment_choice_views.py:L15: permission_classes = [IsAuthenticated]
+- learning/api/views/assessment_choice_views.py:L17: def get_queryset(self):
+- learning/api/views/assessment_choice_views.py:L22: self.request.user
+- learning/api/views/assessment_choice_views.py:L38: != self.request.user.id
+- learning/api/views/assessment_question_views.py:L3: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/assessment_question_views.py:L15: permission_classes = [IsAuthenticated]
+- learning/api/views/assessment_question_views.py:L17: def get_queryset(self):
+- learning/api/views/assessment_question_views.py:L22: self.request.user
+- learning/api/views/assessment_question_views.py:L40: != self.request.user.id
+- learning/api/views/assessment_response_views.py:L3: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/assessment_response_views.py:L15: permission_classes = [IsAuthenticated]
+- learning/api/views/assessment_response_views.py:L17: def get_queryset(self):
+- learning/api/views/assessment_response_views.py:L21: attempt__user=self.request.user
+- learning/api/views/assessment_response_views.py:L37: if attempt.user_id != self.request.user.id:
+- learning/api/views/assessment_views.py:L5: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/assessment_views.py:L20: permission_classes = [IsAuthenticated]
+- learning/api/views/assessment_views.py:L22: def get_queryset(self):
+- learning/api/views/assessment_views.py:L26: topic__path__user=self.request.user
+- learning/api/views/assessment_views.py:L51: if topic.path.user_id != self.request.user.id:
+- learning/api/views/assessment_views.py:L86: assessment=assessment, user=request.user)
+- learning/api/views/assessment_views.py:L111: user=request.user,
+- learning/api/views/assessment_views.py:L115: user=request.user,
+- learning/api/views/assessment_views.py:L178: user=request.user,
+- learning/api/views/knowledge_application_views.py:L5: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/knowledge_application_views.py:L22: permission_classes = [IsAuthenticated]
+- learning/api/views/knowledge_application_views.py:L24: def get_queryset(self):
+- learning/api/views/knowledge_application_views.py:L28: user=self.request.user
+- learning/api/views/knowledge_application_views.py:L49: != self.request.user.id
+- learning/api/views/knowledge_application_views.py:L74: != self.request.user.id
+- learning/api/views/knowledge_application_views.py:L81: user=self.request.user
+- learning/api/views/knowledge_application_views.py:L93: user=request.user,
+- learning/api/views/knowledge_application_views.py:L139: user=request.user,
+- learning/api/views/knowledge_application_views.py:L183: "reviewer": request.user.username,
+- learning/api/views/learning_goal_views.py:L5: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_goal_views.py:L19: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_goal_views.py:L21: def get_queryset(self):
+- learning/api/views/learning_goal_views.py:L25: user=self.request.user
+- learning/api/views/learning_goal_views.py:L33: .filter(user=self.request.user)
+- learning/api/views/learning_goal_views.py:L52: user=self.request.user
+- learning/api/views/learning_goal_views.py:L97: user=request.user,
+- learning/api/views/learning_goal_views.py:L101: user=request.user
+- learning/api/views/learning_goal_views.py:L114: data = AIService(request.user).serialize_learning_result(result)
+- learning/api/views/learning_goal_views.py:L147: goals = self.get_queryset().order_by("-created_at")
+- learning/api/views/learning_goal_views.py:L258: "recipient": request.user.get_full_name() or request.user.username,
+- learning/api/views/learning_goal_views.py:L262: "verification_code": f"CERT-{request.user.id}-{goal.id}-{timezone.now().strftime('%Y%m%d')}",
+- learning/api/views/learning_note_views.py:L3: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_note_views.py:L16: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_note_views.py:L19: def get_queryset(self):
+- learning/api/views/learning_note_views.py:L23: user=self.request.user
+- learning/api/views/learning_note_views.py:L35: if topic.path.user_id != self.request.user.id:
+- learning/api/views/learning_note_views.py:L41: user=self.request.user
+- learning/api/views/learning_path_views.py:L6: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_path_views.py:L20: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_path_views.py:L22: def get_queryset(self):
+- learning/api/views/learning_path_views.py:L26: user=self.request.user
+- learning/api/views/learning_path_views.py:L46: if goal.user_id != self.request.user.id:
+- learning/api/views/learning_path_views.py:L52: user=self.request.user
+- learning/api/views/learning_progress_views.py:L4: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_progress_views.py:L21: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_progress_views.py:L23: def get_queryset(self):
+- learning/api/views/learning_progress_views.py:L27: user=self.request.user
+- learning/api/views/learning_progress_views.py:L38: if topic.path.user_id != self.request.user.id:
+- learning/api/views/learning_progress_views.py:L44: user=self.request.user
+- learning/api/views/learning_progress_views.py:L50: if topic.path.user_id != self.request.user.id:
+- learning/api/views/learning_progress_views.py:L112: path__user=request.user,
+- learning/api/views/learning_progress_views.py:L127: user=request.user,
+- learning/api/views/learning_progress_views.py:L159: return Response(LearningCompletionService.progress_summary(request.user))
+- learning/api/views/learning_resource_views.py:L3: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_resource_views.py:L15: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_resource_views.py:L17: def get_queryset(self):
+- learning/api/views/learning_resource_views.py:L21: topic__path__user=self.request.user
+- learning/api/views/learning_resource_views.py:L32: if topic.path.user_id != self.request.user.id:
+- learning/api/views/learning_revision_views.py:L5: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_revision_views.py:L20: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_revision_views.py:L22: def get_queryset(self):
+- learning/api/views/learning_revision_views.py:L26: user=self.request.user
+- learning/api/views/learning_revision_views.py:L41: if topic.path.user_id != self.request.user.id:
+- learning/api/views/learning_revision_views.py:L55: != self.request.user.id
+- learning/api/views/learning_revision_views.py:L62: user=self.request.user
+- learning/api/views/learning_session_views.py:L5: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_session_views.py:L18: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_session_views.py:L20: def get_queryset(self):
+- learning/api/views/learning_session_views.py:L24: user=self.request.user
+- learning/api/views/learning_session_views.py:L35: if topic.path.user_id != self.request.user.id:
+- learning/api/views/learning_session_views.py:L41: user=self.request.user
+- learning/api/views/learning_topic_views.py:L5: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/learning_topic_views.py:L20: permission_classes = [IsAuthenticated]
+- learning/api/views/learning_topic_views.py:L22: def get_queryset(self):
+- learning/api/views/learning_topic_views.py:L26: path__user=self.request.user
+- learning/api/views/learning_topic_views.py:L44: def get_queryset_for_detail(self):
+- learning/api/views/learning_topic_views.py:L45: current_user = self.request.user
+- learning/api/views/learning_topic_views.py:L76: self.get_queryset()
+- learning/api/views/learning_topic_views.py:L115: queryset = self.get_queryset_for_detail()
+- learning/api/views/learning_topic_views.py:L138: if path.user_id != self.request.user.id:
+- learning/api/views/learning_topic_views.py:L208: user=request.user, topic=topic)
+- learning/api/views/learning_topic_views.py:L276: user=request.user,
+- learning/api/views/lesson_views.py:L4: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/lesson_views.py:L17: permission_classes = [IsAuthenticated]
+- learning/api/views/lesson_views.py:L19: def get_queryset(self):
+- learning/api/views/lesson_views.py:L23: topic__path__user=self.request.user
+- learning/api/views/lesson_views.py:L37: if topic.path.user_id != self.request.user.id:
+- learning/api/views/skill_views.py:L2: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/skill_views.py:L27: permission_classes = [IsAuthenticated]
+- learning/api/views/skill_views.py:L29: def get_queryset(self):
+- learning/api/views/skill_views.py:L30: queryset = super().get_queryset()
+- learning/api/views/user_owned_model_views.py:L2: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/user_owned_model_views.py:L10: permission_classes = [IsAuthenticated]
+- learning/api/views/user_owned_queryset_mixin_views.py:L17: def get_queryset(self):
+- learning/api/views/user_owned_queryset_mixin_views.py:L18: queryset = super().get_queryset()
+- learning/api/views/user_owned_queryset_mixin_views.py:L24: user=self.request.user
+- learning/api/views/user_owned_read_only_views.py:L2: from rest_framework.permissions import IsAuthenticated
+- learning/api/views/user_owned_read_only_views.py:L10: permission_classes = [IsAuthenticated]
+
+
+## Tests
+- learning/tests/tests_completion_additions.py
+- learning/tests/test_learning.py
+- learning/tests/__init__.py
+
+
+Tests were not run. This scan is not a complete authorization/security review. Shared guidance: [authentication and permissions](../../07-authentication-and-permissions.md).
