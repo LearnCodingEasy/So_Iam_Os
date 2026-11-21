@@ -16,3 +16,10 @@ backend_django/media/runs/
 project_docs/
 
 Build/
+CODEX_RELEASE_VALIDATION.md
+
+FEATURE_REGISTER.csv
+API_ENDPOINT_AUDIT.csv
+project_manifest.json
+desktop.ini
+PHASE1_RESTRUCTURE_REPORT.md
