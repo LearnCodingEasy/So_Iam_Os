@@ -242,9 +242,9 @@
 
 <script setup>
 import { computed, defineComponent, h, onMounted, reactive, ref, nextTick } from 'vue'
-import api from '@/services/api'
-import aiControl from '@/services/aiControl'
-import { endpoints } from '@/services/endpoints'
+import api from '@/services/Shared/api'
+import aiControl from '@/services/AI/aiControl'
+import { endpoints } from '@/services/Shared/endpoints'
 
 const HelpButton = defineComponent({
   name: 'HelpButton',

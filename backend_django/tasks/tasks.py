@@ -1,6 +1,6 @@
 from celery import shared_task
 from django.contrib.auth import get_user_model
-from .daily_generation import DailyTaskGenerationService
+from tasks.services.daily_generation import DailyTaskGenerationService
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=2)
 def generate_daily_learning_tasks(self, user_id, count=None, provider=None, model=None):

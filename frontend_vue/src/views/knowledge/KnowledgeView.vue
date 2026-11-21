@@ -12,15 +12,15 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import { knowledgeService } from '@/services/knowledge'
+import { storeToRefs } from 'pinia'
+import { useKnowledgeStore } from '@/stores/knowledge/knowledgeStore'
 
 import KnowledgeCard from '@/components/knowledge/KnowledgeCard.vue'
 import KnowledgeEmptyState from '@/components/knowledge/KnowledgeEmptyState.vue'
 import KnowledgeForm from '@/components/knowledge/KnowledgeForm.vue'
 
-const knowledgeItems = ref([])
-
-const loading = ref(false)
+const knowledgeStore = useKnowledgeStore()
+const { items: knowledgeItems, loading } = storeToRefs(knowledgeStore)
 const saving = ref(false)
 const extractingMetadata = ref(false)
 
@@ -50,17 +50,12 @@ const knowledgeTypes = [
 ]
 
 const loadKnowledge = async () => {
-  loading.value = true
   error.value = ''
-
   try {
-    const response = await knowledgeService.getAll()
-    knowledgeItems.value = Array.isArray(response) ? response : response.results || []
+    await knowledgeStore.fetchItems()
   } catch (err) {
     console.error('Failed to load knowledge:', err)
     error.value = err.response?.data?.detail || 'Failed to load your knowledge.'
-  } finally {
-    loading.value = false
   }
 }
 
@@ -115,10 +110,8 @@ const extractSelectedMetadata = async () => {
   extractingMetadata.value = true
   error.value = ''
   try {
-    const result = await knowledgeService.extractMetadata(selectedKnowledge.value.id)
+    const result = await knowledgeStore.extractItemMetadata(selectedKnowledge.value.id)
     selectedKnowledge.value = result.item
-    const index = knowledgeItems.value.findIndex((item) => item.id === result.item.id)
-    if (index !== -1) knowledgeItems.value[index] = result.item
     successMessage.value = 'Metadata extracted and saved.'
   } catch (err) {
     error.value = err.response?.data?.detail || 'Could not extract metadata.'
@@ -138,18 +131,21 @@ const saveKnowledge = async (data) => {
 
   try {
     if (editingKnowledge.value) {
-      const updated = await knowledgeService.update(editingKnowledge.value.id, data)
-      const index = knowledgeItems.value.findIndex((item) => item.id === editingKnowledge.value.id)
-
-      if (index !== -1) {
-        knowledgeItems.value[index] = updated
-      }
-
+      await knowledgeStore.updateItem(editingKnowledge.value.id, data)
       successMessage.value = 'Knowledge updated successfully.'
     } else {
-      const created = await knowledgeService.create(data)
-      knowledgeItems.value.unshift(created)
+      await knowledgeStore.createItem(data)
       successMessage.value = 'Knowledge created successfully.'
+    }
+
+    // Report file persistence from the backend's actual answers, never optimistically.
+    const report = knowledgeStore.lastUploadReport
+    if (report.failed.length) {
+      error.value = `Saved, but ${report.failed.length} file(s) were not uploaded: ` +
+        report.failed.map((f) => `${f.name} (${f.message})`).join('; ')
+      successMessage.value = ''
+    } else if (report.uploaded.length) {
+      successMessage.value += ` ${report.uploaded.length} file(s) uploaded and queued for processing.`
     }
 
     closeForm()
@@ -171,8 +167,7 @@ const archiveKnowledge = async (knowledge) => {
   error.value = ''
 
   try {
-    await knowledgeService.archive(knowledge.id)
-    knowledgeItems.value = knowledgeItems.value.filter((item) => item.id !== knowledge.id)
+    await knowledgeStore.archiveItem(knowledge.id)
     successMessage.value = 'Knowledge archived successfully.'
   } catch (err) {
     console.error('Failed to archive knowledge:', err)

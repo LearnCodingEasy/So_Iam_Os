@@ -26,8 +26,8 @@ import { VueFlow, Panel } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
-import CustomNode from '@/components/Automation/Node/CustomNode.vue'
-import CustomEdge from '@/components/Automation/Edge/CustomEdge.vue'
+import CustomNode from '@/components/automation/Node/CustomNode.vue'
+import CustomEdge from '@/components/automation/Edge/CustomEdge.vue'
 
 // ─── Props ─────────────────────────────────────────
 const props = defineProps({

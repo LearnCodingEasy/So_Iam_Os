@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import taskService from '../../services/taskService'
+import taskService from '../../services/Automation/taskService'
 const tasks = ref([])
 const load = async () => {
   const res = await taskService.list()

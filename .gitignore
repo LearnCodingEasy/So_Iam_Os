@@ -11,3 +11,6 @@ backend_django/media/runs/
 *.log
 .vscode/
 .idea/
+
+# Private project documentation
+project_docs/

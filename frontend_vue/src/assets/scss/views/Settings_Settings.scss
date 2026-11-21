@@ -1,0 +1,5 @@
+// Dedicated page stylesheet for Settings/Settings.vue
+// Shared tokens and layout primitives stay centralized; page-specific rules belong here.
+.page-scope--Settings_Settings {
+  min-width: 0;
+}

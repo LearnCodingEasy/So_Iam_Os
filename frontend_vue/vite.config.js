@@ -16,6 +16,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        // Entry chunk is ~4 MB until the full FontAwesome sets in main.js are trimmed.
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         clientsClaim: true,
         skipWaiting: true,
         cleanupOutdatedCaches: false,

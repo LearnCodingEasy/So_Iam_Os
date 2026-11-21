@@ -39,7 +39,7 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Select from 'primevue/select'
-import { memoryApi } from '@/services/osDomains'
+import { memoryApi } from '@/services/Memory/memory'
 const items = ref([]),
   loading = ref(false),
   open = ref(false),

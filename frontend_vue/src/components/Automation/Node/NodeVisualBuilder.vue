@@ -41,7 +41,7 @@ watch(
     if (!p) return
     label.value = p.label
     customColor.value = p.color
-    formData.value = { ...(p.defaultPayload ?? {}) }
+    formData.value = { ...p.defaultPayload }
     error.value = null
   },
   { immediate: true },

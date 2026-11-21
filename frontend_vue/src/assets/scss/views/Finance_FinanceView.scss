@@ -1,0 +1,5 @@
+// Dedicated page stylesheet for Finance/FinanceView.vue
+// Shared tokens and layout primitives stay centralized; page-specific rules belong here.
+.page-scope--Finance_FinanceView {
+  min-width: 0;
+}

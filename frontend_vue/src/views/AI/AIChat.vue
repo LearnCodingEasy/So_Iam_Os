@@ -1,5 +1,5 @@
 <template>
-  <div class="ai-chat-page" dir="rtl">
+  <div class="ai-chat-page" :dir="direction">
     <aside class="ai-sidebar" :class="{ 'is-collapsed': sidebarCollapsed }">
       <div class="sidebar-brand">
         <div class="brand-mark">AI</div>
@@ -50,20 +50,19 @@
               conversation.title || `محادثة #${conversation.id}`
             }}</span>
           </button>
-          <button
-            class="mini-danger"
-            type="button"
-            title="أرشفة المحادثة"
-            @click="archiveConversation(conversation.id)"
-          >
-            ×
-          </button>
+          <div class="conversation-actions">
+            <button class="mini-danger" type="button" title="أرشفة المحادثة" aria-label="أرشفة المحادثة"
+              @click="archiveConversation(conversation.id)">×</button>
+            <button class="mini-danger" type="button" title="حذف المحادثة" aria-label="حذف المحادثة"
+              @click="deleteConversation(conversation.id)">⌫</button>
+          </div>
         </div>
       </div>
       <div v-if="!sidebarCollapsed" class="sidebar-footer">
         <span class="status-dot" :class="{ online: backendAvailable }"></span>
         {{ backendAvailable ? 'واجهة الخادم متاحة' : 'تعذر الاتصال بالخادم' }}
         <HelpButton @click="showHelp('backendStatus')" />
+        <button v-if="lastArchivedConversation" class="text-btn" type="button" @click="restoreLastArchived">استعادة آخر محادثة</button>
       </div>
     </aside>
 
@@ -79,6 +78,9 @@
             >{{ providerLabel(settings.preferred_provider) }} ·
             {{ settings.preferred_model || 'النموذج الافتراضي' }}</span
           >
+          <button class="secondary-btn" type="button" :disabled="!activeConversationId" @click="inspectContext">
+            سياق المحادثة
+          </button>
           <button class="secondary-btn" type="button" @click="settingsOpen = true">
             ⚙ الإعدادات
             <HelpButton @click.stop="showHelp('settings')" />
@@ -133,19 +135,11 @@
                 @click="showHelp('assistantMessage')"
               />
             </div>
-            <div class="message-bubble">{{ message.content }}</div>
+            <div class="message-bubble"><MarkdownRenderer v-if="message.role === 'assistant'" :content="message.content" /><span v-else>{{ message.content }}</span></div>
           </div>
         </article>
 
-        <article v-if="sending" class="message-row assistant">
-          <div class="message-avatar">✦</div>
-          <div class="message-body">
-            <div class="message-meta">
-              <strong>AI Core</strong><span class="muted">جارٍ التفكير…</span>
-            </div>
-            <div class="message-bubble typing"><i></i><i></i><i></i></div>
-          </div>
-        </article>
+
 
         <div v-if="errorMessage" class="error-banner" role="alert">
           <span>⚠ {{ errorMessage }}</span>
@@ -160,6 +154,8 @@
             <select v-model="settings.preferred_provider" @change="onProviderChange">
               <option value="ollama">Ollama</option>
               <option value="openai">OpenAI</option>
+              <option value="gemini">Google Gemini</option>
+              <option value="deepseek">DeepSeek</option>
               <option value="openrouter">OpenRouter</option>
             </select>
             <HelpButton @click="showHelp('provider')" />
@@ -189,10 +185,10 @@
           <button
             class="send-btn"
             type="button"
-            :disabled="sending || !draft.trim()"
-            @click="sendMessage"
+            :disabled="!sending && !draft.trim()"
+            @click="sending ? cancelStream() : sendMessage()"
           >
-            {{ sending ? '…' : 'إرسال ↑' }}
+            {{ sending ? 'إيقاف' : 'إرسال ↑' }}
           </button>
         </div>
         <div class="composer-foot">
@@ -203,6 +199,18 @@
         </div>
       </footer>
     </main>
+
+    <div v-if="contextDialog" class="modal-backdrop" @click.self="contextDialog = false">
+      <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="context-title">
+        <header class="modal-header">
+          <div><span class="eyebrow">CONVERSATION CONTEXT</span><h2 id="context-title">فحص سياق المحادثة</h2></div>
+          <button class="icon-btn" type="button" aria-label="إغلاق" @click="contextDialog = false">×</button>
+        </header>
+        <p v-if="contextLoading" class="muted">جارٍ تحميل السياق...</p>
+        <pre v-else class="context-json">{{ JSON.stringify(conversationContext, null, 2) }}</pre>
+        <div v-if="contextError" class="error-banner" role="alert">{{ contextError }}</div>
+      </section>
+    </div>
 
     <!-- Settings drawer -->
     <div v-if="settingsOpen" class="modal-backdrop" @click.self="settingsOpen = false">
@@ -293,6 +301,24 @@
               max="100000"
               step="256"
             />
+          </label>
+          <label class="field-label">قالب التعليمات الافتراضي
+            <select v-model="settings.default_prompt_profile">
+              <option :value="null">بدون قالب افتراضي</option>
+              <option v-for="profile in promptProfiles" :key="profile.id" :value="profile.id">{{ profile.name }}</option>
+            </select>
+          </label>
+          <label class="switch-row"><span><strong>تفعيل البث المباشر</strong><small>تفضيل Streaming عند إرسال رسائل المحادثة.</small></span>
+            <input type="checkbox" v-model="settings.streaming_enabled" />
+          </label>
+          <label class="switch-row"><span><strong>تفعيل Fallback</strong><small>السماح بالانتقال لمزود بديل عند فشل المزود الأساسي وفق سياسة الخادم.</small></span>
+            <input type="checkbox" v-model="settings.fallback_enabled" />
+          </label>
+          <label class="field-label">Temperature
+            <input v-model.number="settings.temperature" type="number" min="0" max="2" step="0.1" />
+          </label>
+          <label class="field-label">مهلة الاتصال بالثواني
+            <input v-model.number="settings.timeout_seconds" type="number" min="1" max="300" />
           </label>
           <p class="info-note">
             هذه هي إعدادات AISettings التي يدعمها الـ API الحالي. لا تعرض هذه الشاشة خيارات لا يوجد
@@ -512,9 +538,13 @@
 
 <script setup>
 import { computed, defineComponent, h, onMounted, reactive, ref, nextTick } from 'vue'
-import api from '@/services/api'
-import aiControl from '@/services/aiControl'
-import { endpoints } from '@/services/endpoints'
+import aiControl from '@/services/AI/aiControl'
+import { sendMessage as sendNonStreamingMessage, streamMessage } from '@/services/AI/Ai'
+import MarkdownRenderer from '@/components/ai/MarkdownRenderer.vue'
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n()
+const direction = computed(() => locale.value === 'ar' ? 'rtl' : 'ltr')
 
 const HelpButton = defineComponent({
   name: 'HelpButton',
@@ -600,6 +630,10 @@ const helpCopy = {
 
 const sidebarCollapsed = ref(false)
 const settingsOpen = ref(false)
+const contextDialog = ref(false)
+const contextLoading = ref(false)
+const conversationContext = ref(null)
+const contextError = ref('')
 const settingsTab = ref('general')
 const settingsTabs = [
   { id: 'general', label: 'عام', help: 'generalSettings' },
@@ -609,9 +643,13 @@ const settingsTabs = [
 ]
 const conversations = ref([])
 const activeConversationId = ref(null)
+const lastArchivedConversation = ref(null)
 const messages = ref([])
 const draft = ref('')
 const sending = ref(false)
+const streamController = ref(null)
+const retryDraft = ref('')
+const retryIdempotencyKey = ref('')
 const loadingConversations = ref(false)
 const savingSettings = ref(false)
 const modelsLoading = ref(false)
@@ -632,6 +670,10 @@ const settings = reactive({
   default_prompt_profile: null,
   context_enabled: true,
   max_context_tokens: 6000,
+  streaming_enabled: true,
+  fallback_enabled: true,
+  temperature: 0.7,
+  timeout_seconds: 35,
 })
 const credentialForm = reactive({ provider: 'openai', api_key: '' })
 const promptForm = reactive({
@@ -712,7 +754,7 @@ async function loadSettings() {
 async function loadConversations() {
   loadingConversations.value = true
   try {
-    conversations.value = normalizeList((await api.get(endpoints.ai.conversations)).data)
+    conversations.value = await aiControl.listAIConversations()
     backendAvailable.value = true
   } catch (error) {
     errorMessage.value = getErrorMessage(error, 'تعذر تحميل المحادثات.')
@@ -788,6 +830,10 @@ async function saveSettings() {
       context_enabled: Boolean(settings.context_enabled),
       max_context_tokens: Number(settings.max_context_tokens),
       default_prompt_profile: settings.default_prompt_profile || null,
+      streaming_enabled: Boolean(settings.streaming_enabled),
+      fallback_enabled: Boolean(settings.fallback_enabled),
+      temperature: Number(settings.temperature),
+      timeout_seconds: Number(settings.timeout_seconds),
     }
     const saved = await aiControl.updateAISettings(payload)
     Object.assign(settings, saved)
@@ -901,12 +947,11 @@ async function startNewConversation() {
   messages.value = []
   draft.value = ''
   try {
-    const response = await api.post(endpoints.ai.conversations, {
+    const conversation = await aiControl.createAIConversation({
       title: '',
       provider: settings.preferred_provider,
       model: settings.preferred_model || '',
-    }, { timeout: 150000 })
-    const conversation = response.data
+    })
     conversations.value = [
       conversation,
       ...conversations.value.filter((item) => item.id !== conversation.id),
@@ -926,8 +971,7 @@ async function selectConversation(id) {
   if (sending.value) return
   errorMessage.value = ''
   try {
-    const response = await api.get(endpoints.ai.conversation(id))
-    const conversation = response.data
+    const conversation = await aiControl.getAIConversation(id)
     activeConversationId.value = conversation.id
     messages.value = (conversation.messages || []).filter((message) => message.role !== 'system')
     await scrollToBottom()
@@ -938,7 +982,9 @@ async function selectConversation(id) {
 async function archiveConversation(id) {
   if (!window.confirm('هل تريد أرشفة هذه المحادثة؟')) return
   try {
-    await api.delete(endpoints.ai.conversation(id))
+    const archived = conversations.value.find((item) => item.id === id)
+    await aiControl.setAIConversationAction(id, 'archive')
+    lastArchivedConversation.value = archived || { id, title: `محادثة #${id}` }
     conversations.value = conversations.value.filter((item) => item.id !== id)
     if (activeConversationId.value === id) {
       activeConversationId.value = null
@@ -947,6 +993,46 @@ async function archiveConversation(id) {
     notify('تمت أرشفة المحادثة.')
   } catch (error) {
     errorMessage.value = getErrorMessage(error, 'تعذرت أرشفة المحادثة.')
+  }
+}
+async function restoreLastArchived() {
+  if (!lastArchivedConversation.value?.id) return
+  try {
+    const restored = await aiControl.setAIConversationAction(lastArchivedConversation.value.id, 'restore')
+    conversations.value = [restored, ...conversations.value.filter((item) => item.id !== restored.id)]
+    lastArchivedConversation.value = null
+    notify('تمت استعادة المحادثة.')
+  } catch (error) {
+    errorMessage.value = getErrorMessage(error, 'تعذرت استعادة المحادثة.')
+  }
+}
+async function deleteConversation(id) {
+  if (!window.confirm('سيتم حذف المحادثة وإخفاؤها من السجل. هل تريد المتابعة؟')) return
+  try {
+    await aiControl.setAIConversationAction(id, 'delete')
+    conversations.value = conversations.value.filter((item) => item.id !== id)
+    if (activeConversationId.value === id) {
+      activeConversationId.value = null
+      messages.value = []
+    }
+    if (lastArchivedConversation.value?.id === id) lastArchivedConversation.value = null
+    notify('تم حذف المحادثة.')
+  } catch (error) {
+    errorMessage.value = getErrorMessage(error, 'تعذر حذف المحادثة.')
+  }
+}
+async function inspectContext() {
+  if (!activeConversationId.value) return
+  contextDialog.value = true
+  contextLoading.value = true
+  contextError.value = ''
+  conversationContext.value = null
+  try {
+    conversationContext.value = await aiControl.getAIConversationContext(activeConversationId.value)
+  } catch (error) {
+    contextError.value = getErrorMessage(error, 'تعذر فحص سياق المحادثة.')
+  } finally {
+    contextLoading.value = false
   }
 }
 function useSuggestion(text) {
@@ -958,45 +1044,87 @@ function onComposerKeydown(event) {
     sendMessage()
   }
 }
+function cancelStream() {
+  streamController.value?.abort()
+}
+
 async function sendMessage() {
   const content = draft.value.trim()
   if (!content || sending.value) return
   sending.value = true
   errorMessage.value = ''
   draft.value = ''
+  const localUserId = `local-user-${Date.now()}`
+  const localAssistantId = `local-assistant-${Date.now()}`
+  const idempotencyKey = retryDraft.value === content && retryIdempotencyKey.value
+    ? retryIdempotencyKey.value
+    : (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`)
   messages.value.push({
-    id: `local-${Date.now()}`,
+    id: localUserId,
     role: 'user',
     content,
     created_at: new Date().toISOString(),
   })
+  messages.value.push({
+    id: localAssistantId,
+    role: 'assistant',
+    content: '',
+    provider: settings.preferred_provider,
+    model: settings.preferred_model,
+    streaming: true,
+  })
+  streamController.value = new AbortController()
   await scrollToBottom()
   try {
-    const response = await api.post(endpoints.ai.chat, {
+    const requestPayload = {
       message: content,
       conversation_id: activeConversationId.value || null,
       provider: settings.preferred_provider,
       model: settings.preferred_model || '',
-    })
-    const data = response.data || {}
-    if (data.success === false) throw new Error(data.error || 'فشل طلب الذكاء الاصطناعي.')
-    activeConversationId.value = data.conversation_id || activeConversationId.value
-    if (data.message)
-      messages.value.push({
-        ...data.message,
-        created_at: new Date().toISOString(),
-      })
+      idempotencyKey,
+      signal: streamController.value.signal,
+    }
+    const response = settings.streaming_enabled
+      ? await streamMessage({
+          ...requestPayload,
+          onChunk: (chunk) => {
+            const assistantMessage = messages.value.find((item) => item.id === localAssistantId)
+            if (assistantMessage) assistantMessage.content += chunk
+            scrollToBottom()
+          },
+        })
+      : await sendNonStreamingMessage(requestPayload)
+    activeConversationId.value = response.conversation_id || activeConversationId.value
+    retryDraft.value = ''
+    retryIdempotencyKey.value = ''
+    const assistant = messages.value.find((item) => item.id === localAssistantId)
+    if (assistant) {
+      assistant.id = response.message?.id || localAssistantId
+      assistant.content = response.message?.content || assistant.content
+      assistant.provider = response.provider || response.message?.provider || assistant.provider
+      assistant.model = response.model || response.message?.model || assistant.model
+      assistant.streaming = false
+      assistant.created_at = new Date().toISOString()
+    }
     await loadConversations()
     if (activeConversationId.value) {
-      const selected = conversations.value.find((item) => item.id === activeConversationId.value)
-      if (!selected || !selected.messages) await selectConversation(activeConversationId.value)
+      const conversation = await aiControl.getAIConversation(activeConversationId.value)
+      messages.value = (conversation.messages || []).filter((item) => item.role !== 'system')
     }
     await scrollToBottom()
   } catch (error) {
-    errorMessage.value = getErrorMessage(error, 'تعذر إرسال الرسالة إلى AI Backend.')
-    // Keep the user's draft content visible in the conversation for recovery.
+    messages.value = messages.value.filter((item) => item.id !== localAssistantId)
+    if (error?.name === 'AbortError') {
+      errorMessage.value = 'تم إيقاف البث. لم يتم تأكيد اكتمال الرسالة أو حفظها.'
+    } else {
+      errorMessage.value = getErrorMessage(error, 'تعذر إرسال الرسالة إلى AI Backend.')
+    }
+    draft.value = content
+    retryDraft.value = content
+    retryIdempotencyKey.value = error?.code === 'previous_attempt_failed' ? '' : idempotencyKey
   } finally {
     sending.value = false
+    streamController.value = null
   }
 }
 async function refreshAll() {

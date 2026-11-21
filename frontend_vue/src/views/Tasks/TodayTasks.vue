@@ -7,7 +7,7 @@
         <p>كل ما تحتاج تنفذه اليوم في مكان واحد.</p>
       </div>
       <div class="header-actions">
-        <button class="primary-btn" @click="generate">✦ Generate AI Tasks</button
+        <button class="primary-btn" :disabled="generating" @click="generate">{{ generating ? 'جارٍ التوليد…' : '✦ Generate AI Tasks' }}</button
         ><button class="primary-btn" @click="openCreate">＋ مهمة جديدة</button>
       </div>
     </header>
@@ -26,7 +26,7 @@
           </select>
         </div>
         <div v-if="loading" class="loading">جاري التحميل...</div>
-        <div v-else-if="tasks.length === 0" class="empty">
+        <div v-else-if="tasks.length === 0 && !error" class="empty">
           مفيش مهام لليوم. ممتاز! أو أنشئ مهمة جديدة.
         </div>
         <div v-else class="task-list">
@@ -36,7 +36,7 @@
             class="task-row"
             :class="task.status"
           >
-            <button class="check" :disabled="task.status === 'completed'" @click="finish(task)">
+            <button class="check" :disabled="task.status === 'completed' || busyTaskId === task.id" @click="finish(task)">
               {{ task.status === 'completed' ? '✓' : '○' }}
             </button>
             <div class="task-body">
@@ -52,9 +52,10 @@
               </div>
             </div>
             <div class="task-actions">
-              <button v-if="task.status !== 'completed'" @click="openPostpone(task)">تأجيل</button
-              ><button @click="editTask(task)">تعديل</button
-              ><button class="danger" @click="removeTask(task)">حذف</button>
+              <button v-if="task.status === 'completed'" :disabled="busyTaskId === task.id" @click="reopen(task)">إعادة فتح</button
+              ><button v-else :disabled="busyTaskId === task.id" @click="openPostpone(task)">تأجيل</button
+              ><button :disabled="busyTaskId === task.id" @click="editTask(task)">تعديل</button
+              ><button class="danger" :disabled="busyTaskId === task.id" @click="removeTask(task)">حذف</button>
             </div>
           </article>
         </div>
@@ -132,7 +133,8 @@ import {
   postponeTask,
   updateTask,
   generateTodayTasks,
-} from '@/services/tasks'
+  reopenTask,
+} from '@/services/Tasks/tasks'
 const tasks = ref([]),
   loading = ref(false),
   dialog = ref(false),
@@ -142,7 +144,9 @@ const tasks = ref([]),
   filter = ref('all'),
   error = ref(''),
   success = ref(''),
-  postponeDate = ref('')
+  postponeDate = ref(''),
+  busyTaskId = ref(null),
+  generating = ref(false)
 const form = reactive({
   title: '',
   description: '',
@@ -161,16 +165,20 @@ const completed = computed(() => tasks.value.filter((t) => t.status === 'complet
     filter.value === 'all' ? tasks.value : tasks.value.filter((t) => t.status === filter.value),
   )
 const generate = async () => {
+  if (generating.value) return
+  generating.value = true
+  error.value = ''
   try {
     await generateTodayTasks({ async: true })
     success.value = 'تم إرسال توليد المهام إلى الخلفية.'
     setTimeout(load, 1500)
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر توليد المهام.'
-  }
+  } finally { generating.value = false }
 }
 const load = async () => {
   loading.value = true
+  error.value = ''
   try {
     tasks.value = await listTodayTasks()
   } catch (e) {
@@ -208,6 +216,7 @@ const editTask = (t) => {
   dialog.value = true
 }
 const save = async () => {
+  error.value = ''
   try {
     const payload = { ...form, scheduled_start: form.scheduled_start || null }
     editing.value ? await updateTask(editing.value, payload) : await createTask(payload)
@@ -219,12 +228,29 @@ const save = async () => {
   }
 }
 const finish = async (t) => {
+  if (busyTaskId.value !== null) return
+  busyTaskId.value = t.id
+  error.value = ''
   try {
     await completeTask(t.id, t.actual_minutes || t.estimated_minutes || 0)
     success.value = 'تم إكمال المهمة.'
     await load()
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر إكمال المهمة.'
+  } finally { busyTaskId.value = null }
+}
+const reopen = async (task) => {
+  if (busyTaskId.value !== null) return
+  busyTaskId.value = task.id
+  error.value = ''
+  try {
+    await reopenTask(task.id)
+    success.value = 'تمت إعادة فتح المهمة.'
+    await load()
+  } catch (e) {
+    error.value = e.response?.data?.detail || 'تعذر إعادة فتح المهمة.'
+  } finally {
+    busyTaskId.value = null
   }
 }
 const openPostpone = (t) => {
@@ -233,6 +259,8 @@ const openPostpone = (t) => {
   postponeDialog.value = true
 }
 const postpone = async () => {
+  busyTaskId.value = postponing.value
+  error.value = ''
   try {
     await postponeTask(postponing.value, postponeDate.value)
     postponeDialog.value = false
@@ -240,273 +268,19 @@ const postpone = async () => {
     await load()
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر تأجيل المهمة.'
-  }
+  } finally { busyTaskId.value = null }
 }
 const removeTask = async (t) => {
+  if (busyTaskId.value !== null) return
   if (!window.confirm(`حذف المهمة "${t.title}"؟`)) return
+  busyTaskId.value = t.id
   try {
     await deleteTask(t.id)
     await load()
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر حذف المهمة.'
-  }
+  } finally { busyTaskId.value = null }
 }
 onMounted(load)
 </script>
-<style scoped>
-.workspace-page {
-  min-height: 100vh;
-  padding: 32px;
-  max-width: 1400px;
-  margin: auto;
-  color: #e5e7eb;
-}
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
-.workspace-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  align-items: flex-start;
-  margin-bottom: 24px;
-}
-.eyebrow {
-  color: #60a5fa;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-.workspace-header h1 {
-  margin: 6px 0;
-  font-size: 34px;
-}
-.workspace-header p {
-  margin: 0;
-  color: #94a3b8;
-}
-.primary-btn {
-  background: #2563eb;
-  color: white;
-  border: 0;
-  border-radius: 10px;
-  padding: 11px 16px;
-  font-weight: 700;
-}
-.task-layout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 16px;
-}
-.content-card {
-  background: #111827;
-  border: 1px solid #253044;
-  border-radius: 16px;
-  padding: 18px;
-}
-.task-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-.task-toolbar select {
-  background: #0f172a;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 8px;
-}
-.task-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px 0;
-  border-bottom: 1px solid #1f2937;
-}
-.task-row:last-child {
-  border-bottom: 0;
-}
-.check {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1px solid #475569;
-  background: #0f172a;
-  color: #60a5fa;
-  font-size: 18px;
-}
-.task-body {
-  flex: 1;
-}
-.task-title {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.task-title h3 {
-  margin: 0;
-}
-.task-body p {
-  color: #94a3b8;
-  margin: 5px 0;
-}
-.task-meta {
-  display: flex;
-  gap: 12px;
-  color: #64748b;
-  font-size: 12px;
-}
-.overdue {
-  color: #fca5a5;
-}
-.pill {
-  padding: 3px 7px;
-  border-radius: 999px;
-  background: #334155;
-  font-size: 10px;
-}
-.task-actions {
-  display: flex;
-  gap: 5px;
-}
-.task-actions button {
-  background: #1f2937;
-  color: #cbd5e1;
-  border: 0;
-  border-radius: 7px;
-  padding: 7px;
-}
-.danger {
-  color: #fca5a5 !important;
-}
-.summary h2 {
-  margin-top: 0;
-}
-.ring {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  border: 12px solid #1e3a8a;
-  margin: 20px auto;
-  display: grid;
-  place-items: center;
-  align-content: center;
-}
-.ring strong {
-  font-size: 26px;
-}
-.ring span {
-  font-size: 11px;
-  color: #94a3b8;
-}
-.summary-line {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-top: 1px solid #1f2937;
-  color: #94a3b8;
-}
-.alert {
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 14px;
-}
-.alert.error {
-  background: #451a1a;
-  color: #fecaca;
-}
-.alert.success {
-  background: #052e1b;
-  color: #bbf7d0;
-}
-.loading,
-.empty {
-  text-align: center;
-  padding: 40px;
-  color: #94a3b8;
-}
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: #0009;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  z-index: 100;
-}
-.modal-card {
-  width: min(680px, 100%);
-  background: #111827;
-  border: 1px solid #334155;
-  border-radius: 16px;
-  padding: 20px;
-}
-.modal-card.small {
-  width: 400px;
-}
-.modal-head,
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.modal-head button {
-  background: none;
-  border: 0;
-  color: #94a3b8;
-  font-size: 24px;
-}
-.modal-card label {
-  display: block;
-  margin-top: 14px;
-  font-size: 13px;
-  color: #cbd5e1;
-}
-.modal-card input,
-.modal-card textarea,
-.modal-card select {
-  width: 100%;
-  margin-top: 6px;
-  background: #0f172a;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-  border-radius: 9px;
-  padding: 10px;
-}
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.modal-actions {
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-.modal-actions button:not(.primary-btn) {
-  background: #1f2937;
-  color: #e5e7eb;
-  border: 0;
-  border-radius: 8px;
-  padding: 9px 12px;
-}
-@media (max-width: 900px) {
-  .task-layout {
-    grid-template-columns: 1fr;
-  }
-  .workspace-page {
-    padding: 18px;
-  }
-  .workspace-header {
-    flex-direction: column;
-  }
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-  .task-actions {
-    flex-direction: column;
-  }
-}
-</style>
+

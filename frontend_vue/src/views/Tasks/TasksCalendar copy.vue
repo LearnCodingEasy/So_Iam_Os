@@ -1,8 +1,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { listTasks, createTask, updateTask, completeTask } from '@/services/tasks'
-import api from '@/services/api'
-import { endpoints } from '@/services/endpoints'
+import { listTasks, createTask, updateTask, completeTask } from '@/services/Tasks/tasks'
+import api from '@/services/Shared/api'
+import { endpoints } from '@/services/Shared/endpoints'
 const cursor = ref(new Date())
 const view = ref('week')
 const tasks = ref([])

@@ -14,9 +14,8 @@ import json
 import re
 
 from ai.exceptions import AIResponseError
-from ai.providers import get_ai_provider
 from ai.prompts import build_learning_intent_prompt
-from ai.serializers import AILearningPlanSerializer
+from ai.api.serializers import AILearningPlanSerializer
 
 
 LEARNING_PATTERNS = [
@@ -152,9 +151,8 @@ class AILearningActionService:
     def generate_ai_plan(*, message, provider="ollama", model="", user=None):
         """Generate and validate a complete learning plan with the configured LLM."""
         prompt = build_learning_intent_prompt(message)
-        ai_provider = get_ai_provider(provider or "ollama", user=user)
-
-        result = ai_provider.generate(
+        from ai.services import AIFallbackChainService
+        result = AIFallbackChainService.generate_completion(
             messages=[
                 {
                     "role": "system",
@@ -164,12 +162,13 @@ class AILearningActionService:
                         "Generate 6 to 15 ordered practical topics. "
                     ),
                 },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
+                {"role": "user", "content": prompt},
             ],
+            user=user,
+            preferred_provider=provider or "ollama",
             model=model or None,
+            temperature=0.2,
+            max_tokens=5000,
         )
 
         content = (result.get("content") or "").strip()

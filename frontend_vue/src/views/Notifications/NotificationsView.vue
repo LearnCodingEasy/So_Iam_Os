@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { listNotifications, markAllRead, markRead, archiveNotification } from '@/services/notifications'
+import { listNotifications, markAllRead, markRead, archiveNotification } from '@/services/Notifications/notifications'
 const items = ref([]); const loading = ref(true)
 const load = async () => { loading.value = true; try { items.value = await listNotifications() } finally { loading.value = false } }
 const read = async (item) => { if (!item.read_at) { await markRead(item.id); item.read_at = new Date().toISOString() } }

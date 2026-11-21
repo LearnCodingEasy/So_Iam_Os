@@ -1,50 +1,52 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
+const HomeView = () => import('../views/shared/HomeView.vue')
+const AboutView = () => import('../views/shared/AboutView.vue')
 
-import LoginView from '../views/Authentication/LoginView.vue'
-import ProfileView from '../views/Account/ProfileView.vue'
-import AuthCallback from '../views/Authentication/AuthCallback.vue'
+const LoginView = () => import('../views/accounts/LoginView.vue')
+const ProfileView = () => import('../views/accounts/ProfileView.vue')
+const AuthCallback = () => import('../views/accounts/AuthCallback.vue')
 
-import KnowledgeView from '../views/knowledge/KnowledgeView.vue'
 
-import LearningView from '../views/learning/LearningView.vue'
+const LearningView = () => import('../views/learning/LearningView.vue')
 
-import Dashboard from '../views/Dashboard/DashboardView.vue'
+const Dashboard = () => import('../views/core/DashboardView.vue')
 
-import ScraperView from '@/views/Scraper/ScraperView.vue'
+const ScraperView = () => import('@/views/scraper/ScraperView.vue')
 
-import AIChat from '@/views/AI/AIChat.vue'
-import AIControl from '@/views/AI/AI.vue'
-import SettingsView from '@/views/Settings/Settings.vue'
-import GoalsView from '@/views/Goals/Goals.vue'
-import TodayTasksView from '@/views/Tasks/TodayTasks.vue'
-import TasksCalendar from '@/views/Tasks/TasksCalendar.vue'
-import SocialView from '@/views/Social/SocialView.vue'
-import NotificationsView from '@/views/Notifications/NotificationsView.vue'
-import MyProgressView from '@/views/Progress/MyProgress.vue'
-import JobsView from '@/views/jobs/JobsView.vue'
-import CodexView from '@/views/Codex/CodexView.vue'
-import ProjectsView from '@/views/Projects/ProjectsView.vue'
-import ChallengesView from '@/views/Challenges/ChallengesView.vue'
-import FinanceView from '@/views/Finance/FinanceView.vue'
-import MemoryView from '@/views/Memory/MemoryView.vue'
-import AgentPlanner from '@/views/AI/AgentPlanner.vue'
+const AIChat = () => import('@/views/ai/AIChat.vue')
+const AIControl = () => import('@/views/ai/AIControl.vue')
+const SettingsView = () => import('@/views/core/Settings.vue')
+const GoalsView = () => import('@/views/goals/Goals.vue')
+const TodayTasksView = () => import('@/views/tasks/TodayTasks.vue')
+const TasksCalendar = () => import('@/views/tasks/TasksCalendar.vue')
+const SocialView = () => import('@/views/social/SocialView.vue')
+const NotificationsView = () => import('@/views/notifications/NotificationsView.vue')
+const MyProgressView = () => import('@/views/core/MyProgress.vue')
+const JobsView = () => import('@/views/jobs/JobsView.vue')
+const CodexView = () => import('@/views/codex/CodexView.vue')
+const ProjectsView = () => import('@/views/projects/ProjectsView.vue')
+const ChallengesView = () => import('@/views/challenges/ChallengesView.vue')
+const FinanceView = () => import('@/views/finance/FinanceView.vue')
+const MemoryView = () => import('@/views/memory/MemoryView.vue')
+const AgentPlanner = () => import('@/views/ai/AgentPlanner.vue')
+const FrontendEnhancementCenter = () => import('@/components/core/FrontendEnhancementCenter.vue')
 
 // Automation
-import Automation from '../views/Automation/AutomationView.vue'
-import automation_Dashboard from '../views/Automation/DashboardAutomationView.vue'
-import ProgramList from '../views/Automation/ProgramList.vue'
-import ProgramCreate from '../views/Automation/ProgramCreate.vue'
-import ProgramEdit from '../views/Automation/ProgramEdit.vue'
-import TaskCreate from '../views/Automation/TaskCreate.vue'
-import TaskEditor from '../views/Automation/TaskEditor.vue'
+const Automation = () => import('../views/automation/AutomationView.vue')
+const automation_Dashboard = () => import('../views/automation/DashboardAutomationView.vue')
+const ProgramList = () => import('../views/automation/ProgramList.vue')
+const ProgramCreate = () => import('../views/automation/ProgramCreate.vue')
+const ProgramEdit = () => import('../views/automation/ProgramEdit.vue')
+const TaskCreate = () => import('../views/automation/TaskCreate.vue')
+const TaskEditor = () => import('../views/automation/TaskEditor.vue')
 
 // 404 catchall Page Not Found
-import NotFound from '../views/Page_Not_Found/Page_Not_Found.vue'
+const NotFound = () => import('../views/shared/Page_Not_Found.vue')
 
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/accounts/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,7 +114,7 @@ const router = createRouter({
     {
       path: '/knowledge',
       name: 'knowledge',
-      component: KnowledgeView,
+      component: () => import('../views/knowledge/knowledgeView.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -202,6 +204,16 @@ const router = createRouter({
     },
 
     // ==============================
+    // Frontend Engineering Center
+    // ==============================
+    {
+      path: '/system/frontend',
+      name: 'frontend-enhancements',
+      component: FrontendEnhancementCenter,
+      meta: { requiresAuth: true },
+    },
+
+    // ==============================
     // Settings
     // ==============================
     {
@@ -212,12 +224,24 @@ const router = createRouter({
     },
 
     // ==============================
-    // AI Chat
+    // AI Chat & Control Center
     // ==============================
     {
       path: '/ai',
       name: 'ai-chat',
       component: AIChat,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/ai/control',
+      name: 'ai-control',
+      component: AIControl,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/ai/operations',
+      name: 'ai-operations',
+      component: () => import('@/views/ai/AIOperationsView.vue'),
       meta: { requiresAuth: true },
     },
 
@@ -287,11 +311,26 @@ const router = createRouter({
   ],
 })
 
+// Keep route access synchronized when the central Axios client determines
+// that both the access token and refresh token are no longer usable.
+if (typeof window !== 'undefined') {
+  window.addEventListener('so-iam-auth-expired', () => {
+    const current = router.currentRoute.value
+    if (current.name !== 'login') {
+      router.replace({
+        name: 'login',
+        query: current.fullPath ? { redirect: current.fullPath } : {},
+      })
+    }
+  })
+}
+
 // ==========================================
 // Authentication Guard
 // ==========================================
 
 router.beforeEach(async (to) => {
+  NProgress.start()
   const userStore = useUserStore()
 
   // Initialize authentication state
@@ -320,5 +359,8 @@ router.beforeEach(async (to) => {
 
   return true
 })
+
+router.afterEach(() => NProgress.done())
+router.onError(() => NProgress.done())
 
 export default router

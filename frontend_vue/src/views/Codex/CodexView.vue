@@ -2,35 +2,38 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useCodexStore } from '@/stores/codex'
-import codex from '@/services/codex'
+import { useRouter } from 'vue-router'
+import { useCodexStore } from '@/stores/codex/codex'
+import codex from '@/services/Codex/codex'
 
 // Layout Components
-import CodexSidebar from '@/components/Codex/Layout/CodexSidebar.vue'
-import CodexRightSidebar from '@/components/Codex/Layout/CodexRightSidebar.vue'
-import CodexTopbar from '@/components/Codex/Layout/CodexTopbar.vue'
+import CodexSidebar from '@/components/codex/Layout/CodexSidebar.vue'
+import CodexRightSidebar from '@/components/codex/Layout/CodexRightSidebar.vue'
+import CodexTopbar from '@/components/codex/Layout/CodexTopbar.vue'
 
 // Panels
-import CodexChatPanel from '@/components/Codex/panels/CodexChatPanel.vue'
-import CodexAnalysisPanel from '@/components/Codex/panels/CodexAnalysisPanel.vue'
-import CodexPipelinePanel from '@/components/Codex/panels/CodexPipelinePanel.vue'
-import CodexGovernancePanel from '@/components/Codex/panels/CodexGovernancePanel.vue'
-import CodexRegistryPanel from '@/components/Codex/panels/CodexRegistryPanel.vue'
+import CodexChatPanel from '@/components/codex/panels/CodexChatPanel.vue'
+import CodexAnalysisPanel from '@/components/codex/panels/CodexAnalysisPanel.vue'
+import CodexPipelinePanel from '@/components/codex/panels/CodexPipelinePanel.vue'
+import CodexGovernancePanel from '@/components/codex/panels/CodexGovernancePanel.vue'
+import CodexRegistryPanel from '@/components/codex/panels/CodexRegistryPanel.vue'
 
 // Workspace Components
-import CodexFileExplorer from '@/components/Codex/workspace/CodexProjectExplorer.vue'
-import CodexCodeEditor from '@/components/Codex/workspace/CodexCodeEditor.vue'
-import CodexTerminal from '@/components/Codex/workspace/CodexTerminal.vue'
+import CodexFileExplorer from '@/components/codex/workspace/CodexProjectExplorer.vue'
+import CodexCodeEditor from '@/components/codex/workspace/CodexCodeEditor.vue'
+import CodexTerminal from '@/components/codex/workspace/CodexTerminal.vue'
+import CodexInspectorWorkspace from '@/components/codex/workspace/CodexInspectorWorkspace.vue'
 
 // Dialogs
-import CodexPromptDialog from '@/components/Codex/dialogs/CodexPromptDialog.vue'
-import CodexInfoDialog from '@/components/Codex/dialogs/CodexInfoDialog.vue'
+import CodexPromptDialog from '@/components/codex/dialogs/CodexPromptDialog.vue'
+import CodexInfoDialog from '@/components/codex/dialogs/CodexInfoDialog.vue'
 
 // Existing shared components
-import CodexBuildWorkspace from '@/components/Codex/Build/WorkspaceView.vue'
-import CodexCapabilities from '@/components/Codex/Capabilities/CapabilitiesView.vue'
+import CodexBuildWorkspace from '@/components/codex/Build/WorkspaceView.vue'
+import CodexCapabilities from '@/components/codex/Capabilities/CapabilitiesView.vue'
 
 const store = useCodexStore()
+const router = useRouter()
 
 const activePanel = ref('workspace')
 const query = ref('')
@@ -50,6 +53,12 @@ const security = ref(null)
 const overview = ref(null)
 const context = ref(null)
 const files = ref([])
+const features = ref([])
+const apis = ref([])
+const discoveredRoutes = computed(() => router.getRoutes()
+  .filter((route) => route.meta?.requiresAuth && route.path && !route.path.includes(':catchAll') && !route.path.includes(':pathMatch'))
+  .map((route) => ({ name: route.name, path: route.path }))
+  .sort((a, b) => a.path.localeCompare(b.path)))
 const workflow = ref({ steps: [], completed: 0, total: 0 })
 const protectedItems = ref([])
 const localAIJobs = ref([])
@@ -63,6 +72,7 @@ const command = ref('')
 const navItems = [
   { key: 'workspace', label: 'Workspace', icon: 'pi pi-home' },
   { key: 'files', label: 'Project Explorer', icon: 'pi pi-folder-open' },
+  { key: 'inspector', label: 'Live Inspector', icon: 'pi pi-search' },
   { key: 'analysis', label: 'Project Analysis', icon: 'pi pi-chart-line' },
   { key: 'chat', label: 'Codex Chat', icon: 'pi pi-comments' },
   { key: 'build', label: 'Build Workspace', icon: 'pi pi-sitemap' },
@@ -102,10 +112,14 @@ async function runAction(action, success = 'Operation completed successfully.') 
 async function loadCoreData() {
   loading.value = true
   try {
-    const [ov, ctx, fl] = await Promise.all([codex.overview(), codex.context(), codex.files()])
+    const [ov, ctx, fl, discoveredFeatures, discoveredApis] = await Promise.all([
+      codex.overview(), codex.context(), codex.files(), codex.features(), codex.apis(),
+    ])
     overview.value = ov
     context.value = ctx
     files.value = fl
+    features.value = discoveredFeatures
+    apis.value = discoveredApis
     await store.loadCapabilities()
   } catch (err) {
     notifyError(err)
@@ -230,6 +244,19 @@ onMounted(async () => {
             />
           </div>
         </template>
+
+        <!-- Live application preview and source inspector -->
+        <CodexInspectorWorkspace
+          v-else-if="activePanel === 'inspector'"
+          :features="features"
+          :files="files"
+          :apis="apis"
+          :routes="discoveredRoutes"
+          :loading="loading"
+          @openFile="openFile"
+          @askAI="(message) => { activePanel = 'chat'; sendChat(message, selectedFiles.map((file) => file.path)) }"
+          @scan="runAction(async () => { const result = await codex.scan(); await loadCoreData(); return result }, 'Project scan completed.')"
+        />
 
         <!-- Dynamic Panels -->
         <template v-else-if="activePanel === 'chat'">

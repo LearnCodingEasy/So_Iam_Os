@@ -9,8 +9,8 @@ import InputText from 'primevue/inputtext'
 import ProgressBar from 'primevue/progressbar'
 import Message from 'primevue/message'
 import Dialog from 'primevue/dialog'
-import { useCodexStore } from '@/stores/codex'
-import codex from '@/services/codex'
+import { useCodexStore } from '@/stores/codex/codex'
+import codex from '@/services/Codex/codex'
 
 const store = useCodexStore()
 const query = ref('')

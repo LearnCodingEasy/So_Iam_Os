@@ -6,7 +6,7 @@ import {
   completeTask,
   postponeTask,
   generateTodayTasks,
-} from '@/services/tasks'
+} from '@/services/Tasks/tasks'
 
 // =====================================================
 // State

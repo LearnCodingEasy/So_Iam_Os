@@ -14,3 +14,18 @@ if (import.meta.hot) {
     __VUE_HMR_RUNTIME__.updatePageData(data)
   })
 }
+\",\"email\":\"learncodingeasy@yahoo.com\",\"commits\":1}],\"changelog\":[{\"hash\":\"bab0ad473aef001bb6cef1602d7750fd431b4525\",\"time\":1790972990000,\"email\":\"learncodingeasy@yahoo.com\",\"author\":\"Hossam Rashad\",\"message\":\"2/10/202\"}]},\"filePathRelative\":\"README.md\"}")
+export { comp, data }
+
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept()
+  if (__VUE_HMR_RUNTIME__.updatePageData) {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  }
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(({ data }) => {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  })
+}

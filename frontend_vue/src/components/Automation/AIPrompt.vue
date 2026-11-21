@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import api from '@/services/api'
-import { endpoints } from '@/services/endpoints'
+import api from '@/services/Shared/api'
+import { endpoints } from '@/services/Shared/endpoints'
 
 const prompt = ref('')
 const result = ref(null)

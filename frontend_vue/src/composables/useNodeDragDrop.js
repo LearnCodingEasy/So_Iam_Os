@@ -22,7 +22,7 @@
 
 import { ref, reactive } from 'vue'
 import { debounce }       from 'lodash'
-import automationService  from '@/services/AutomationService'
+import automationService  from '@/services/Automation/AutomationService'
 
 export function useNodeDragDrop({ workflowStore, programStore, tracker, project, showToast }) {
 

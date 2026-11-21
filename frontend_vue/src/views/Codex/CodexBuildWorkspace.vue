@@ -7,7 +7,7 @@ import { MiniMap } from '@vue-flow/minimap'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import Message from 'primevue/message'
-import codex from '@/services/codex'
+import codex from '@/services/Codex/codex'
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
 

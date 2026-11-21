@@ -20,7 +20,7 @@
 //    />
 // ============================================================
 import { ref, watch } from 'vue'
-import automationService from '@/services/AutomationService'
+import automationService from '@/services/Automation/AutomationService'
 import { useToast } from 'primevue/usetoast'
 
 const props = defineProps({

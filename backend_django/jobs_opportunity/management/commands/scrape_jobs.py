@@ -1,25 +1,44 @@
-# backend_django/jobs_opportunity/management/commands/scrape_jobs.py
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
+
+from jobs_opportunity.models import JobSource
 from jobs_opportunity.scraper import JobScraperService
-from jobs_opportunity.models import JobOpportunity
 
 
 class Command(BaseCommand):
-    help = 'Synchronously scrape job opportunities and save them to the database.'
+    help = "Synchronize enabled HTML job sources through the unified ingestion pipeline."
+
+    def add_arguments(self, parser):
+        parser.add_argument("--source-id", type=int, help="Synchronize only this HTML source.")
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.NOTICE(
-            "Initializing synchronous job scraper..."))
-        scraper = JobScraperService()
-        jobs = scraper.fetch_and_parse()
-
-        count = 0
-        for job_data in jobs:
-            JobOpportunity.objects.update_or_create(
-                external_id=job_data.get('external_id'),
-                defaults=job_data
+        sources = JobSource.objects.filter(
+            enabled=True, source_type=JobSource.SourceType.SCRAPER
+        )
+        if options.get("source_id"):
+            sources = sources.filter(pk=options["source_id"])
+        sources = list(sources.order_by("pk"))
+        if not sources:
+            raise CommandError(
+                "No enabled HTML scraper sources found. Review source configuration and terms first."
             )
-            count += 1
 
-        self.stdout.write(self.style.SUCCESS(
-            f"Successfully scraped and updated {count} jobs."))
+        service = JobScraperService()
+        succeeded = 0
+        failed = 0
+        for source in sources:
+            try:
+                result = service.run(source.pk)
+                succeeded += 1
+                self.stdout.write(self.style.SUCCESS(
+                    f"Source {source.pk} ({source.name}): {result.get('jobs', 0)} jobs processed."
+                ))
+            except Exception as exc:
+                failed += 1
+                self.stderr.write(self.style.ERROR(
+                    f"Source {source.pk} ({source.name}) failed: {exc.__class__.__name__}: {exc}"
+                ))
+        self.stdout.write(
+            f"Scraper sync finished: {succeeded} succeeded, {failed} failed."
+        )
+        if failed:
+            raise CommandError("One or more scraper sources failed; see errors above.")

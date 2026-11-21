@@ -206,7 +206,7 @@
 <script setup>
 import { ref,  } from 'vue'
 
-import automationService from '@/services/AutomationService'
+import automationService from '@/services/Automation/AutomationService'
 // VueFlow
 
 
@@ -221,8 +221,10 @@ const confirm = useConfirm()
 const emit = defineEmits(['program-selected'])
 
 const selectProgram = async (id) => {
+  if (!id) return
   currentProgramId.value = id
   emit('program-selected', id)
+  await loadProgram(id)
 }
 
 // ==============================================
@@ -268,16 +270,7 @@ const loadPrograms = async () => {
   }
 }
 // 2️⃣ Get Single
-const selectProgram = async (id) => {
-  if (!id) {
-    console.warn('Program ID is missing')
-    return
-  }
 
-  currentProgramId.value = id
-  console.log('selectProgram currentProgramId: ', currentProgramId.value)
-  await loadProgram(id)
-}
 const loadProgram = async (id) => {
   console.log('loadProgram By id: ', id)
   const { data } = await automationService.getProgram(id)
@@ -298,66 +291,39 @@ const onImageChangeProgram = (e) => {
   formProgram.value.image = e.target.files[0]
 }
 const createProgram = async () => {
+  let succeeded = false
   try {
     const formData = new FormData()
-
-    // ======================
-    // Basic Info
-    // ======================
     formData.append('name', formProgram.value.name)
     formData.append('description', formProgram.value.description)
-
-    // ======================
-    // Execution
-    // ======================
     formData.append('executable_path', formProgram.value.executable_path)
     formData.append('project_path', formProgram.value.project_path || '')
     formData.append('working_directory', formProgram.value.working_directory || '')
     formData.append('window_title_pattern', formProgram.value.window_title_pattern || '')
 
-    // // ======================
-    // // JSON Fields ⚠️ لازم stringify
-    // // ======================
-    // formData.append('global_shortcuts', JSON.stringify(JSON.parse(globalShortcutsText.value)))
-
-    // formData.append('env_variables', JSON.stringify(JSON.parse(envVariablesText.value)))
-
-    // // ======================
-    // // State
-    // // ======================
-    // formData.append('is_running', form.value.is_running ? 'true' : 'false')
-
-    // // ======================
-    // // Image
-    // // ======================
     if (formProgram.value.image) {
       formData.append('image', formProgram.value.image)
     }
-    // // =================
-    // // JSON
-    // // =================
-    // formData.append('settings', JSON.stringify(form.value.settings))
-    const res = await automationService.createProgram(formData)
 
-    console.log(res.data)
+    await automationService.createProgram(formData)
+    succeeded = true
+    toast.add({
+      severity: 'success',
+      summary: 'Program created',
+      detail: 'The program was created successfully.',
+      life: 3000,
+    })
   } catch (error) {
-    console.error(error)
+    console.error('Failed to create program', error)
     toast.add({
       severity: 'error',
-      summary: `❌ Error creating program`,
-      detail: `${error.message}`,
+      summary: 'Error creating program',
+      detail: error.response?.data?.detail || error.message || 'The request failed.',
       life: 3000,
     })
   } finally {
     ceateProgramVisible.value = false
-    console.log('Programs STORE DATA 👉', programs.value)
-    toast.add({
-      severity: 'success',
-      summary: `✅ Program Successfully`,
-      detail: `✅ Program Created Successfully`,
-      life: 3000,
-    })
-    await loadPrograms()
+    if (succeeded) await loadPrograms()
   }
 }
 // 4️⃣ update Program
@@ -380,50 +346,39 @@ const openEditProgram = async (id) => {
   }
 }
 const editProgram = async () => {
+  let succeeded = false
   try {
     const formData = new FormData()
-    // ======================
-    // Basic Info
-    // ======================
     formData.append('name', formProgram.value.name)
     formData.append('description', formProgram.value.description)
-
-    // ======================
-    // Execution
-    // ======================
     formData.append('executable_path', formProgram.value.executable_path)
     formData.append('project_path', formProgram.value.project_path || '')
     formData.append('working_directory', formProgram.value.working_directory || '')
     formData.append('window_title_pattern', formProgram.value.window_title_pattern || '')
 
-    // // ======================
-    // // Image
-    // // ======================
     if (formProgram.value.image) {
       formData.append('image', formProgram.value.image)
     }
 
-    const res = await automationService.updateProgram(currentProgramId.value, formData)
-    console.log('editProgram currentProgramId: ', currentProgramId.value)
-    console.log(res.data)
-  } catch (errorCode) {
-    console.error(errorCode)
+    await automationService.updateProgram(currentProgramId.value, formData)
+    succeeded = true
+    toast.add({
+      severity: 'success',
+      summary: 'Program updated',
+      detail: 'The program was updated successfully.',
+      life: 3000,
+    })
+  } catch (error) {
+    console.error('Failed to update program', error)
     toast.add({
       severity: 'error',
-      summary: `❌ Error creating program`,
-      detail: `${errorCode.message}`,
+      summary: 'Error updating program',
+      detail: error.response?.data?.detail || error.message || 'The request failed.',
       life: 3000,
     })
   } finally {
     editProgramVisible.value = false
-    console.log('Programs STORE DATA 👉', programs.value)
-    toast.add({
-      severity: 'success',
-      summary: `✅ Program Successfully`,
-      detail: `✅ Program Edit Successfully`,
-      life: 3000,
-    })
-    await loadPrograms()
+    if (succeeded) await loadPrograms()
   }
 }
 // 5️⃣ Delete Program

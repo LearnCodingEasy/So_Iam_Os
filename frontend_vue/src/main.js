@@ -29,6 +29,12 @@ axios.defaults.baseURL =
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { VueQueryPlugin } from '@tanstack/vue-query'
+import { i18n } from './plugins/i18n.js'
+import FloatingVue from 'floating-vue'
+import 'floating-vue/dist/style.css'
+import { Toaster } from 'vue-sonner'
+import 'vue-sonner/style.css'
 
 import App from './App.vue'
 import router from './router'
@@ -102,7 +108,7 @@ import Card from 'primevue/card'
 // Import theme presets and theme switcher component
 // مكونات اللوحات لعرض المعلومات المنظمة
 import Noir from './presets/Noir.js'
-import ThemeSwitcher from './components/Theme/ThemeSwitcher.vue'
+import ThemeSwitcher from './components/shared/ThemeSwitcher.vue'
 // ------------ Notification Components ------------
 // Import toast and message components for notifications
 import Toast from 'primevue/toast'
@@ -166,6 +172,10 @@ import 'primeicons/primeicons.css'
 const app = createApp(App)
 
 app.use(createPinia())
+app.use(i18n)
+app.use(VueQueryPlugin)
+app.use(FloatingVue)
+app.component('SystemToaster', Toaster)
 
 // Axios تفعيل التوجيه و
 app.use(router)

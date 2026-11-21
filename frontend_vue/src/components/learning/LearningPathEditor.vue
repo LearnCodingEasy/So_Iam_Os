@@ -12,7 +12,7 @@ import {
   updateLearningTopic,
   deleteLearningTopic,
   reorderLearningTopics,
-} from '@/services/learning'
+} from '@/services/Learning/learning'
 
 const props = defineProps({
   paths: {

@@ -1,0 +1,5 @@
+// Dedicated page stylesheet for Memory/MemoryView.vue
+// Shared tokens and layout primitives stay centralized; page-specific rules belong here.
+.page-scope--Memory_MemoryView {
+  min-width: 0;
+}

@@ -1,0 +1,5 @@
+// Dedicated page stylesheet for jobs/JobsView.vue
+// Shared tokens and layout primitives stay centralized; page-specific rules belong here.
+.page-scope--jobs_JobsView {
+  min-width: 0;
+}

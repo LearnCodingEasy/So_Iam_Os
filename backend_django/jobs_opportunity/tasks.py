@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime, parse_date
 from decimal import Decimal, InvalidOperation
 from learning.models import Skill
-from .models import JobSource, JobOpportunity, JobSkillRequirement
+from .models import JobSource, JobOpportunity, JobSkillRequirement, JobSourceSyncRun
 from .services import JobMatchingService, JobParserService, JobRecommendationService, JobAnalyticsService
 from .scraper import fetch_and_extract
 
@@ -247,9 +247,15 @@ def _rss_items(content):
     return items
 
 
-@shared_task(bind=True, autoretry_for=(requests.RequestException, TimeoutError, socket.gaierror), retry_backoff=True, max_retries=3)
-def sync_job_source(self, source_id):
+@shared_task(bind=True, autoretry_for=(requests.RequestException, TimeoutError, socket.gaierror), retry_backoff=True, max_retries=3, ignore_result=True)
+def sync_job_source(self, source_id, sync_run_id=None):
     source = JobSource.objects.get(pk=source_id)
+    sync_run = JobSourceSyncRun.objects.filter(pk=sync_run_id, source=source).first() if sync_run_id else None
+    if sync_run:
+        sync_run.status = JobSourceSyncRun.Status.RUNNING
+        sync_run.started_at = timezone.now()
+        sync_run.save(update_fields=["status", "started_at"])
+
     if not source.enabled:
         return {"source_id": source.id, "status": "skipped", "reason": "source_disabled"}
     source.last_sync_status = "running"
@@ -314,6 +320,12 @@ def sync_job_source(self, source_id):
         source.last_sync_count = len(created)
         source.save(update_fields=["last_synced_at", "last_sync_status",
                     "last_sync_error", "last_sync_count", "updated_at"])
+        if sync_run:
+            sync_run.status = JobSourceSyncRun.Status.COMPLETED
+            sync_run.finished_at = timezone.now()
+            sync_run.job_count = len(created)
+            sync_run.metadata = fetch_meta
+            sync_run.save(update_fields=["status", "finished_at", "job_count", "metadata"])
         return {"source_id": source.id, "status": "completed", "jobs": len(created), "skipped_invalid": skipped_invalid, "metadata": fetch_meta}
     except Exception as exc:
         source.last_synced_at = timezone.now()
@@ -321,10 +333,15 @@ def sync_job_source(self, source_id):
         source.last_sync_error = str(exc)[:2000]
         source.save(update_fields=[
                     "last_synced_at", "last_sync_status", "last_sync_error", "updated_at"])
+        if sync_run:
+            sync_run.status = JobSourceSyncRun.Status.FAILED
+            sync_run.finished_at = timezone.now()
+            sync_run.error_message = str(exc)[:4000]
+            sync_run.save(update_fields=["status", "finished_at", "error_message"])
         raise
 
 
-@shared_task
+@shared_task(ignore_result=True)
 def refresh_all_job_sources():
     ids = list(JobSource.objects.filter(
         enabled=True).values_list("id", flat=True))

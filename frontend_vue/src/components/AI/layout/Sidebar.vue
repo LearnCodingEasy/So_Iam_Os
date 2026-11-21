@@ -1,81 +1,90 @@
 <template>
-  <aside class="sidebar" :class="{ collapsed }">
+  <aside class="sidebar" :class="{ collapsed }" aria-label="التنقل الرئيسي">
     <div class="brand">
-      <div class="brand-mark">✦</div>
+      <div class="brand-mark" aria-hidden="true">✦</div>
       <div v-if="!collapsed" class="brand-copy">
-        <strong>Opportunity AI</strong>
-        <span>AI Career Engine</span>
+        <strong>SO_IAM_OS</strong>
+        <span>Personal AI OS</span>
       </div>
     </div>
 
-    <button class="collapse-btn" @click="$emit('toggle')" :title="collapsed ? 'فتح القائمة' : 'تصغير القائمة'">
-      {{ collapsed ? "→" : "←" }}
+    <button
+      class="collapse-btn"
+      type="button"
+      @click="$emit('toggle')"
+      :aria-label="collapsed ? 'فتح القائمة' : 'تصغير القائمة'"
+      :title="collapsed ? 'فتح القائمة' : 'تصغير القائمة'"
+    >
+      {{ collapsed ? '→' : '←' }}
     </button>
 
     <nav class="nav">
-      <div v-if="!collapsed" class="nav-label">الرئيسية</div>
-
-      <a
+      <div v-if="!collapsed" class="nav-label">مساحة العمل</div>
+      <RouterLink
         v-for="item in mainItems"
-        :key="item.label"
-        href="#"
+        :key="item.path"
+        :to="item.path"
         class="nav-item"
-        :class="{ active: item.active }"
-        @click.prevent
+        active-class="active"
+        @click="$emit('navigate')"
         :title="item.label"
+        :aria-label="item.label"
       >
-        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
         <span v-if="!collapsed">{{ item.label }}</span>
-        <span v-if="item.badge && !collapsed" class="nav-badge">{{ item.badge }}</span>
-      </a>
+      </RouterLink>
 
-      <div v-if="!collapsed" class="nav-label section-space">إدارة النظام</div>
-
-      <a
+      <div v-if="!collapsed" class="nav-label section-space">النظام</div>
+      <RouterLink
         v-for="item in secondaryItems"
-        :key="item.label"
-        href="#"
+        :key="item.path"
+        :to="item.path"
         class="nav-item"
-        @click.prevent
+        active-class="active"
+        @click="$emit('navigate')"
         :title="item.label"
+        :aria-label="item.label"
       >
-        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
         <span v-if="!collapsed">{{ item.label }}</span>
-      </a>
+      </RouterLink>
     </nav>
-
-    <div class="sidebar-bottom">
-      <div class="user-card">
-        <div class="avatar">ح</div>
-        <div v-if="!collapsed" class="user-copy">
-          <strong>حسام رشاد</strong>
-          <span>Developer</span>
-        </div>
-        <button v-if="!collapsed" class="more-btn">•••</button>
-      </div>
-    </div>
   </aside>
 </template>
 
 <script setup>
-defineProps({
-  collapsed: Boolean,
-});
+import { RouterLink } from 'vue-router'
 
-defineEmits(["toggle"]);
+defineProps({ collapsed: Boolean })
+defineEmits(['toggle', 'navigate'])
 
 const mainItems = [
-  { label: "لوحة التحكم", icon: "⌂", active: true },
-  { label: "الفرص", icon: "◈", badge: "24" },
-  { label: "الوظائف", icon: "▣" },
-  { label: "المشاريع", icon: "◆" },
-  { label: "طلبات التقديم", icon: "✓" },
-  { label: "المهارات", icon: "◇" },
-  { label: "المساعد الذكي", icon: "✦" },
-];
+  { label: 'لوحة التحكم', icon: '⌂', path: '/dashboard' },
+  { label: 'الأهداف', icon: '◎', path: '/goals' },
+  { label: 'المهام', icon: '✓', path: '/tasks' },
+  { label: "Today's Tasks", icon: '◷', path: '/tasks/today' },
 
+  { label: 'التعلم', icon: '◇', path: '/learning' },
+  { label: 'المعرفة', icon: '▤', path: '/knowledge' },
+  { label: 'الذاكرة', icon: '◉', path: '/memory' },
+  { label: 'الوظائف', icon: '▣', path: '/jobs' },
+  { label: 'المشروعات', icon: '◆', path: '/projects' },
+  { label: 'التحديات', icon: '⚑', path: '/challenges' },
+  { label: 'المالية', icon: '$', path: '/finance' },
+  { label: 'المساعد الذكي', icon: '✦', path: '/ai' },
+  { label: 'إعدادات الذكاء الاصطناعي', icon: '⚙', path: '/ai/control' },
+  { label: 'عمليات ومراقبة AI', icon: '▥', path: '/ai/operations' },
+  { label: 'الأتمتة', icon: '⟳', path: '/automation' },
+]
 const secondaryItems = [
-  { label: "التحليلات", icon: "◌" },
-  { label: "الإعدادات", icon: "⚙" },
-];
+  { label: 'التواصل الاجتماعي', icon: '◎', path: '/social' },
+  { label: 'الإشعارات', icon: '♧', path: '/notifications' },
+  { label: 'Scraper', icon: '⌕', path: '/scraper' },
+  { label: 'Codex', icon: '⌘', path: '/codex' },
+  { label: 'التقدم', icon: '↗', path: '/progress' },
+  { label: 'وكلاء الذكاء الاصطناعي', icon: '✦', path: '/ai/agents' },
+  { label: 'عن النظام', icon: 'ⓘ', path: '/About' },
+  { label: 'الإعدادات', icon: '⚙', path: '/settings' },
+  { label: 'هندسة الواجهة', icon: '✣', path: '/system/frontend' },
+]
 </script>

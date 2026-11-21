@@ -131,7 +131,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 // import { useRoute, useRouter } from 'vue-router'
-import programService from '@/services/AutomationService'
+import programService from '@/services/Automation/AutomationService'
 
 // =======================
 // Router

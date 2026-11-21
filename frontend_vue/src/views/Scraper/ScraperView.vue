@@ -94,7 +94,7 @@
 
 <script setup>
 import { onMounted, onUnmounted, reactive, ref } from 'vue'
-import { scraperApi } from '@/services/scraperApi'
+import { scraperApi } from '@/services/Scraper/scraperApi'
 
 const sources = ref([])
 const runs = ref([])

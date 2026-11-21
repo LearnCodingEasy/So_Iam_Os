@@ -1,0 +1,560 @@
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import (
+    PermissionDenied,
+    ValidationError,
+)
+from rest_framework.parsers import (
+    JSONParser,
+    FormParser,
+    MultiPartParser,
+)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+
+from learning.models import LearningTopic
+
+from knowledge.api.serializers import (
+    KnowledgeItemSerializer,
+    KnowledgeItemDetailSerializer,
+    KnowledgeFileSerializer,
+)
+from knowledge.extractors import extract_metadata
+from knowledge.services import KnowledgeService, KnowledgeFileService
+
+
+# ====================================================
+# 🧠 Knowledge Item ViewSet
+# ====================================================
+
+class KnowledgeItemViewSet(viewsets.ModelViewSet):
+    """
+    Main API for KnowledgeItem.
+
+    Every operation is scoped to the authenticated user.
+    """
+
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    parser_classes = [
+        JSONParser,
+        FormParser,
+        MultiPartParser,
+    ]
+
+    serializer_class = KnowledgeItemSerializer
+
+    # ================================================
+    # 📚 Queryset
+    # ================================================
+
+    def get_queryset(self):
+        include_archived = (
+            self.request.query_params
+            .get(
+                "include_archived",
+                "false",
+            )
+            .lower()
+            == "true"
+        )
+        # An archived item must be reachable by the action that un-archives it
+        # (the frontend calls POST .../restore/ without include_archived).
+        if self.action == "restore":
+            include_archived = True
+
+        queryset = (
+            KnowledgeService
+            .get_user_knowledge(
+                user=self.request.user,
+                include_archived=include_archived,
+            )
+        )
+
+        # --------------------------------------------
+        # Search
+        # --------------------------------------------
+
+        search = self.request.query_params.get(
+            "search"
+        )
+
+        if search:
+            queryset = (
+                queryset
+                .filter(
+                    title__icontains=search
+                )
+                |
+                queryset.filter(
+                    description__icontains=search
+                )
+                |
+                queryset.filter(
+                    content__icontains=search
+                )
+            ).filter(
+                user=self.request.user,
+            ).distinct()
+
+        # --------------------------------------------
+        # Knowledge type
+        # --------------------------------------------
+
+        knowledge_type = (
+            self.request.query_params
+            .get("knowledge_type")
+        )
+
+        if knowledge_type:
+            queryset = queryset.filter(
+                knowledge_type=knowledge_type
+            )
+
+        # --------------------------------------------
+        # Learning topic relation
+        # --------------------------------------------
+
+        learning_topic = self.request.query_params.get(
+            "learning_topic"
+        )
+
+        if learning_topic:
+            queryset = queryset.filter(
+                learning_topics__id=learning_topic
+            )
+
+        # --------------------------------------------
+        # Visibility
+        # --------------------------------------------
+
+        visibility = (
+            self.request.query_params
+            .get("visibility")
+        )
+
+        if visibility:
+            queryset = queryset.filter(
+                visibility=visibility
+            )
+
+        return queryset
+
+    # ================================================
+    # 🎨 Serializer
+    # ================================================
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return KnowledgeItemDetailSerializer
+
+        return KnowledgeItemSerializer
+
+    # ================================================
+    # ➕ Create
+    # ================================================
+
+    def perform_create(self, serializer):
+        serializer.save(
+            user=self.request.user
+        )
+
+    # ================================================
+    # ✏️ Update
+    # ================================================
+
+    def perform_update(self, serializer):
+        instance = self.get_object()
+
+        if instance.user_id != self.request.user.id:
+            raise PermissionDenied(
+                "You do not own this knowledge item."
+            )
+
+        serializer.save()
+
+    # ================================================
+    # 🗑️ Delete
+    # ================================================
+
+    def perform_destroy(self, instance):
+        if instance.user_id != self.request.user.id:
+            raise PermissionDenied(
+                "You do not own this knowledge item."
+            )
+
+        instance.delete()
+
+    # ================================================
+    # 🧠 Extract metadata (offline, deterministic)
+    # ================================================
+
+    @action(detail=True, methods=["post"], url_path="extract-metadata")
+    def extract_metadata_action(self, request, pk=None):
+        knowledge = self.get_object()
+        extracted = extract_metadata(
+            title=knowledge.title,
+            description=knowledge.description,
+            content=knowledge.content,
+        )
+        metadata = dict(knowledge.metadata or {})
+        metadata["extracted"] = extracted
+        knowledge.metadata = metadata
+        update_fields = ["metadata", "updated_at"]
+
+        # Preserve authored values; only fill empty fields.
+        if not knowledge.description and extracted["summary"]:
+            knowledge.description = extracted["summary"]
+            update_fields.append("description")
+        if not knowledge.tags and extracted["technology_tags"]:
+            knowledge.tags = extracted["technology_tags"]
+            update_fields.append("tags")
+        knowledge.save(update_fields=update_fields)
+        return Response({
+            "item": self.get_serializer(knowledge).data,
+            "extracted": extracted,
+        }, status=status.HTTP_200_OK)
+
+    # ================================================
+    # 🗄️ Archive
+    # ================================================
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="archive",
+    )
+    def archive(self, request, pk=None):
+        knowledge = self.get_object()
+
+        knowledge = (
+            KnowledgeService.archive_knowledge(
+                user=request.user,
+                knowledge=knowledge,
+            )
+        )
+
+        serializer = self.get_serializer(
+            knowledge
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    # ================================================
+    # ♻️ Restore
+    # ================================================
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="restore",
+    )
+    def restore(self, request, pk=None):
+        knowledge = self.get_object()
+
+        knowledge = (
+            KnowledgeService.restore_knowledge(
+                user=request.user,
+                knowledge=knowledge,
+            )
+        )
+
+        serializer = self.get_serializer(
+            knowledge
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    # ================================================
+    # 🔗 Connect to Learning Topic
+    # ================================================
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="connect-topic",
+    )
+    def connect_topic(self, request, pk=None):
+        knowledge = self.get_object()
+
+        topic_id = request.data.get(
+            "topic_id"
+        )
+
+        if not topic_id:
+            raise ValidationError(
+                {
+                    "topic_id": (
+                        "This field is required."
+                    )
+                }
+            )
+
+        try:
+            topic = (
+                LearningTopic.objects
+                .select_related(
+                    "path",
+                    "path__user",
+                )
+                .get(
+                    id=topic_id,
+                )
+            )
+        except LearningTopic.DoesNotExist:
+            raise ValidationError(
+                {
+                    "topic_id": (
+                        "Learning topic does not exist."
+                    )
+                }
+            )
+
+        try:
+            topic = (
+                KnowledgeService
+                .connect_to_topic(
+                    user=request.user,
+                    knowledge=knowledge,
+                    topic=topic,
+                )
+            )
+        except PermissionError as exc:
+            raise PermissionDenied(
+                str(exc)
+            )
+
+        return Response(
+            {
+                "message": (
+                    "Knowledge item connected "
+                    "to learning topic successfully."
+                ),
+                "topic_id": topic.id,
+                "knowledge_item_id": knowledge.id,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    # ================================================
+    # 🔌 Disconnect from Topic
+    # ================================================
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="disconnect-topic",
+    )
+    def disconnect_topic(
+        self,
+        request,
+        pk=None,
+    ):
+        knowledge = self.get_object()
+
+        topic_id = request.data.get(
+            "topic_id"
+        )
+
+        if not topic_id:
+            raise ValidationError(
+                {
+                    "topic_id": (
+                        "This field is required."
+                    )
+                }
+            )
+
+        try:
+            topic = (
+                LearningTopic.objects
+                .select_related(
+                    "path",
+                )
+                .get(
+                    id=topic_id,
+                    knowledge_item=knowledge,
+                )
+            )
+        except LearningTopic.DoesNotExist:
+            raise ValidationError(
+                {
+                    "topic_id": (
+                        "This learning topic is "
+                        "not connected to this knowledge item."
+                    )
+                }
+            )
+
+        try:
+            KnowledgeService.disconnect_from_topic(
+                user=request.user,
+                topic=topic,
+            )
+        except PermissionError as exc:
+            raise PermissionDenied(
+                str(exc)
+            )
+
+        return Response(
+            {
+                "message": (
+                    "Knowledge item disconnected "
+                    "from learning topic successfully."
+                ),
+                "topic_id": topic.id,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    # ================================================
+    # 📎 Files
+    # ================================================
+
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path="files",
+    )
+    def files(self, request, pk=None):
+        knowledge = self.get_object()
+
+        files = (
+            knowledge.files
+            .all()
+            .order_by("-created_at")
+        )
+
+        serializer = KnowledgeFileSerializer(
+            files,
+            many=True,
+            context={
+                "request": request,
+            },
+        )
+
+        return Response(
+            serializer.data
+        )
+
+    # ================================================
+    # 📤 Upload File
+    # ================================================
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="upload-file",
+        parser_classes=[
+            MultiPartParser,
+            FormParser,
+        ],
+    )
+    def upload_file(
+        self,
+        request,
+        pk=None,
+    ):
+        knowledge = self.get_object()
+
+        uploaded_file = request.FILES.get(
+            "file"
+        )
+
+        if not uploaded_file:
+            raise ValidationError(
+                {
+                    "file": (
+                        "A file is required."
+                    )
+                }
+            )
+
+        try:
+            knowledge_file = (
+                KnowledgeFileService.add_file(
+                    user=request.user,
+                    knowledge=knowledge,
+                    file=uploaded_file,
+                    original_name=(
+                        request.data.get(
+                            "original_name"
+                        )
+                        or uploaded_file.name
+                    ),
+                    file_type=(
+                        request.data.get(
+                            "file_type"
+                        )
+                        or "other"
+                    ),
+                    description=(
+                        request.data.get(
+                            "description"
+                        )
+                        or ""
+                    ),
+                )
+            )
+
+        except PermissionError as exc:
+            raise PermissionDenied(str(exc))
+        except ValueError as exc:
+            raise ValidationError({"file": str(exc)}) from exc
+
+        from knowledge.tasks import process_knowledge_file
+        try:
+            process_knowledge_file.delay(knowledge_file.id)
+        except Exception:
+            # Do not misreport a successfully stored file as an upload failure.
+            # Keep it pending so an operator or a later retry can process it.
+            pass
+
+        serializer = KnowledgeFileSerializer(
+            knowledge_file,
+            context={
+                "request": request,
+            },
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    # ================================================
+    # 🗑️ Archive All
+    # ================================================
+
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="archive-all",
+    )
+    def archive_all(
+        self,
+        request,
+    ):
+        queryset = self.get_queryset()
+
+        updated = queryset.update(
+            is_archived=True
+        )
+
+        return Response(
+            {
+                "message": (
+                    "Knowledge items archived successfully."
+                ),
+                "updated": updated,
+            }
+        )

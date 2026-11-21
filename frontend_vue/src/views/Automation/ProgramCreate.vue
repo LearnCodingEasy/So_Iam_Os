@@ -129,7 +129,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import programService from '@/services/AutomationService'
+import programService from '@/services/Automation/AutomationService'
 // =======================
 // State
 // =======================

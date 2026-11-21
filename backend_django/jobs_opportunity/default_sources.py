@@ -5,6 +5,20 @@ must configure a specific board/site and confirm the source terms before enablin
 """
 DEFAULT_JOB_SOURCES = [
     # --- مصادر APIs عامة وموثوقة (تتضمن Python & Web Development) ---
+    # Wuzzuf HTML search preset supplied by the project owner. It remains
+    # disabled until source terms/robots policy are reviewed and confirmed.
+    {"name": "Wuzzuf HTML — Django Developer (XPath)", "source_type": "scraper",
+     "base_url": "https://wuzzuf.net/search/jobs?q=Django%20Developer&a=expmty%7Cspbl",
+     "adapter": "xpath_html", "enabled": False,
+     "config": {
+         "card": {"selector_type": "xpath", "selector": '//*[@id="app"]/div/div[3]/div/div/div[2]/div[1]/div'},
+         "title": {"selector_type": "xpath", "selector": "./div/div[1]/h2/a"},
+         "url": {"selector_type": "xpath", "selector": "./div/div[1]/h2/a", "attribute": "href"},
+         "rate_limit_seconds": 2.0,
+         "terms_confirmed": False,
+         "robots_required": True,
+         "notes": "Owner-provided XPath preset. Validate card repetition, robots.txt, source terms, and server-rendered HTML before enabling.",
+     }},
     {"name": "Greenhouse Public Job Board", "source_type": "api",
         "base_url": "https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs?content=true", "adapter": "greenhouse", "enabled": False},
     {"name": "Lever Postings API", "source_type": "api",

@@ -34,16 +34,20 @@ ENVIRONMENT = os.getenv(
 # ====================================================
 
 if ENVIRONMENT == "production":
-    ENV_FILE = PROJECT_ROOT / ".env.production"
+    ENV_FILES = (PROJECT_ROOT / ".env.production", PROJECT_ROOT / ".env")
 else:
-    ENV_FILE = PROJECT_ROOT / ".env.local"
+    ENV_FILES = (PROJECT_ROOT / ".env.local", PROJECT_ROOT / ".env")
 
 
 # ====================================================
 # LOAD ENVIRONMENT
 # ====================================================
-
-load_dotenv(ENV_FILE)
+# Prefer the environment-specific file, then fall back to the project's .env.
+# Existing process/container variables always take precedence.
+for _env_file in ENV_FILES:
+    if _env_file.is_file():
+        load_dotenv(_env_file, override=False)
+        break
 
 
 # ====================================================
@@ -51,6 +55,19 @@ load_dotenv(ENV_FILE)
 # ====================================================
 
 SECRET_KEY = config("SECRET_KEY", default="dev-only-change-me")
+
+# Keep this value stable in a secret manager. Existing credentials encrypted
+# with SECRET_KEY remain readable when this optional key is introduced.
+AI_CREDENTIAL_ENCRYPTION_KEY = config(
+    "AI_CREDENTIAL_ENCRYPTION_KEY", default="")
+
+if ENVIRONMENT == "production" and (
+    not AI_CREDENTIAL_ENCRYPTION_KEY or len(AI_CREDENTIAL_ENCRYPTION_KEY) < 32
+):
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        "Production requires AI_CREDENTIAL_ENCRYPTION_KEY with at least 32 characters."
+    )
 
 # Production must fail closed rather than silently booting with development secrets.
 if ENVIRONMENT == "production" and (
@@ -319,6 +336,38 @@ AI_DEFAULT_PROVIDER = config(
     default="ollama",
 )
 
+# AI provider credentials are user-scoped in AIProviderCredential. These
+# environment values are optional application-level fallbacks only.
+OPENAI_API_KEY = config("OPENAI_API_KEY", default="")
+OPENAI_BASE_URL = config(
+    "OPENAI_BASE_URL", default="https://api.openai.com/v1")
+OPENAI_MODEL = config("OPENAI_MODEL", default="gpt-4o-mini")
+GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
+GOOGLE_API_KEY = config("GOOGLE_API_KEY", default="")
+GEMINI_BASE_URL = config(
+    "GEMINI_BASE_URL", default="https://generativelanguage.googleapis.com/v1beta")
+GEMINI_MODEL = config("GEMINI_MODEL", default="gemini-2.5-flash")
+DEEPSEEK_API_KEY = config("DEEPSEEK_API_KEY", default="")
+DEEPSEEK_BASE_URL = config(
+    "DEEPSEEK_BASE_URL", default="https://api.deepseek.com")
+DEEPSEEK_MODEL = config("DEEPSEEK_MODEL", default="deepseek-chat")
+AI_MAX_PROVIDER_ATTEMPTS = config(
+    "AI_MAX_PROVIDER_ATTEMPTS", default=5, cast=int)
+AI_MAX_RETRIES_PER_PROVIDER = config(
+    "AI_MAX_RETRIES_PER_PROVIDER", default=1, cast=int)
+AI_TOTAL_DEADLINE_SECONDS = config(
+    "AI_TOTAL_DEADLINE_SECONDS", default=60, cast=int)
+AI_RETRY_BACKOFF_SECONDS = config(
+    "AI_RETRY_BACKOFF_SECONDS", default=0.75, cast=float)
+AI_PROVIDER_TIMEOUT_SECONDS = config(
+    "AI_PROVIDER_TIMEOUT_SECONDS", default=35, cast=int)
+AI_PROVIDER_CONNECT_TIMEOUT_SECONDS = config(
+    "AI_PROVIDER_CONNECT_TIMEOUT_SECONDS", default=5, cast=int)
+AI_MODEL_DISCOVERY_TIMEOUT_SECONDS = config(
+    "AI_MODEL_DISCOVERY_TIMEOUT_SECONDS", default=8, cast=int)
+AI_PROVIDER_TEST_TIMEOUT_SECONDS = config(
+    "AI_PROVIDER_TEST_TIMEOUT_SECONDS", default=20, cast=int)
+
 OLLAMA_BASE_URL = config(
     "OLLAMA_BASE_URL",
     default="http://127.0.0.1:11434",
@@ -534,7 +583,25 @@ CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default=REDIS_URL)
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
+# Fail fast when Redis is unavailable. A synchronous API request must never
+# spend two minutes waiting for a broker/result-store reconnect.
+CELERY_BROKER_CONNECTION_TIMEOUT = config(
+    "CELERY_BROKER_CONNECTION_TIMEOUT", default=3, cast=int)
+CELERY_BROKER_CONNECTION_RETRY = config(
+    "CELERY_BROKER_CONNECTION_RETRY", default=False, cast=bool)
+CELERY_BROKER_CONNECTION_MAX_RETRIES = config(
+    "CELERY_BROKER_CONNECTION_MAX_RETRIES", default=1, cast=int)
+CELERY_TASK_PUBLISH_RETRY = config(
+    "CELERY_TASK_PUBLISH_RETRY", default=False, cast=bool)
+CELERY_RESULT_BACKEND_ALWAYS_RETRY = config(
+    "CELERY_RESULT_BACKEND_ALWAYS_RETRY", default=False, cast=bool)
+CELERY_RESULT_BACKEND_MAX_RETRIES = config(
+    "CELERY_RESULT_BACKEND_MAX_RETRIES", default=1, cast=int)
+CELERY_TASK_IGNORE_RESULT = config(
+    "CELERY_TASK_IGNORE_RESULT", default=False, cast=bool)
 CELERY_TIMEZONE = TIME_ZONE
+
+# AI provider resilience settings are defined once above the provider defaults.
 CELERY_BEAT_SCHEDULE = {
     "generate-daily-learning-tasks": {
         "task": "tasks.tasks.generate_daily_learning_tasks_for_all_users",

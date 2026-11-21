@@ -222,6 +222,13 @@
   color: var(--ai-primary);
 }
 
+.conversation-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
 .mini-danger {
   border: 0;
   color: var(--ai-text-secondary);
@@ -997,4 +1004,16 @@
   .inline-field {
     flex-direction: column;
   }
+}
+
+.context-json {
+  max-height: 55vh;
+  overflow: auto;
+  direction: ltr;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--ai-hover-bg);
 }

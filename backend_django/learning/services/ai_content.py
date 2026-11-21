@@ -6,7 +6,6 @@ import re
 from django.db import transaction
 from django.utils import timezone
 
-from ai.providers import get_ai_provider
 from ai.prompts import (
     build_learning_topic_content_prompt,
 )
@@ -61,22 +60,17 @@ class LearningTopicAIContentService:
             context=context,
         )
 
-        provider = get_ai_provider(
-            self.provider_name,
-        )
-
-        result = provider.generate(
+        from ai.services import AIFallbackChainService
+        result = AIFallbackChainService.generate_completion(
             messages=[
-                {
-                    "role": "system",
-                    "content": self._system_prompt(),
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
+                {"role": "system", "content": self._system_prompt()},
+                {"role": "user", "content": prompt},
             ],
+            user=self.user,
+            preferred_provider=self.provider_name,
             model=self.model or None,
+            temperature=0.3,
+            max_tokens=5000,
         )
 
         payload = self._parse_json(

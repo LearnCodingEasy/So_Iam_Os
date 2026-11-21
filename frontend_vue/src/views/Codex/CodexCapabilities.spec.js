@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { useCodexStore } from '@/stores/codex'
+import { useCodexStore } from '@/stores/codex/codex'
 
 describe('Codex capability registry contract', () => {
   beforeEach(() => setActivePinia(createPinia()))

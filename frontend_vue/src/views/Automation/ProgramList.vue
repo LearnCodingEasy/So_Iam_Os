@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import programService from '../../services/AutomationService'
+import programService from '../../services/Automation/AutomationService'
 const programs = ref([])
 const load = async () => {
   const res = await programService.list()

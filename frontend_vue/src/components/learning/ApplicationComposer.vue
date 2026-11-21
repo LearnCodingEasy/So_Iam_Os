@@ -6,7 +6,7 @@ import {
   updateKnowledgeApplication,
   submitKnowledgeApplication,
   reviewKnowledgeApplication,
-} from '@/services/learning'
+} from '@/services/Learning/learning'
 
 const props = defineProps({
   topicId: {

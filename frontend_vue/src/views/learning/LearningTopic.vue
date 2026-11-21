@@ -1,5 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import api from '@/services/Shared/api'
+import { endpoints } from '@/services/Shared/endpoints'
 
 import { RouterLink, useRoute } from 'vue-router'
 
@@ -18,7 +20,7 @@ import {
   generateLearningTopicContent,
   completeLearningTopic,
   topicChat,
-} from '@/services/learning'
+} from '@/services/Learning/learning'
 
 import ApplicationComposer from '@/components/learning/ApplicationComposer.vue'
 import AIReviewPanel from '@/components/learning/AIReviewPanel.vue'
@@ -505,7 +507,7 @@ const finishQuickCheck = async () => {
 
     const score = total > 0 ? Math.round((correct / total) * 100) : 0
 
-    const result = await import('@/services/learning').then((module) =>
+    const result = await import('@/services/Learning/learning').then((module) =>
       module.submitAssessment(assessment.id, {
         score,
         feedback: `Assessment completed with score ${score}%.`,
@@ -733,7 +735,7 @@ const loadTopicChat = async () => {
     const stored = localStorage.getItem(`topic_chat_${topic.value?.id}`)
     if (!stored) return
     const data = (
-      await (await import('@/services/api')).default.get(`/ai/conversations/${stored}/`)
+      await api.get(endpoints.ai.conversation(stored))
     ).data
     chatMessages.value = (data.messages || [])
       .filter((m) => ['user', 'assistant'].includes(m.role))

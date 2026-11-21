@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { getRecommendations, getSocialProfile, updateSocialProfile, sendFriendRequest } from '@/services/social'
+import { getRecommendations, getSocialProfile, updateSocialProfile, sendFriendRequest } from '@/services/Social/social'
 const recommendations = ref([]); const profile = ref({ learning_interests: [], professional_interests: [], topics: [], looking_for: [], bio: '', discoverable: true }); const saving = ref(false)
 const text = (v) => Array.isArray(v) ? v.join(', ') : v
 const parse = (v) => v.split(',').map(x => x.trim()).filter(Boolean)

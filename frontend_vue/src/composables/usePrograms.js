@@ -20,7 +20,7 @@ import { ref }              from 'vue'
 import { useConfirm }       from 'primevue/useconfirm'
 import { useToastHelper }   from '@/composables/useToastHelper'
 import { useAsyncAction }   from '@/composables/useAsyncAction'
-import { useProgramStore }  from '@/stores/useProgramStore'
+import { useProgramStore }  from '@/stores/automation/useProgramStore'
 
 export function usePrograms() {
   const confirm       = useConfirm()

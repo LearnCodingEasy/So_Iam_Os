@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import api from '../../services/api'
+import api from '../../services/Shared/api'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const taskId = route.params.id

@@ -577,7 +577,7 @@ import {
   updatePreferences,
   getFeatureCatalog,
   generateCoverLetter,
-} from '@/services/jobs'
+} from '@/services/Jobs/jobs'
 
 const activeTab = ref('jobs')
 const busy = ref(false)
@@ -901,7 +901,7 @@ async function applyJob(job) {
   }
 }
 async function fetchApply(id) {
-  const { applyToJob } = await import('@/services/jobs')
+  const { applyToJob } = await import('@/services/Jobs/jobs')
   return applyToJob(id, { status: 'applied' })
 }
 async function startLearning(gap) {
@@ -969,7 +969,7 @@ async function syncSourceNow(source) {
 }
 async function previewSourceNow(source) {
   try {
-    const { previewSource } = await import('@/services/jobs')
+    const { previewSource } = await import('@/services/Jobs/jobs')
     const result = await previewSource(source.id)
     notice.value = `اكتملت معاينة المصدر ${source.name}: ${result.items?.length || 0} وظيفة.`
     error.value = ''

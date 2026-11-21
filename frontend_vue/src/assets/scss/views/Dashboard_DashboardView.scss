@@ -1,0 +1,5 @@
+// Dedicated page stylesheet for Dashboard/DashboardView.vue
+// Shared tokens and layout primitives stay centralized; page-specific rules belong here.
+.page-scope--Dashboard_DashboardView {
+  min-width: 0;
+}

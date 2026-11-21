@@ -17,6 +17,10 @@ _EXPORTS = {
     "TaskPlanner": ".task_planner",
     "UsageService": ".usage_service",
     "WorkflowService": ".workflow_service",
+    "ProviderService": ".provider_service",
+    "AIDiagnostics": ".diagnostics",
+    "CredentialService": ".credential_service",
+    "ContextService": ".context_service",
 }
 
 __all__ = list(_EXPORTS)

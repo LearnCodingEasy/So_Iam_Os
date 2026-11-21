@@ -16,21 +16,20 @@ import requests
 
 
 class JobScraperService:
-    """
-    خدمة سحب وظائف من الإنترنت لتطبيق jobs_opportunity
+    """Compatibility facade over the single Jobs source synchronization pipeline.
+
+    The Celery task owns fetching, normalization, transactional persistence,
+    deduplication, and source status updates. This facade intentionally delegates
+    to that implementation instead of maintaining a second scraper path.
     """
 
-    def __init__(self, *args, **kwargs):
-        # يمكنك إضافة المتغيرات التي تحتاجها هنا عند التهيئة
-        pass
-
-    def run(self):
-        """
-        دالة لتشغيل عملية السحب
-        """
-        # اكتب الكود الخاص بسحب الوظائف هنا
-        print("بدء عملية سحب الوظائف...")
-        return True
+    def run(self, source_id: int):
+        if not source_id:
+            raise ValueError("A JobSource id is required.")
+        # Import lazily to avoid a module cycle: tasks imports fetch_and_extract
+        # from this module.
+        from .tasks import sync_job_source
+        return sync_job_source.run(source_id)
 
 
 class ScraperPolicyError(ValueError):
@@ -104,31 +103,47 @@ def _select(root, selector: str, selector_type: str):
         return None
     if selector_type == "xpath":
         try:
-            from lxml import html  # type: ignore
+            from lxml import etree, html  # type: ignore
         except ImportError as exc:
             raise RuntimeError(
                 "lxml is required for XPath selectors. Install requirements.txt.") from exc
-        tree = html.fromstring(str(root))
-        found = tree.xpath(selector)
+        # When card selection already returned an lxml element, evaluate the
+        # field XPath relative to that card. Converting an element with str()
+        # produces a Python representation, not its HTML markup.
+        if isinstance(root, etree._Element):
+            found = root.xpath(selector)
+        else:
+            tree = html.fromstring(str(root))
+            found = tree.xpath(selector)
         return found[0] if found else None
-    return root.select_one(selector)
+    if hasattr(root, "select_one"):
+        return root.select_one(selector)
+    raise RuntimeError(
+        "CSS field selectors require a BeautifulSoup root; use XPath selectors "
+        "when the card selector type is XPath.")
 
 
 def _value(element, rule: dict):
     if element is None:
         return ""
+    if isinstance(element, str):
+        return element.strip()
     attribute = rule.get("attribute")
     if attribute:
-        return str(element.get(attribute, "")).strip()
-    return element.get_text(" ", strip=True)
+        if hasattr(element, "get"):
+            return str(element.get(attribute, "") or "").strip()
+        return ""
+    if hasattr(element, "get_text"):
+        return element.get_text(" ", strip=True)
+    if hasattr(element, "text_content"):
+        return " ".join(element.text_content().split())
+    return str(element).strip()
 
 
 def extract_jobs(html_text: str, mapping: dict) -> list[dict]:
     BeautifulSoup = _load_bs4()
     soup = BeautifulSoup(html_text, "html.parser")
     card_rule = mapping.get("card") or {}
-    cards = soup.select(card_rule.get("selector", "body")
-                        ) if card_rule.get("selector") else [soup]
     selector_type = card_rule.get("selector_type", "css")
     if selector_type == "xpath":
         try:
@@ -138,6 +153,8 @@ def extract_jobs(html_text: str, mapping: dict) -> list[dict]:
         except ImportError as exc:
             raise RuntimeError(
                 "lxml is required for XPath card selectors.") from exc
+    else:
+        cards = soup.select(card_rule.get("selector", "body")) if card_rule.get("selector") else [soup]
     jobs = []
     for card in cards:
         item = {}
