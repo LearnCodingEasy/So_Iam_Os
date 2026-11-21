@@ -58,6 +58,41 @@ python manage.py startapp ai_app
 python manage.py startapp jobs_opportunity
 ```
 
+```cmd
+python manage.py startapp ai_tools_laboratory
+```
+
+```cmd
+python manage.py startapp agents
+```
+
+```cmd
+python manage.py startapp skills
+```
+
+```cmd
+python manage.py startapp architecture
+```
+
+```cmd
+python manage.py startapp marketing
+```
+
+```cmd
+python manage.py startapp sales
+```
+
+```cmd
+python manage.py startapp crm
+```
+
+```cmd
+python manage.py startapp analytics
+```
+
+```cmd
+python manage.py startapp revenue
+```
 
 ### 👥 Start App users_accounts
 
