@@ -9,7 +9,6 @@ const LoginView = () => import('../views/accounts/LoginView.vue')
 const ProfileView = () => import('../views/accounts/ProfileView.vue')
 const AuthCallback = () => import('../views/accounts/AuthCallback.vue')
 
-
 const LearningView = () => import('../views/learning/LearningView.vue')
 
 const Dashboard = () => import('../views/core/DashboardView.vue')
@@ -35,13 +34,13 @@ const AgentPlanner = () => import('@/views/ai/AgentPlanner.vue')
 const FrontendEnhancementCenter = () => import('@/components/core/FrontendEnhancementCenter.vue')
 
 // Automation
-const Automation = () => import('../views/automation/AutomationView.vue')
-const automation_Dashboard = () => import('../views/automation/DashboardAutomationView.vue')
-const ProgramList = () => import('../views/automation/ProgramList.vue')
-const ProgramCreate = () => import('../views/automation/ProgramCreate.vue')
-const ProgramEdit = () => import('../views/automation/ProgramEdit.vue')
-const TaskCreate = () => import('../views/automation/TaskCreate.vue')
-const TaskEditor = () => import('../views/automation/TaskEditor.vue')
+const Automation = () => import('../views/Automation/AutomationView.vue')
+const automation_Dashboard = () => import('../views/Automation/DashboardAutomationView.vue')
+const ProgramList = () => import('../views/Automation/ProgramList.vue')
+const ProgramCreate = () => import('../views/Automation/ProgramCreate.vue')
+const ProgramEdit = () => import('../views/Automation/ProgramEdit.vue')
+const TaskCreate = () => import('../views/Automation/TaskCreate.vue')
+const TaskEditor = () => import('../views/Automation/TaskEditor.vue')
 
 // 404 catchall Page Not Found
 const NotFound = () => import('../views/shared/Page_Not_Found.vue')
