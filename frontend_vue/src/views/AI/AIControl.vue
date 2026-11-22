@@ -131,7 +131,7 @@ import Select from 'primevue/select'
 import Tag from 'primevue/tag'
 import Textarea from 'primevue/textarea'
 import InputText from 'primevue/inputtext'
-import MarkdownRenderer from '@/components/ai/MarkdownRenderer.vue'
+import MarkdownRenderer from '@/components/AI/MarkdownRenderer.vue'
 import { sendMessage } from '@/services/AI/Ai'
 import {
   approveLearningPlan, deleteCredential, getAISettings, getCredentials,
@@ -391,4 +391,4 @@ onMounted(load)
 @use '@/assets/scss/views/AIControl.scss';
 </style>
 
-<style lang="scss" src="@/assets/scss/AI/AI.scss"></style>
+<style lang="scss" src="@/assets/scss/AI/_AI.scss"></style>

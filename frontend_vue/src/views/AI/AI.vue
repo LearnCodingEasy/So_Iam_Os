@@ -323,4 +323,4 @@ async function approve() {
 onMounted(load)
 </script>
 
-<style lang="scss" src="@/assets/scss/AI/AI.scss"></style>
+<style lang="scss" src="@/assets/scss/AI/_AI.scss"></style>
