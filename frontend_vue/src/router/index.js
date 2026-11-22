@@ -5,32 +5,35 @@ import 'nprogress/nprogress.css'
 const HomeView = () => import('../views/shared/HomeView.vue')
 const AboutView = () => import('../views/shared/AboutView.vue')
 
-const LoginView = () => import('../views/accounts/LoginView.vue')
-const ProfileView = () => import('../views/accounts/ProfileView.vue')
-const AuthCallback = () => import('../views/accounts/AuthCallback.vue')
+const LoginView = () => import('../views/Accounts/LoginView.vue')
+const ProfileView = () => import('../views/Accounts/ProfileView.vue')
+const AuthCallback = () => import('../views/Accounts/AuthCallback.vue')
 
-const LearningView = () => import('../views/learning/LearningView.vue')
+const LearningView = () => import('../views/Learning/LearningView.vue')
 
-const Dashboard = () => import('../views/core/DashboardView.vue')
+const Dashboard = () => import('../views/Core/DashboardView.vue')
+const SettingsView = () => import('@/views/Core/Settings.vue')
+const MyProgressView = () => import('@/views/Core/MyProgress.vue')
 
-const ScraperView = () => import('@/views/scraper/ScraperView.vue')
+const ScraperView = () => import('@/views/Scraper/ScraperView.vue')
 
-const AIChat = () => import('@/views/ai/AIChat.vue')
-const AIControl = () => import('@/views/ai/AIControl.vue')
-const SettingsView = () => import('@/views/core/Settings.vue')
 const GoalsView = () => import('@/views/goals/Goals.vue')
 const TodayTasksView = () => import('@/views/tasks/TodayTasks.vue')
 const TasksCalendar = () => import('@/views/tasks/TasksCalendar.vue')
 const SocialView = () => import('@/views/social/SocialView.vue')
 const NotificationsView = () => import('@/views/notifications/NotificationsView.vue')
-const MyProgressView = () => import('@/views/core/MyProgress.vue')
 const JobsView = () => import('@/views/jobs/JobsView.vue')
 const CodexView = () => import('@/views/codex/CodexView.vue')
 const ProjectsView = () => import('@/views/projects/ProjectsView.vue')
 const ChallengesView = () => import('@/views/challenges/ChallengesView.vue')
 const FinanceView = () => import('@/views/finance/FinanceView.vue')
-const MemoryView = () => import('@/views/memory/MemoryView.vue')
-const AgentPlanner = () => import('@/views/ai/AgentPlanner.vue')
+const MemoryView = () => import('@/views/Memory/MemoryView.vue')
+
+// Ai
+const AgentPlanner = () => import('@/views/Ai/AgentPlanner.vue')
+const AIChat = () => import('@/views/Ai/AIChat.vue')
+const AIControl = () => import('@/views/Ai/AIControl.vue')
+
 const FrontendEnhancementCenter = () => import('@/components/core/FrontendEnhancementCenter.vue')
 
 // Automation
@@ -133,7 +136,7 @@ const router = createRouter({
     {
       path: '/learning/topics/:topicId',
       name: 'learning-topic',
-      component: () => import('@/views/learning/LearningTopic.vue'),
+      component: () => import('@/views/Learning/LearningTopic.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -240,7 +243,7 @@ const router = createRouter({
     {
       path: '/ai/operations',
       name: 'ai-operations',
-      component: () => import('@/views/ai/AIOperationsView.vue'),
+      component: () => import('@/views/Ai/AIOperationsView.vue'),
       meta: { requiresAuth: true },
     },
 
