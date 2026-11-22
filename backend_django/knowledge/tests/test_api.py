@@ -1,5 +1,6 @@
 """API integration tests for Knowledge: auth, ownership scoping, actions, uploads."""
 import tempfile
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -75,10 +76,13 @@ class KnowledgeItemApiTests(APITestCase):
     def test_upload_valid_text_file_creates_record(self):
         item = KnowledgeItem.objects.create(user=self.alice, title="Files", content="x")
         self.client.force_authenticate(self.alice)
-        with tempfile.TemporaryDirectory() as tmp, override_settings(MEDIA_ROOT=tmp):
+        with tempfile.TemporaryDirectory() as tmp, override_settings(MEDIA_ROOT=tmp), patch(
+            "knowledge.tasks.process_knowledge_file.delay"
+        ) as enqueue_task:
             good = SimpleUploadedFile("notes.md", b"# Notes\nhello", content_type="text/markdown")
             res = self.client.post(f"{BASE}{item.id}/upload-file/", {"file": good}, format="multipart")
             self.assertIn(res.status_code, (200, 201), getattr(res, "data", None))
+            enqueue_task.assert_called_once()
         self.assertEqual(KnowledgeFile.objects.filter(knowledge=item).count(), 1)
 
     def test_cannot_touch_another_users_item(self):

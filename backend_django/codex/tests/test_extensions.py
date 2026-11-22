@@ -8,7 +8,11 @@ from codex.services.extensions import bootstrap_workflow, freeze_item, build_pro
 class CodexExtensionTests(TestCase):
     def setUp(self):
         self.project = ProjectRegistry.objects.create(key="test-project", name="Test Project")
-        self.user = get_user_model().objects.create_user(username="codex-test", password="test-password")
+        self.user = get_user_model().objects.create_user(
+            email="codex-test@example.test",
+            password="test-password",
+            name="Codex Test",
+        )
 
     def test_workflow_bootstrap_has_five_gated_steps(self):
         result = bootstrap_workflow(self.project)
