@@ -34,6 +34,21 @@
         <span v-if="!collapsed">{{ item.label }}</span>
       </RouterLink>
 
+      <div v-if="!collapsed" class="nav-label section-space">الأعمال والنمو</div>
+      <RouterLink
+        v-for="item in businessItems"
+        :key="item.path"
+        :to="item.path"
+        class="nav-item"
+        active-class="active"
+        @click="$emit('navigate')"
+        :title="item.label"
+        :aria-label="item.label"
+      >
+        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
+        <span v-if="!collapsed">{{ item.label }}</span>
+      </RouterLink>
+
       <div v-if="!collapsed" class="nav-label section-space">النظام</div>
       <RouterLink
         v-for="item in secondaryItems"
@@ -59,12 +74,13 @@ defineProps({ collapsed: Boolean })
 defineEmits(['toggle', 'navigate'])
 
 const mainItems = [
-  { label: 'لوحة التحكم', icon: '⌂', path: '/dashboard' },
+  { label: 'الرئيسية', icon: '⌂', path: '/' },
+  { label: 'لوحة التحكم', icon: '◫', path: '/dashboard' },
   { label: 'الأهداف', icon: '◎', path: '/goals' },
   { label: 'المهام', icon: '✓', path: '/tasks' },
   { label: "Today's Tasks", icon: '◷', path: '/tasks/today' },
-
   { label: 'التعلم', icon: '◇', path: '/learning' },
+  { label: 'موضوع التعلم', icon: '◈', path: '/learning/topics/1' },
   { label: 'المعرفة', icon: '▤', path: '/knowledge' },
   { label: 'الذاكرة', icon: '◉', path: '/memory' },
   { label: 'الوظائف', icon: '▣', path: '/jobs' },
@@ -74,9 +90,27 @@ const mainItems = [
   { label: 'المساعد الذكي', icon: '✦', path: '/ai' },
   { label: 'إعدادات الذكاء الاصطناعي', icon: '⚙', path: '/ai/control' },
   { label: 'عمليات ومراقبة AI', icon: '▥', path: '/ai/operations' },
+  { label: 'مختبر أدوات AI', icon: '⚗', path: '/ai-tools' },
   { label: 'الأتمتة', icon: '⟳', path: '/automation' },
+  { label: 'قائمة برامج الأتمتة', icon: '☰', path: '/automation_ProgramList' },
+  { label: 'إنشاء برنامج أتمتة', icon: '＋', path: '/automation_programs_create' },
+  { label: 'تعديل برنامج أتمتة', icon: '✎', path: '/automation/1' },
+  { label: 'إنشاء مهمة أتمتة', icon: '⊕', path: '/automation_TaskCreate' },
+  { label: 'محرر مهام الأتمتة', icon: '◧', path: '/automation_TaskEditor' },
 ]
+
+const businessItems = [
+  { label: 'الوكلاء', icon: '❖', path: '/agents' },
+  { label: 'التحليلات', icon: '◔', path: '/analytics' },
+  { label: 'البنية المعمارية', icon: '⬢', path: '/architecture' },
+  { label: 'CRM', icon: '◳', path: '/crm' },
+  { label: 'التسويق', icon: '📣', path: '/marketing' },
+  { label: 'الإيرادات', icon: '📈', path: '/revenue' },
+  { label: 'المبيعات', icon: '💼', path: '/sales' },
+]
+
 const secondaryItems = [
+  { label: 'الملف الشخصي', icon: '☺', path: '/profile/me' },
   { label: 'التواصل الاجتماعي', icon: '◎', path: '/social' },
   { label: 'الإشعارات', icon: '♧', path: '/notifications' },
   { label: 'Scraper', icon: '⌕', path: '/scraper' },

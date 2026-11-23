@@ -1,5 +1,8 @@
 # Static Analysis Limitations
 
+> **Historical checkpoint:** the count examples below belong to the earlier audit snapshot. Current archive counts and corrected app registration are in `00_project_overview/CURRENT_SOURCE_BASELINE_2026-11-23.md` and `01_governance/DOCUMENTATION_RECONCILIATION_2026-11-23.md`.
+
+
 ## Scope inspected
 
 This architecture set records static inspection of the checked-out repository. Its inventory defines project source as Python beneath `backend_django/`, frontend source and styles beneath `frontend_vue/src/`, and six root scripts. It excludes dependency trees, virtual environments, Git metadata, caches, build output, media, databases, binary assets, and Markdown from the source-file total. See [repository inventory](../00_project_overview/REPOSITORY_INVENTORY.md).

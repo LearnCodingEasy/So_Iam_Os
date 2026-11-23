@@ -41,7 +41,7 @@ class JobsAPITests(APITestCase):
     def test_preferences_and_readiness(self):
         response = self.client.get('/api/jobs/preferences/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(str(response.data['user']), str(self.user.id))
+        self.assertEqual(response.data['user'], str(self.user.id))
         response = self.client.get('/api/jobs/readiness/')
         self.assertEqual(response.status_code, 200)
 

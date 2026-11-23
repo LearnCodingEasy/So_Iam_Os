@@ -117,9 +117,10 @@ REST_FRAMEWORK = {
 # 3️⃣ Library django-allauth [Allauth]
 SITE_ID = 1
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_SIGNUP_FIELDS = ["email*", "name"]
+ACCOUNT_SIGNUP_FIELDS = ["email", "name", ]
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_LOGOUT_ON_GET = True
@@ -180,6 +181,12 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+
+
+# 🧪 Development Debugging
+print(f"✅ Settings loaded Django")
+# print(f"✅ AUTH_USER_MODEL: {AUTH_USER_MODEL}")
+print(f"✅ SOCIALACCOUNT_ADAPTER: {SOCIALACCOUNT_ADAPTER}")
 
 
 # 1️⃣ Django_Core
@@ -448,6 +455,7 @@ INSTALLED_APPS = [
     "sales",
     "scraper",
     "social",
+    "skills",
     "tasks",
     "users_accounts",
 ]

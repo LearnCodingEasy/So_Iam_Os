@@ -1,5 +1,7 @@
 # Documentation Quality Audit
 
+> Historical audit checkpoint. For current archive counts and the `skills/` registration correction, use `01_governance/DOCUMENTATION_RECONCILIATION_2026-11-23.md`, `02_backend/BACKEND_COVERAGE_AUDIT_2026-11-23.md`, and `03_frontend/FRONTEND_COVERAGE_AUDIT_2026-11-23.md`. This file preserves the earlier audit questions and results.
+
 ## Status definitions
 
 `PASS` means current evidence supports the stated coverage for the defined scope. `PARTIAL` means documented coverage exists but material gaps remain. `FAIL` means a known requirement is absent or contradicted. `NOT VERIFIED` means the evidence does not support a determination. These ratings assess the documentation set, not runtime behavior.
@@ -8,7 +10,7 @@
 
 | # | Question | Status | Evidence |
 |---|---|---|---|
-| 1 | Is every discovered Django application documented correctly? | PARTIAL | The backend audit lists 26/26 apps and 835/835 Python paths represented, but calls semantic/API/security coverage partial. It identifies the nine additional app documents under `02_backend/applications/`. Evidence: `02_backend/BACKEND_COVERAGE_AUDIT.md`; `00_project_overview/REPOSITORY_INVENTORY.md`. |
+| 1 | Is every discovered Django application documented correctly? | PARTIAL | The historical backend audit listed 26 app directories and 835 Python paths represented; the current snapshot has 26 app-like directories (25 installed) and 996 backend Python files under the current counting rule, but calls semantic/API/security coverage partial. It identifies the nine additional app documents under `02_backend/applications/`. Evidence: `02_backend/BACKEND_COVERAGE_AUDIT.md`; `00_project_overview/REPOSITORY_INVENTORY.md`. |
 | 2 | Is every discovered Vue domain documented correctly? | PARTIAL | 18/18 routed domains have documentation and 288/288 frontend paths appear in catalogues. The frontend audit says this is path representation, not full behavior or reachability proof. Evidence: `03_frontend/FRONTEND_COVERAGE_AUDIT.md`. |
 | 3 | Are all important application dependencies explained? | PARTIAL | Existing cross-domain summaries and integration traces explain selected dependencies; the integration map marks traces representative and several domains partial. Evidence: `domains/*.md`; `04_integration/FRONTEND_BACKEND_MAPPING.md`. |
 

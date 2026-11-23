@@ -16,19 +16,6 @@ DEFAULT_TOOL_PERMISSION = {
 
 def ensure_capability_catalog(project=None):
     project = project or ProjectRegistry.objects.get_or_create(key='so_iam_os', defaults={'name': 'SO_IAM_OS'})[0]
-    # Execution paths may call this helper often. A healthy registry should be
-    # a read-only, constant-query check, not 900 update_or_create writes per run.
-    expected_counts = (
-        (CodexFeatureDefinition, len(FEATURES)),
-        (CodexToolDefinition, len(TOOLS)),
-        (CodexAgentDefinition, len(AGENTS)),
-    )
-    if all(
-        model.objects.filter(project=project, version=CATALOG_VERSION).count() == expected
-        for model, expected in expected_counts
-    ):
-        return project
-
     for item in FEATURES:
         CodexFeatureDefinition.objects.update_or_create(
             project=project, key=item['key'],

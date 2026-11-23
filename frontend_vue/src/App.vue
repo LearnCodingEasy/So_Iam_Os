@@ -1,7 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import { useUserStore } from '@/stores/accounts/user'
-import AppLayout from '@/components/AI/layout/AppLayout.vue'
+import AppLayout from '@/components/ai/layout/AppLayout.vue'
 import LiveDebugConsole from '@/components/shared/LiveDebugConsole.vue'
 
 const userStore = useUserStore()

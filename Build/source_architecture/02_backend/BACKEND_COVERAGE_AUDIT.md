@@ -2,7 +2,7 @@
 
 ## Scope and method
 
-This audit cross-checks source paths under `backend_django/` against the current source tree and existing documentation. Each `.py` file is counted, including tests and migration package files. `__pycache__`, bytecode, media, and non-source assets are excluded. For the 17 already-documented apps, every Python path was checked for presence in that app's `source-file-catalog.md`; the path match is a catalogue check, not proof every behavior is fully explained. Nine additional installed apps are covered by the new per-app documents in `applications/`.
+This audit cross-checks source paths under `backend_django/` against the current source tree and existing documentation. Each `.py` file is counted, including tests and migration package files. `__pycache__`, bytecode, media, and non-source assets are excluded. For the 17 already-documented apps, every Python path was checked for presence in that app's `source-file-catalog.md`; the path match is a catalogue check, not proof every behavior is fully explained. Nine additional app directories are covered by the new per-app documents in `applications/`; eight are installed, while `skills/` is an unregistered scaffold.
 
 The project-level count is eight Python files outside local app directories. All eight are named with a purpose in `Build/complete_project_documentation/01-complete-repository-map.md`. The previous coverage register's count of eight project-level Python files is current, while its total backend Python count and installed-app count are stale.
 
@@ -42,7 +42,7 @@ The project-level count is eight Python files outside local app directories. All
 
 ## Counts and findings
 
-- **Installed local Django applications:** 26/26 documented (100% by app count). Third-party entries in `INSTALLED_APPS` are excluded from this local-app denominator.
+- **App-like directories with `apps.py`:** 26. **Installed local Django applications:** 25. The `skills/` package is not listed in `INSTALLED_APPS` and contains placeholder scaffolding only. Third-party entries in `INSTALLED_APPS` are excluded from this local-app denominator.
 - **Python source-path representation:** 835/835 (100%) when existing per-app catalogues, the project-level repository map, and the nine new app guides are considered together. This is path presence only.
 - **Existing app catalogue cross-check:** 764/764 Python paths across the original 17 documented apps appear in their respective source-file catalogues.
 - **New app source files:** 63 files across nine apps, seven Python files each. Each app contains `__init__.py`, `admin.py`, `apps.py`, `models.py`, `tests.py`, `views.py`, and `migrations/__init__.py`; all are represented in its new guide.

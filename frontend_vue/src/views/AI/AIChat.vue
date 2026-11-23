@@ -540,7 +540,7 @@
 import { computed, defineComponent, h, onMounted, reactive, ref, nextTick } from 'vue'
 import aiControl from '@/services/AI/aiControl'
 import { sendMessage as sendNonStreamingMessage, streamMessage } from '@/services/AI/Ai'
-import MarkdownRenderer from '@/components/AI/MarkdownRenderer.vue'
+import MarkdownRenderer from '@/components/ai/MarkdownRenderer.vue'
 import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n()

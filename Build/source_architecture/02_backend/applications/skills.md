@@ -1,8 +1,8 @@
-# `skills` Django application
+# `skills/` — Unregistered Django App Scaffold
 
 ## Overview
 
-`skills` is registered in `INSTALLED_APPS` through `backend_django/skills/apps.py`. **Verified source finding:** the package contains Django-generated scaffolding only. Its product purpose is **unknown**; the package name does not establish a skill domain implementation. No app API URL module, model class, service, signal, task, migration, or management command was found. The project URL configuration does not include a `skills` URL module.
+`skills` is **not registered** in `INSTALLED_APPS` in the supplied source snapshot. The package contains Django-generated scaffolding only. Its product purpose is **unknown**; the package name does not establish a skill domain implementation. No app API URL module, model class, service, signal, task, migration, or management command was found. The project URL configuration does not include a `skills` URL module.
 
 ## Directory and source files
 
@@ -19,7 +19,7 @@ The package also contains `backend_django/skills/migrations/__init__.py`, an emp
 
 ## Database, API, and workflows
 
-No models, migrations, indexes, constraints, routes, serializers, permissions, services, Celery tasks, signals, or schedules were found under the package.
+No models, migrations, indexes, constraints, routes, serializers, permissions, services, Celery tasks, signals, or schedules were found under the package. The `Skill` model consumed by learning, goals, jobs, tasks, and challenges is defined in `backend_django/learning/models/skill.py`.
 
 ## Security and testing
 
@@ -27,6 +27,6 @@ No endpoint or privileged operation is implemented in the package. `tests.py` co
 
 ## Relationships
 
-- Registration: `backend_django/backend_django/settings.py` (`INSTALLED_APPS`).
+- Registration: absent from `backend_django/backend_django/settings.py` (`INSTALLED_APPS`).
 - Project URL composition: `backend_django/backend_django/urls.py`; no `skills` URL include is declared there.
 - Package scaffold: the six files listed in the source table.

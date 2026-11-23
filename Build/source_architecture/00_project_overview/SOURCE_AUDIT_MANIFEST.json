@@ -1,0 +1,221 @@
+{
+  "generated_at": "2026-11-23",
+  "archive_root": "So_Iam_Os/",
+  "apps": [
+    "agents",
+    "ai",
+    "ai_tools_laboratory",
+    "analytics",
+    "architecture",
+    "automation",
+    "challenges",
+    "codex",
+    "core",
+    "crm",
+    "goals",
+    "jobs_opportunity",
+    "knowledge",
+    "learning",
+    "marketing",
+    "memory",
+    "notification",
+    "personal_finance",
+    "projects",
+    "revenue",
+    "sales",
+    "scraper",
+    "skills",
+    "social",
+    "tasks",
+    "users_accounts"
+  ],
+  "installed_app_candidates": [
+    "agents",
+    "ai",
+    "ai_tools_laboratory",
+    "analytics",
+    "architecture",
+    "automation",
+    "challenges",
+    "codex",
+    "core",
+    "crm",
+    "goals",
+    "jobs_opportunity",
+    "knowledge",
+    "learning",
+    "marketing",
+    "memory",
+    "notification",
+    "personal_finance",
+    "projects",
+    "revenue",
+    "sales",
+    "scraper",
+    "social",
+    "tasks",
+    "users_accounts"
+  ],
+  "root_api_mounts": {
+    "codex": [
+      "api/codex/"
+    ],
+    "allauth": [
+      "accounts/"
+    ],
+    "users_accounts": [
+      "api/users/"
+    ],
+    "core": [
+      "api/core/"
+    ],
+    "knowledge": [
+      "api/knowledge/"
+    ],
+    "learning": [
+      "api/learning/"
+    ],
+    "scraper": [
+      "api/scraper/"
+    ],
+    "ai": [
+      "api/ai/"
+    ],
+    "goals": [
+      "api/goals/"
+    ],
+    "tasks": [
+      "api/tasks/"
+    ],
+    "jobs_opportunity": [
+      "api/jobs/"
+    ],
+    "social": [
+      "api/social/"
+    ],
+    "automation": [
+      "api/automation/"
+    ],
+    "notification": [
+      "api/notifications/"
+    ],
+    "memory": [
+      "api/memory/"
+    ],
+    "projects": [
+      "api/projects/"
+    ],
+    "challenges": [
+      "api/challenges/"
+    ],
+    "agents": [
+      "api/agents/"
+    ],
+    "ai_tools_laboratory": [
+      "api/ai-tools/"
+    ],
+    "analytics": [
+      "api/analytics/"
+    ],
+    "architecture": [
+      "api/architecture/"
+    ],
+    "crm": [
+      "api/crm/"
+    ],
+    "marketing": [
+      "api/marketing/"
+    ],
+    "revenue": [
+      "api/revenue/"
+    ],
+    "sales": [
+      "api/sales/"
+    ],
+    "personal_finance": [
+      "api/finance/"
+    ]
+  },
+  "counts": {
+    "files": 1700,
+    "backend_files": 1003,
+    "python_all": 996,
+    "python_without_tests_migrations": 836,
+    "frontend_files": 358,
+    "vue_sfc": 142,
+    "build_markdown": 326,
+    "complete_documentation_markdown": 267,
+    "model_class_declarations": 164,
+    "model_relation_declarations": 291,
+    "api_url_modules": 25,
+    "app_url_pattern_lines": 112,
+    "frontend_route_declarations": 44,
+    "python_ast_parse_success": 996,
+    "python_ast_parse_failures": 0,
+    "cross_app_import_edges": 58,
+    "archive_files_after_documentation_additions": 1760,
+    "files_after_documentation_additions": 1707,
+    "build_markdown_after_documentation_additions": 333,
+    "source_architecture_markdown_after_documentation_additions": 59,
+    "complete_project_documentation_markdown": 267,
+    "installed_app_match_count": 25,
+    "app_directories_with_apps_py": 26,
+    "python_ast_parse_scope": "all backend_django/**/*.py"
+  },
+  "new_files": [
+    "Build/PROJECT_MASTER_MAP.md",
+    "Build/source_architecture/00_project_overview/CURRENT_SOURCE_BASELINE_2026-11-23.md",
+    "Build/source_architecture/00_project_overview/PROJECT_FEATURE_REGISTRY.md",
+    "Build/source_architecture/02_backend/APPLICATION_KNOWLEDGE_BASE_INDEX.md",
+    "Build/source_architecture/04_integration/PROJECT_DEPENDENCY_MAP.md",
+    "Build/source_architecture/05_catalogues/BACKEND_SOURCE_CATALOGUE.md",
+    "Build/source_architecture/05_catalogues/FRONTEND_SOURCE_CATALOGUE.md",
+    "Build/source_architecture/05_catalogues/DATABASE_MODEL_CATALOGUE.md",
+    "Build/source_architecture/05_catalogues/SHARED_INFRASTRUCTURE_CATALOGUE.md",
+    "Build/source_architecture/EGM_LIVING_CHANGE_WORKFLOW.md",
+    "Build/source_architecture/PROJECT_NEXT_ACTIONS.md",
+    "Build/source_architecture/DOCUMENTATION_CHANGELOG.md",
+    "Build/source_architecture/reviews/GOLDFISH_REVIEW_2026-11-23.md",
+    "Build/source_architecture/04_integration/CROSS_APPLICATION_IMPORT_GRAPH.md",
+    "Build/source_architecture/02_backend/APPLICATION_INTERNAL_STRUCTURE_INDEX.md",
+    "Build/source_architecture/01_governance/CURRENT_DOCUMENTATION_MANIFEST_2026-11-23.md",
+    "Build/source_architecture/01_governance/CURRENT_EXECUTION_STATUS_2026-11-23.md",
+    "Build/source_architecture/01_governance/DOCUMENTATION_RECONCILIATION_2026-11-23.md",
+    "Build/source_architecture/02_backend/BACKEND_COVERAGE_AUDIT_2026-11-23.md",
+    "Build/source_architecture/03_frontend/FRONTEND_COVERAGE_AUDIT_2026-11-23.md"
+  ],
+  "missing_relative_markdown_links": [],
+  "installed_apps_match": [
+    "agents",
+    "ai",
+    "ai_tools_laboratory",
+    "analytics",
+    "architecture",
+    "automation",
+    "challenges",
+    "codex",
+    "core",
+    "crm",
+    "goals",
+    "jobs_opportunity",
+    "knowledge",
+    "learning",
+    "marketing",
+    "memory",
+    "notification",
+    "personal_finance",
+    "projects",
+    "revenue",
+    "sales",
+    "scraper",
+    "social",
+    "tasks",
+    "users_accounts"
+  ],
+  "unregistered_app_like_directories": [
+    "skills"
+  ],
+  "notes": [
+    "skills/ has apps.py but is not in INSTALLED_APPS; placeholder only; active Skill model is in learning."
+  ]
+}

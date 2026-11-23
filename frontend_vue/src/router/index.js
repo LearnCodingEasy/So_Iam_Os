@@ -12,38 +12,44 @@ const AuthCallback = () => import('../views/accounts/AuthCallback.vue')
 const LearningView = () => import('../views/learning/LearningView.vue')
 
 const Dashboard = () => import('../views/core/DashboardView.vue')
+
+const ScraperView = () => import('@/views/scraper/ScraperView.vue')
+
+const AIChat = () => import('@/views/ai/AIChat.vue')
+const AIControl = () => import('@/views/ai/AIControl.vue')
 const SettingsView = () => import('@/views/core/Settings.vue')
+const GoalsView = () => import('@/views/goals/Goals.vue')
+const TodayTasksView = () => import('@/views/tasks/TodayTasks.vue')
+const TasksCalendar = () => import('@/views/tasks/TasksCalendar.vue')
+const SocialView = () => import('@/views/social/SocialView.vue')
+const NotificationsView = () => import('@/views/notifications/NotificationsView.vue')
 const MyProgressView = () => import('@/views/core/MyProgress.vue')
-
-const ScraperView = () => import('@/views/Scraper/ScraperView.vue')
-
-const GoalsView = () => import('@/views/Goals/Goals.vue')
-const TodayTasksView = () => import('@/views/Tasks/TodayTasks.vue')
-const TasksCalendar = () => import('@/views/Tasks/TasksCalendar.vue')
-const SocialView = () => import('@/views/Social/SocialView.vue')
-const NotificationsView = () => import('@/views/Notifications/NotificationsView.vue')
 const JobsView = () => import('@/views/jobs/JobsView.vue')
-const CodexView = () => import('@/views/Codex/CodexView.vue')
-const ProjectsView = () => import('@/views/Projects/ProjectsView.vue')
-const ChallengesView = () => import('@/views/Challenges/ChallengesView.vue')
-const FinanceView = () => import('@/views/Finance/FinanceView.vue')
-const MemoryView = () => import('@/views/Memory/MemoryView.vue')
+const CodexView = () => import('@/views/codex/CodexView.vue')
+const ProjectsView = () => import('@/views/projects/ProjectsView.vue')
+const ChallengesView = () => import('@/views/challenges/ChallengesView.vue')
+const FinanceView = () => import('@/views/finance/FinanceView.vue')
 
-// Ai
-const AgentPlanner = () => import('@/views/AI/AgentPlanner.vue')
-const AIChat = () => import('@/views/AI/AIChat.vue')
-const AIControl = () => import('@/views/AI/AIControl.vue')
-
+// Business & platform applications
+const AgentsView = () => import('@/views/agents/agentsView.vue')
+const AiToolsLaboratoryView = () => import('@/views/ai_tools_laboratory/aiToolsLaboratoryView.vue')
+const AnalyticsView = () => import('@/views/analytics/analyticsView.vue')
+const ArchitectureView = () => import('@/views/architecture/architectureView.vue')
+const CrmView = () => import('@/views/crm/crmView.vue')
+const MarketingView = () => import('@/views/marketing/marketingView.vue')
+const RevenueView = () => import('@/views/revenue/revenueView.vue')
+const SalesView = () => import('@/views/sales/salesView.vue')
+const MemoryView = () => import('@/views/memory/MemoryView.vue')
+const AgentPlanner = () => import('@/views/ai/AgentPlanner.vue')
 const FrontendEnhancementCenter = () => import('@/components/core/FrontendEnhancementCenter.vue')
 
 // Automation
-const Automation = () => import('../views/Automation/AutomationView.vue')
-const automation_Dashboard = () => import('../views/Automation/DashboardAutomationView.vue')
-const ProgramList = () => import('../views/Automation/ProgramList.vue')
-const ProgramCreate = () => import('../views/Automation/ProgramCreate.vue')
-const ProgramEdit = () => import('../views/Automation/ProgramEdit.vue')
-const TaskCreate = () => import('../views/Automation/TaskCreate.vue')
-const TaskEditor = () => import('../views/Automation/TaskEditor.vue')
+const Automation = () => import('../views/automation/AutomationView.vue')
+const ProgramList = () => import('../views/automation/ProgramList.vue')
+const ProgramCreate = () => import('../views/automation/ProgramCreate.vue')
+const ProgramEdit = () => import('../views/automation/ProgramEdit.vue')
+const TaskCreate = () => import('../views/automation/TaskCreate.vue')
+const TaskEditor = () => import('../views/automation/TaskEditor.vue')
 
 // 404 catchall Page Not Found
 const NotFound = () => import('../views/shared/Page_Not_Found.vue')
@@ -116,7 +122,7 @@ const router = createRouter({
     {
       path: '/knowledge',
       name: 'knowledge',
-      component: () => import('../views/knowledge/KnowledgeView.vue'),
+      component: () => import('../views/knowledge/knowledgeView.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -190,6 +196,34 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     { path: '/finance', name: 'finance', component: FinanceView, meta: { requiresAuth: true } },
+    { path: '/agents', name: 'agents', component: AgentsView, meta: { requiresAuth: true } },
+    {
+      path: '/ai-tools',
+      name: 'ai-tools-laboratory',
+      component: AiToolsLaboratoryView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/analytics',
+      name: 'analytics',
+      component: AnalyticsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/architecture',
+      name: 'architecture',
+      component: ArchitectureView,
+      meta: { requiresAuth: true },
+    },
+    { path: '/crm', name: 'crm', component: CrmView, meta: { requiresAuth: true } },
+    {
+      path: '/marketing',
+      name: 'marketing',
+      component: MarketingView,
+      meta: { requiresAuth: true },
+    },
+    { path: '/revenue', name: 'revenue', component: RevenueView, meta: { requiresAuth: true } },
+    { path: '/sales', name: 'sales', component: SalesView, meta: { requiresAuth: true } },
     { path: '/memory', name: 'memory', component: MemoryView, meta: { requiresAuth: true } },
     {
       path: '/ai/agents',
@@ -243,7 +277,7 @@ const router = createRouter({
     {
       path: '/ai/operations',
       name: 'ai-operations',
-      component: () => import('@/views/AI/AIOperationsView.vue'),
+      component: () => import('@/views/ai/AIOperationsView.vue'),
       meta: { requiresAuth: true },
     },
 
@@ -265,12 +299,7 @@ const router = createRouter({
       component: Automation,
       meta: { requiresAuth: true },
     },
-    {
-      path: '/automation_Dashboard',
-      name: 'automation_Dashboard',
-      component: automation_Dashboard,
-      meta: { requiresAuth: true },
-    },
+
     {
       path: '/automation_ProgramList',
       name: 'automation_ProgramList',

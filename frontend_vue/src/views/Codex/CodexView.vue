@@ -7,30 +7,30 @@ import { useCodexStore } from '@/stores/codex/codex'
 import codex from '@/services/Codex/codex'
 
 // Layout Components
-import CodexSidebar from '@/components/Codex/Layout/CodexSidebar.vue'
-import CodexRightSidebar from '@/components/Codex/Layout/CodexRightSidebar.vue'
-import CodexTopbar from '@/components/Codex/Layout/CodexTopbar.vue'
+import CodexSidebar from '@/components/codex/Layout/CodexSidebar.vue'
+import CodexRightSidebar from '@/components/codex/Layout/CodexRightSidebar.vue'
+import CodexTopbar from '@/components/codex/Layout/CodexTopbar.vue'
 
 // Panels
-import CodexChatPanel from '@/components/Codex/panels/CodexChatPanel.vue'
-import CodexAnalysisPanel from '@/components/Codex/panels/CodexAnalysisPanel.vue'
-import CodexPipelinePanel from '@/components/Codex/panels/CodexPipelinePanel.vue'
-import CodexGovernancePanel from '@/components/Codex/panels/CodexGovernancePanel.vue'
-import CodexRegistryPanel from '@/components/Codex/panels/CodexRegistryPanel.vue'
+import CodexChatPanel from '@/components/codex/panels/CodexChatPanel.vue'
+import CodexAnalysisPanel from '@/components/codex/panels/CodexAnalysisPanel.vue'
+import CodexPipelinePanel from '@/components/codex/panels/CodexPipelinePanel.vue'
+import CodexGovernancePanel from '@/components/codex/panels/CodexGovernancePanel.vue'
+import CodexRegistryPanel from '@/components/codex/panels/CodexRegistryPanel.vue'
 
 // Workspace Components
-import CodexFileExplorer from '@/components/Codex/workspace/CodexProjectExplorer.vue'
-import CodexCodeEditor from '@/components/Codex/workspace/CodexCodeEditor.vue'
-import CodexTerminal from '@/components/Codex/workspace/CodexTerminal.vue'
-import CodexInspectorWorkspace from '@/components/Codex/workspace/CodexInspectorWorkspace.vue'
+import CodexFileExplorer from '@/components/codex/workspace/CodexProjectExplorer.vue'
+import CodexCodeEditor from '@/components/codex/workspace/CodexCodeEditor.vue'
+import CodexTerminal from '@/components/codex/workspace/CodexTerminal.vue'
+import CodexInspectorWorkspace from '@/components/codex/workspace/CodexInspectorWorkspace.vue'
 
 // Dialogs
-import CodexPromptDialog from '@/components/Codex/dialogs/CodexPromptDialog.vue'
-import CodexInfoDialog from '@/components/Codex/dialogs/CodexInfoDialog.vue'
+import CodexPromptDialog from '@/components/codex/dialogs/CodexPromptDialog.vue'
+import CodexInfoDialog from '@/components/codex/dialogs/CodexInfoDialog.vue'
 
 // Existing shared components
-import CodexBuildWorkspace from '@/components/Codex/Build/WorkspaceView.vue'
-import CodexCapabilities from '@/components/Codex/Capabilities/CapabilitiesView.vue'
+import CodexBuildWorkspace from '@/components/codex/Build/WorkspaceView.vue'
+import CodexCapabilities from '@/components/codex/Capabilities/CapabilitiesView.vue'
 
 const store = useCodexStore()
 const router = useRouter()

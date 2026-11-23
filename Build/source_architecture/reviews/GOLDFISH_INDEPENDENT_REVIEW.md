@@ -40,7 +40,7 @@
 **Evidence:** `02-backend-architecture.md:5` says settings install 17 project apps and that their API URL modules are mounted. Current source `backend_django/backend_django/settings.py:424-451` registers 26 local apps; `backend_django/backend_django/urls.py:8-78` includes API modules for a subset and does not include the nine scaffold apps. The correction is acknowledged in `00_project_overview/REPOSITORY_INVENTORY.md:40`, but the overview is not reconciled.
 
 **Impact:** Readers encounter a “VERIFIED” statement that is false for the current checkout and may infer every registered app has an API.  
-**Recommended correction:** Update the backend architecture summary to say 26 installed local apps, enumerate URL-mounted apps separately, and point to the nine scaffold-only app guides.
+**Recommended correction:** Update the backend architecture summary to say 25 installed local apps across 26 app-like directories, enumerate URL-mounted apps separately, and point to the eight installed additional apps and the unregistered `skills/` scaffold.
 
 ### M-02 — Frontend inventory has contradictory counts
 

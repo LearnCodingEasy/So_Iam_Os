@@ -57,6 +57,15 @@ const menuItems = [
 
   { label: 'Finance', icon: 'pi pi-wallet', route: '/finance' },
 
+  { label: 'CRM', icon: 'pi pi-address-book', route: '/crm' },
+  { label: 'Sales', icon: 'pi pi-shopping-cart', route: '/sales' },
+  { label: 'Marketing', icon: 'pi pi-megaphone', route: '/marketing' },
+  { label: 'Revenue', icon: 'pi pi-chart-line', route: '/revenue' },
+  { label: 'Analytics', icon: 'pi pi-chart-bar', route: '/analytics' },
+  { label: 'Agents', icon: 'pi pi-android', route: '/agents' },
+  { label: 'AI Tools Lab', icon: 'pi pi-wrench', route: '/ai-tools' },
+  { label: 'Architecture', icon: 'pi pi-sitemap', route: '/architecture' },
+
   { label: 'Memory', icon: 'pi pi-history', route: '/memory' },
 
   { label: 'AI Agents', icon: 'pi pi-users', route: '/ai/agents' },

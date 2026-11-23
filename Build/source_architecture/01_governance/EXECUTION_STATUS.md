@@ -1,5 +1,8 @@
 # Documentation Execution Status
 
+> **Historical checkpoint (2026-11-21):** this records the earlier partial audit. The current archive execution checkpoint is `CURRENT_EXECUTION_STATUS_2026-11-23.md`; use that file for current phase status.
+
+
 **Checkpoint date:** 2026-11-21  
 **Scope:** additive static architecture documentation under `Build/source_architecture/`
 

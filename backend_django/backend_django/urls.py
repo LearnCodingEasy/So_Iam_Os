@@ -76,6 +76,14 @@ urlpatterns = [
     path("api/memory/", include("memory.api.urls")),
     path("api/projects/", include("projects.api.urls")),
     path("api/challenges/", include("challenges.api.urls")),
+    path("api/agents/", include("agents.api.urls")),
+    path("api/ai-tools/", include("ai_tools_laboratory.api.urls")),
+    path("api/analytics/", include("analytics.api.urls")),
+    path("api/architecture/", include("architecture.api.urls")),
+    path("api/crm/", include("crm.api.urls")),
+    path("api/marketing/", include("marketing.api.urls")),
+    path("api/revenue/", include("revenue.api.urls")),
+    path("api/sales/", include("sales.api.urls")),
     path("api/finance/", include("personal_finance.api.urls")),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
