@@ -57,3 +57,6 @@
 @use 'views/Authentication_auth_callback';
 @use 'views/Authentication_AuthCallback';
 @use 'views/Progress_MyProgress';
+
+// Design system (last so shell polish layers over legacy page styles)
+@use 'design-system/design-system';

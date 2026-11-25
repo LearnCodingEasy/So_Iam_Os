@@ -3,6 +3,24 @@ from django.conf import settings
 from ..exceptions import AIConfigurationError, AIProviderError, AIResponseError
 from .base import BaseAIProvider, _provider_http_error
 
+
+def _timeout_error(exc, timeouts):
+    """Build a meaningful timeout error that separates connect vs read timeouts."""
+    connect, read = timeouts
+    if isinstance(exc, requests.ConnectTimeout):
+        error = AIProviderError(
+            f"Could not connect to Ollama within {connect}s (connection timeout). "
+            "Check that the Ollama service is running and reachable.",
+            category="timeout", retryable=True)
+        error.timeout_kind = "connect"
+    else:
+        error = AIProviderError(
+            f"Ollama accepted the request but did not finish within {read}s (read timeout). "
+            "The model may still be loading into memory; retry or raise the timeout.",
+            category="timeout", retryable=True)
+        error.timeout_kind = "read"
+    return error
+
 class OllamaProvider(BaseAIProvider):
     name = "ollama"
 
@@ -29,7 +47,7 @@ class OllamaProvider(BaseAIProvider):
             response = requests.post(
                 f"{self.base_url.rstrip('/')}/api/chat", json=payload, headers=headers, timeout=self._request_timeout(timeout_seconds))
         except requests.Timeout as exc:
-            raise AIProviderError("Ollama request timed out.", category="timeout", retryable=True) from exc
+            raise _timeout_error(exc, self._request_timeout(timeout_seconds)) from exc
         except requests.ConnectionError as exc:
             raise AIProviderError("Ollama connection failed.", category="network_error", retryable=True) from exc
         except requests.RequestException as exc:
@@ -67,7 +85,7 @@ class OllamaProvider(BaseAIProvider):
                 timeout=self._request_timeout(timeout_seconds),
             )
         except requests.Timeout as exc:
-            raise AIProviderError("Ollama request timed out.", category="timeout", retryable=True) from exc
+            raise _timeout_error(exc, self._request_timeout(timeout_seconds)) from exc
         except requests.RequestException as exc:
             raise AIProviderError("Ollama connection failed.", category="network_error", retryable=True) from exc
         if not response.ok:

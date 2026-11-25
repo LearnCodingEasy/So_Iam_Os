@@ -1,7 +1,12 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { getLearningDashboard, updateLearningProgress, pauseLearningGoal, resumeLearningGoal } from '@/services/Learning/learning'
+import {
+  getLearningDashboard,
+  updateLearningProgress,
+  pauseLearningGoal,
+  resumeLearningGoal,
+} from '@/services/Learning/learning'
 import LearningPathEditor from '@/components/learning/LearningPathEditor.vue'
 
 // ==================================================

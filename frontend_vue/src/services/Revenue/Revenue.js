@@ -31,4 +31,5 @@ export const recurringApi = crud(revenueEndpoints.recurring)
 
 export const getSummary = (params = {}) => api.get(revenueEndpoints.summary, { params }).then(data)
 export const getMrr = () => api.get(revenueEndpoints.mrr).then(data)
-export const recordFromSale = (saleId) => api.post(revenueEndpoints.fromSale, { sale: saleId }).then(data)
+export const recordFromSale = (saleId) =>
+  api.post(revenueEndpoints.fromSale, { sale: saleId }).then(data)

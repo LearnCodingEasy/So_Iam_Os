@@ -21,11 +21,16 @@ const store = useAiToolsLaboratoryStore()
 const toast = useToast()
 const confirm = useConfirm()
 
-const TOOL_STATUS = ['evaluating', 'adopted', 'rejected', 'archived'].map((v) => ({ label: v, value: v }))
+const TOOL_STATUS = ['evaluating', 'adopted', 'rejected', 'archived'].map((v) => ({
+  label: v,
+  value: v,
+}))
 const RUN_STATUS = ['pending', 'succeeded', 'failed'].map((v) => ({ label: v, value: v }))
 
 const toolOptions = computed(() => store.tools.map((t) => ({ label: t.name, value: t.id })))
-const categoryOptions = computed(() => store.categories.map((c) => ({ label: c.name, value: c.id })))
+const categoryOptions = computed(() =>
+  store.categories.map((c) => ({ label: c.name, value: c.id })),
+)
 const configurationOptions = computed(() =>
   store.configurations.map((c) => ({ label: `${c.name} (tool #${c.tool})`, value: c.id })),
 )
@@ -49,8 +54,20 @@ const resources = computed(() => ({
       { key: 'name', label: 'Name', type: 'text', required: true },
       { key: 'vendor', label: 'Vendor', type: 'text' },
       { key: 'website_url', label: 'Website', type: 'url' },
-      { key: 'category', label: 'Category', type: 'select', options: categoryOptions.value, clearable: true },
-      { key: 'status', label: 'Status', type: 'select', options: TOOL_STATUS, default: 'evaluating' },
+      {
+        key: 'category',
+        label: 'Category',
+        type: 'select',
+        options: categoryOptions.value,
+        clearable: true,
+      },
+      {
+        key: 'status',
+        label: 'Status',
+        type: 'select',
+        options: TOOL_STATUS,
+        default: 'evaluating',
+      },
       { key: 'rating', label: 'Rating (1-5)', type: 'number', min: 1, max: 5 },
       { key: 'pricing_model', label: 'Pricing model', type: 'text' },
       { key: 'tags', label: 'Tags (comma separated)', type: 'tags' },
@@ -89,12 +106,22 @@ const resources = computed(() => ({
       { field: 'tool', header: 'Tool', format: toolName },
       { field: 'status', header: 'Status' },
       { field: 'duration_ms', header: 'Duration (ms)' },
-      { field: 'executed_at', header: 'Executed', format: (v) => (v ? new Date(v).toLocaleString() : '') },
+      {
+        field: 'executed_at',
+        header: 'Executed',
+        format: (v) => (v ? new Date(v).toLocaleString() : ''),
+      },
       { field: 'notes', header: 'Notes' },
     ],
     fields: [
       { key: 'tool', label: 'Tool', type: 'select', options: toolOptions.value, required: true },
-      { key: 'configuration', label: 'Configuration', type: 'select', options: configurationOptions.value, clearable: true },
+      {
+        key: 'configuration',
+        label: 'Configuration',
+        type: 'select',
+        options: configurationOptions.value,
+        clearable: true,
+      },
       { key: 'status', label: 'Outcome', type: 'select', options: RUN_STATUS, default: 'pending' },
       { key: 'input_text', label: 'Input', type: 'textarea' },
       { key: 'output_text', label: 'Output', type: 'textarea' },
@@ -117,7 +144,8 @@ const loadError = ref('')
 const current = computed(() => resources.value[active.value])
 const rows = computed(() => {
   let list = store[active.value] || []
-  if (active.value === 'tools' && statusFilter.value) list = list.filter((t) => t.status === statusFilter.value)
+  if (active.value === 'tools' && statusFilter.value)
+    list = list.filter((t) => t.status === statusFilter.value)
   const q = search.value.trim().toLowerCase()
   if (q) list = list.filter((row) => JSON.stringify(row).toLowerCase().includes(q))
   return list
@@ -151,7 +179,10 @@ function buildPayload() {
   for (const field of current.value.fields) {
     const value = form[field.key]
     if (field.type === 'tags') {
-      payload[field.key] = String(value || '').split(',').map((t) => t.trim()).filter(Boolean)
+      payload[field.key] = String(value || '')
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean)
     } else if (field.type === 'json') {
       try {
         payload[field.key] = value && value.trim() ? JSON.parse(value) : {}
@@ -192,7 +223,12 @@ function askRemove(row) {
         await store.remove(active.value, row.id)
         toast.add({ severity: 'success', summary: 'Deleted', life: 2500 })
       } catch (cause) {
-        toast.add({ severity: 'error', summary: 'Delete failed', detail: describeError(cause), life: 5000 })
+        toast.add({
+          severity: 'error',
+          summary: 'Delete failed',
+          detail: describeError(cause),
+          life: 5000,
+        })
       }
     },
   })
@@ -230,16 +266,24 @@ onMounted(load)
         </Message>
 
         <div v-if="store.summary" class="lab-summary">
-          <span>Tools: <strong>{{ store.summary.tools_total }}</strong></span>
+          <span
+            >Tools: <strong>{{ store.summary.tools_total }}</strong></span
+          >
           <span>
             Avg rating:
             <strong>{{ store.summary.average_rating ?? '—' }}</strong>
           </span>
-          <span>Trial runs: <strong>{{ store.summary.executions_total }}</strong></span>
+          <span
+            >Trial runs: <strong>{{ store.summary.executions_total }}</strong></span
+          >
           <span>
             Success rate:
             <strong>
-              {{ store.summary.success_rate == null ? '—' : Math.round(store.summary.success_rate * 100) + '%' }}
+              {{
+                store.summary.success_rate == null
+                  ? '—'
+                  : Math.round(store.summary.success_rate * 100) + '%'
+              }}
             </strong>
           </span>
           <span v-for="(n, status) in store.summary.tools_by_status" :key="status">
@@ -273,29 +317,64 @@ onMounted(load)
           <Button label="New" icon="pi pi-plus" @click="openDialog()" />
         </div>
 
-        <DataTable :value="rows" :loading="store.loading" striped-rows data-key="id" paginator :rows="10">
+        <DataTable
+          :value="rows"
+          :loading="store.loading"
+          striped-rows
+          data-key="id"
+          paginator
+          :rows="10"
+        >
           <template #empty>No {{ current.label.toLowerCase() }} yet.</template>
-          <Column v-for="col in current.columns" :key="col.field" :field="col.field" :header="col.header">
+          <Column
+            v-for="col in current.columns"
+            :key="col.field"
+            :field="col.field"
+            :header="col.header"
+          >
             <template #body="{ data }">
               {{ col.format ? col.format(data[col.field]) : data[col.field] }}
             </template>
           </Column>
           <Column header="Actions">
             <template #body="{ data }">
-              <Button icon="pi pi-pencil" text size="small" aria-label="Edit" @click="openDialog(data)" />
-              <Button icon="pi pi-trash" text size="small" severity="danger" aria-label="Delete" @click="askRemove(data)" />
+              <Button
+                icon="pi pi-pencil"
+                text
+                size="small"
+                aria-label="Edit"
+                @click="openDialog(data)"
+              />
+              <Button
+                icon="pi pi-trash"
+                text
+                size="small"
+                severity="danger"
+                aria-label="Delete"
+                @click="askRemove(data)"
+              />
             </template>
           </Column>
         </DataTable>
       </template>
     </Card>
 
-    <Dialog v-model:visible="dialogOpen" modal :header="editingId ? 'Edit' : 'New'" :style="{ width: '34rem' }">
+    <Dialog
+      v-model:visible="dialogOpen"
+      modal
+      :header="editingId ? 'Edit' : 'New'"
+      :style="{ width: '34rem' }"
+    >
       <Message v-if="formError" severity="error" :closable="false">{{ formError }}</Message>
       <form class="lab-form" @submit.prevent="submit">
         <label v-for="field in current.fields" :key="field.key" class="lab-field">
           <span>{{ field.label }}<em v-if="field.required"> *</em></span>
-          <Textarea v-if="field.type === 'textarea' || field.type === 'json'" v-model="form[field.key]" rows="3" auto-resize />
+          <Textarea
+            v-if="field.type === 'textarea' || field.type === 'json'"
+            v-model="form[field.key]"
+            rows="3"
+            auto-resize
+          />
           <InputNumber
             v-else-if="field.type === 'number'"
             v-model="form[field.key]"
@@ -312,10 +391,21 @@ onMounted(load)
             :show-clear="field.clearable"
           />
           <Checkbox v-else-if="field.type === 'checkbox'" v-model="form[field.key]" binary />
-          <InputText v-else v-model="form[field.key]" :type="field.type === 'url' ? 'url' : 'text'" :required="field.required" />
+          <InputText
+            v-else
+            v-model="form[field.key]"
+            :type="field.type === 'url' ? 'url' : 'text'"
+            :required="field.required"
+          />
         </label>
         <div class="lab-actions">
-          <Button type="button" label="Cancel" severity="secondary" text @click="dialogOpen = false" />
+          <Button
+            type="button"
+            label="Cancel"
+            severity="secondary"
+            text
+            @click="dialogOpen = false"
+          />
           <Button type="submit" label="Save" :loading="saving" />
         </div>
       </form>
@@ -324,10 +414,33 @@ onMounted(load)
 </template>
 
 <style scoped>
-.lab-page { padding: 1rem; }
-.lab-summary { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1rem; }
-.lab-tabs, .lab-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-.lab-form { display: grid; gap: 0.75rem; }
-.lab-field { display: grid; gap: 0.25rem; }
-.lab-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
+.lab-page {
+  padding: 1rem;
+}
+.lab-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+.lab-tabs,
+.lab-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.lab-form {
+  display: grid;
+  gap: 0.75rem;
+}
+.lab-field {
+  display: grid;
+  gap: 0.25rem;
+}
+.lab-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
 </style>

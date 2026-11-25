@@ -42,7 +42,10 @@
           <h2>{{ t('enhancements.files') }}</h2>
         </div>
         <input ref="fileInput" type="file" multiple />
-        <small>FilePond is configured as an upload intake UI; submission remains backend-controlled.</small>
+        <small
+          >FilePond is configured as an upload intake UI; submission remains
+          backend-controlled.</small
+        >
       </article>
 
       <article class="enhancement-card">
@@ -113,7 +116,12 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import api from '@/services/Shared/api'
 
 const { t, locale } = useI18n()
-const isDark = useDark({ selector: 'html', attribute: 'class', valueDark: 'p-dark', valueLight: '' })
+const isDark = useDark({
+  selector: 'html',
+  attribute: 'class',
+  valueDark: 'p-dark',
+  valueLight: '',
+})
 const prefersReducedMotion = computed(() => usePreferredReducedMotion().value === 'reduce')
 
 const query = useQuery({
@@ -172,30 +180,126 @@ function notify() {
 </script>
 
 <style scoped lang="scss">
-.enhancement-center { padding: 2rem; }
-.enhancement-center__header { display:flex; justify-content:space-between; gap:2rem; align-items:flex-start; margin-bottom:1.5rem; }
-.eyebrow { font-size:.72rem; letter-spacing:.16em; opacity:.65; }
-.enhancement-center h1 { margin:.25rem 0 .5rem; font-size:clamp(1.8rem,3vw,2.8rem); }
-.enhancement-center__header p { max-width: 760px; opacity:.75; }
-.enhancement-center__actions { display:flex; gap:.6rem; flex-wrap:wrap; }
-.enhancement-center__actions button { border:1px solid var(--surface-border); background:var(--surface-card); color:inherit; border-radius:10px; padding:.65rem .9rem; cursor:pointer; }
-.enhancement-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
-.enhancement-card { min-height:180px; padding:1.25rem; border:1px solid var(--surface-border); border-radius:18px; background:color-mix(in srgb, var(--surface-card) 94%, transparent); box-shadow:0 12px 40px rgba(0,0,0,.08); }
-.enhancement-card--wide { grid-column:span 2; }
-.card-heading { display:flex; gap:.75rem; align-items:center; margin-bottom:1rem; }
-.card-heading > span { opacity:.5; font-variant-numeric:tabular-nums; }
-.card-heading h2 { margin:0; font-size:1rem; }
-.tiptap-surface :deep(.tiptap) { min-height:120px; outline:none; padding:1rem; border:1px solid var(--surface-border); border-radius:12px; }
-.draggable-list { display:grid; gap:.5rem; }
-.draggable-item { display:grid; grid-template-columns:auto 120px 1fr; gap:.75rem; align-items:center; padding:.75rem; border:1px solid var(--surface-border); border-radius:10px; background:var(--surface-ground); }
-.drag-handle { cursor:grab; opacity:.6; }
-.activity-scroller { height:240px; border:1px solid var(--surface-border); border-radius:12px; }
-.activity-row { display:grid; grid-template-columns:56px 1fr; gap:.75rem; padding:.65rem .8rem; border-bottom:1px solid color-mix(in srgb, var(--surface-border) 50%, transparent); }
-.switch-row { display:flex; gap:.75rem; align-items:center; }
+.enhancement-center {
+  padding: 2rem;
+}
+.enhancement-center__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  opacity: 0.65;
+}
+.enhancement-center h1 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+.enhancement-center__header p {
+  max-width: 760px;
+  opacity: 0.75;
+}
+.enhancement-center__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.enhancement-center__actions button {
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: inherit;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  cursor: pointer;
+}
+.enhancement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.enhancement-card {
+  min-height: 180px;
+  padding: 1.25rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-card) 94%, transparent);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+.enhancement-card--wide {
+  grid-column: span 2;
+}
+.card-heading {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.card-heading > span {
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+}
+.card-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.tiptap-surface :deep(.tiptap) {
+  min-height: 120px;
+  outline: none;
+  padding: 1rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+}
+.draggable-list {
+  display: grid;
+  gap: 0.5rem;
+}
+.draggable-item {
+  display: grid;
+  grid-template-columns: auto 120px 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 10px;
+  background: var(--surface-ground);
+}
+.drag-handle {
+  cursor: grab;
+  opacity: 0.6;
+}
+.activity-scroller {
+  height: 240px;
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+}
+.activity-row {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--surface-border) 50%, transparent);
+}
+.switch-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
 @media (max-width: 900px) {
-  .enhancement-center__header { flex-direction:column; }
-  .enhancement-grid { grid-template-columns:1fr; }
-  .enhancement-card--wide { grid-column:span 1; }
-  .draggable-item { grid-template-columns:auto 1fr; }
+  .enhancement-center__header {
+    flex-direction: column;
+  }
+  .enhancement-grid {
+    grid-template-columns: 1fr;
+  }
+  .enhancement-card--wide {
+    grid-column: span 1;
+  }
+  .draggable-item {
+    grid-template-columns: auto 1fr;
+  }
 }
 </style>

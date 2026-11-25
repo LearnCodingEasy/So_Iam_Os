@@ -1,5 +1,5 @@
 <template>
-  <prime_card class="goal-card">
+  <prime_card class="goal-card ds-lift">
     <template #title>
       <div class="goal-card-title">
         <span>{{ goal.title }}</span>

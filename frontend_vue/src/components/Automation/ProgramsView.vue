@@ -3,7 +3,12 @@
     <h2 class="text-xl font-bold mb-4">Programs 🖥️</h2>
 
     <!-- زر إضافة برنامج -->
-    <Button label="Create Program" icon="pi pi-plus" class="mb-4" @click="ceateProgramVisible = true" />
+    <Button
+      label="Create Program"
+      icon="pi pi-plus"
+      class="mb-4"
+      @click="ceateProgramVisible = true"
+    />
 
     <!-- جدول البرامج -->
 
@@ -12,39 +17,78 @@
         <h3 class="text-lg font-bold">
           <prime_tag value="Programs" />
         </h3>
-        <prime_button icon="pi pi-plus" @click="ceateProgramVisible = true"
-          style="background-color: transparent; padding: 0; border: none">
+        <prime_button
+          icon="pi pi-plus"
+          @click="ceateProgramVisible = true"
+          style="background-color: transparent; padding: 0; border: none"
+        >
           <prime_tag icon="pi pi-plus" />
         </prime_button>
       </div>
       <div class="wrapper_programs">
         <div class="" v-if="loadingPrograms">
-          <prime_skeleton height="3rem" width="100%" class="mt-2" shape="circle" borderRadius="16px">
+          <prime_skeleton
+            height="3rem"
+            width="100%"
+            class="mt-2"
+            shape="circle"
+            borderRadius="16px"
+          >
           </prime_skeleton>
-          <prime_skeleton height="3rem" width="100%" class="mt-2" shape="circle" borderRadius="16px">
+          <prime_skeleton
+            height="3rem"
+            width="100%"
+            class="mt-2"
+            shape="circle"
+            borderRadius="16px"
+          >
           </prime_skeleton>
-          <prime_skeleton height="3rem" width="100%" class="mt-2" shape="circle" borderRadius="16px">
+          <prime_skeleton
+            height="3rem"
+            width="100%"
+            class="mt-2"
+            shape="circle"
+            borderRadius="16px"
+          >
           </prime_skeleton>
         </div>
-        <div v-for="p in programs" :key="p.id" class="p-1 rounded cursor-grab link_aside" draggable="true"
-          @dragstart="startDrag({ type: 'program', id: p.id })" v-else @click="selectProgram(p.id)">
+        <div
+          v-for="p in programs"
+          :key="p.id"
+          class="p-1 rounded cursor-grab link_aside"
+          draggable="true"
+          @dragstart="startDrag({ type: 'program', id: p.id })"
+          v-else
+          @click="selectProgram(p.id)"
+        >
           <prime_image alt="Image" preview>
             <template #previewicon> <i class="pi pi-search"></i> </template>
             <template #image>
               <img :src="p.get_image" alt="image" />
             </template>
             <template #preview="slotProps">
-              <img :src="p.get_image" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+              <img
+                :src="p.get_image"
+                alt="preview"
+                :style="slotProps.style"
+                @click="slotProps.onClick"
+              />
             </template>
           </prime_image>
           <prime_tag :value="p.name" />
           <div class="">
-            <prime_button icon="pi pi-plus" @click.stop="openEditProgram(p.id)"
-              style="background-color: transparent; padding: 0; border: none">
+            <prime_button
+              icon="pi pi-plus"
+              @click.stop="openEditProgram(p.id)"
+              style="background-color: transparent; padding: 0; border: none"
+            >
               <prime_tag icon="pi pi-file-edit" />
             </prime_button>
-            <prime_button icon="pi pi-plus" @click.stop="confirmDeleteProgram(p)"
-              style="background-color: transparent; padding: 0; border: none">
+            <prime_button
+              icon="pi pi-plus"
+              @click.stop="confirmDeleteProgram(p)"
+              style="background-color: transparent; padding: 0; border: none"
+            >
               <prime_tag icon="pi pi-trash" />
             </prime_button>
           </div>
@@ -55,62 +99,99 @@
     <div class="card flex justify-center">
       <!-- eslint-disable vue/no-v-model-argument -->
 
-      <prime_dialog v-model:visible="ceateProgramVisible" pt:root:class="!border-0 !bg-transparent"
-        pt:mask:class="backdrop-blur-sm">
+      <prime_dialog
+        v-model:visible="ceateProgramVisible"
+        pt:root:class="!border-0 !bg-transparent"
+        pt:mask:class="backdrop-blur-sm"
+      >
         <template #container="{ closeCallback }">
-          <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl" style="
+          <div
+            class="flex flex-col px-8 py-8 gap-6 rounded-2xl"
+            style="
               background-image: radial-gradient(
                 circle at left top,
                 var(--p-primary-400),
                 var(--p-primary-700)
               );
-            ">
+            "
+          >
             <div class="" style="margin: auto; font-size: 2rem; font-weight: bolder">
               Create Program
             </div>
             <div class="inline-flex flex-row gap-2">
               <div class="inline-flex flex-col gap-2">
                 <label for="programName" class="text-primary-50 font-semibold">Program Name</label>
-                <prime_input_text id="programName" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.name" type="text" placeholder="Program name"></prime_input_text>
+                <prime_input_text
+                  id="programName"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.name"
+                  type="text"
+                  placeholder="Program name"
+                ></prime_input_text>
               </div>
               <div class="inline-flex flex-col gap-2">
                 <label for="description" class="text-primary-50 font-semibold">Description</label>
-                <prime_textarea id="description" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.description" placeholder="Program description"></prime_textarea>
+                <prime_textarea
+                  id="description"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.description"
+                  placeholder="Program description"
+                ></prime_textarea>
               </div>
             </div>
 
             <div class="inline-flex flex-row gap-2">
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_executable_path" class="text-primary-50 font-semibold">Program Executable
-                  Path</label>
-                <prime_input_text id="Program_executable_path" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.executable_path" type="text" placeholder="C:/Program Files/VSCode/Code.exe">
+                <label for="Program_executable_path" class="text-primary-50 font-semibold"
+                  >Program Executable Path</label
+                >
+                <prime_input_text
+                  id="Program_executable_path"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.executable_path"
+                  type="text"
+                  placeholder="C:/Program Files/VSCode/Code.exe"
+                >
                 </prime_input_text>
               </div>
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_project_path" class="text-primary-50 font-semibold">Open Program In Project
-                  Path</label>
-                <prime_input_text id="Program_project_path" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.project_path" type="text" placeholder="C:/Users/Hossam/Desktop/project">
+                <label for="Program_project_path" class="text-primary-50 font-semibold"
+                  >Open Program In Project Path</label
+                >
+                <prime_input_text
+                  id="Program_project_path"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.project_path"
+                  type="text"
+                  placeholder="C:/Users/Hossam/Desktop/project"
+                >
                 </prime_input_text>
               </div>
             </div>
             <div class="inline-flex flex-row gap-2">
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_working_directory" class="text-primary-50 font-semibold">Open Program In Working
-                  Directory</label>
-                <prime_input_text id="Program_working_directory"
-                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80" v-model="formProgram.working_directory"
-                  type="text" placeholder="C:/Users/Hossam/Desktop/project"></prime_input_text>
+                <label for="Program_working_directory" class="text-primary-50 font-semibold"
+                  >Open Program In Working Directory</label
+                >
+                <prime_input_text
+                  id="Program_working_directory"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.working_directory"
+                  type="text"
+                  placeholder="C:/Users/Hossam/Desktop/project"
+                ></prime_input_text>
               </div>
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_window_title_pattern" class="text-primary-50 font-semibold">Program Window Title
-                  Pattern</label>
-                <prime_input_text id="Program_window_title_pattern"
-                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80" v-model="formProgram.window_title_pattern"
-                  type="text" placeholder="Project Name"></prime_input_text>
+                <label for="Program_window_title_pattern" class="text-primary-50 font-semibold"
+                  >Program Window Title Pattern</label
+                >
+                <prime_input_text
+                  id="Program_window_title_pattern"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.window_title_pattern"
+                  type="text"
+                  placeholder="Project Name"
+                ></prime_input_text>
               </div>
             </div>
 
@@ -118,10 +199,18 @@
               <input type="file" accept="image/*" @change="onImageChangeProgram" />
             </div>
             <div class="flex items-center gap-4">
-              <prime_button label="Cancel" @click="closeCallback" variant="text"
-                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"></prime_button>
-              <prime_button label="Create" @click="createProgram" variant="text"
-                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"></prime_button>
+              <prime_button
+                label="Cancel"
+                @click="closeCallback"
+                variant="text"
+                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+              ></prime_button>
+              <prime_button
+                label="Create"
+                @click="createProgram"
+                variant="text"
+                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+              ></prime_button>
             </div>
           </div>
         </template>
@@ -129,61 +218,99 @@
     </div>
     <!-- Edit Program -->
     <div class="card flex justify-center">
-      <prime_dialog v-model:visible="editProgramVisible" pt:root:class="!border-0 !bg-transparent"
-        pt:mask:class="backdrop-blur-sm">
+      <prime_dialog
+        v-model:visible="editProgramVisible"
+        pt:root:class="!border-0 !bg-transparent"
+        pt:mask:class="backdrop-blur-sm"
+      >
         <template #container="{ closeCallback }">
-          <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl" style="
+          <div
+            class="flex flex-col px-8 py-8 gap-6 rounded-2xl"
+            style="
               background-image: radial-gradient(
                 circle at left top,
                 var(--p-primary-400),
                 var(--p-primary-700)
               );
-            ">
+            "
+          >
             <div class="" style="margin: auto; font-size: 2rem; font-weight: bolder">
               Edit Program
             </div>
             <div class="inline-flex flex-row gap-2">
               <div class="inline-flex flex-col gap-2">
                 <label for="programName" class="text-primary-50 font-semibold">Program Name</label>
-                <prime_input_text id="programName" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.name" type="text" placeholder="Program name"></prime_input_text>
+                <prime_input_text
+                  id="programName"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.name"
+                  type="text"
+                  placeholder="Program name"
+                ></prime_input_text>
               </div>
               <div class="inline-flex flex-col gap-2">
                 <label for="description" class="text-primary-50 font-semibold">Description</label>
-                <prime_textarea id="description" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.description" placeholder="Program description"></prime_textarea>
+                <prime_textarea
+                  id="description"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.description"
+                  placeholder="Program description"
+                ></prime_textarea>
               </div>
             </div>
 
             <div class="inline-flex flex-row gap-2">
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_executable_path" class="text-primary-50 font-semibold">Program Executable
-                  Path</label>
-                <prime_input_text id="Program_executable_path" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.executable_path" type="text" placeholder="C:/Program Files/VSCode/Code.exe">
+                <label for="Program_executable_path" class="text-primary-50 font-semibold"
+                  >Program Executable Path</label
+                >
+                <prime_input_text
+                  id="Program_executable_path"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.executable_path"
+                  type="text"
+                  placeholder="C:/Program Files/VSCode/Code.exe"
+                >
                 </prime_input_text>
               </div>
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_project_path" class="text-primary-50 font-semibold">Program Project Path</label>
-                <prime_input_text id="Program_project_path" class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
-                  v-model="formProgram.project_path" type="text" placeholder="C:/Users/Hossam/Desktop/project">
+                <label for="Program_project_path" class="text-primary-50 font-semibold"
+                  >Program Project Path</label
+                >
+                <prime_input_text
+                  id="Program_project_path"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.project_path"
+                  type="text"
+                  placeholder="C:/Users/Hossam/Desktop/project"
+                >
                 </prime_input_text>
               </div>
             </div>
             <div class="inline-flex flex-row gap-2">
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_working_directory" class="text-primary-50 font-semibold">Program Working
-                  Directory</label>
-                <prime_input_text id="Program_working_directory"
-                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80" v-model="formProgram.working_directory"
-                  type="text" placeholder="C:/Users/Hossam/Desktop/project"></prime_input_text>
+                <label for="Program_working_directory" class="text-primary-50 font-semibold"
+                  >Program Working Directory</label
+                >
+                <prime_input_text
+                  id="Program_working_directory"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.working_directory"
+                  type="text"
+                  placeholder="C:/Users/Hossam/Desktop/project"
+                ></prime_input_text>
               </div>
               <div class="inline-flex flex-col gap-2">
-                <label for="Program_window_title_pattern" class="text-primary-50 font-semibold">Program Window Title
-                  Pattern</label>
-                <prime_input_text id="Program_window_title_pattern"
-                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80" v-model="formProgram.window_title_pattern"
-                  type="text" placeholder="Project Name"></prime_input_text>
+                <label for="Program_window_title_pattern" class="text-primary-50 font-semibold"
+                  >Program Window Title Pattern</label
+                >
+                <prime_input_text
+                  id="Program_window_title_pattern"
+                  class="!bg-white/20 !border-0 !p-4 !text-primary-50 w-80"
+                  v-model="formProgram.window_title_pattern"
+                  type="text"
+                  placeholder="Project Name"
+                ></prime_input_text>
               </div>
             </div>
 
@@ -191,10 +318,18 @@
               <input type="file" accept="image/*" @change="onImageChangeProgram" />
             </div>
             <div class="flex items-center gap-4">
-              <prime_button label="Cancel" @click="closeCallback" variant="text"
-                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"></prime_button>
-              <prime_button label="Create" @click="editProgram" variant="text"
-                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"></prime_button>
+              <prime_button
+                label="Cancel"
+                @click="closeCallback"
+                variant="text"
+                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+              ></prime_button>
+              <prime_button
+                label="Create"
+                @click="editProgram"
+                variant="text"
+                class="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+              ></prime_button>
             </div>
           </div>
         </template>
@@ -204,19 +339,16 @@
 </template>
 
 <script setup>
-import { ref,  } from 'vue'
+import { ref } from 'vue'
 
 import automationService from '@/services/Automation/AutomationService'
 // VueFlow
-
-
 
 // Toast
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
 import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
-
 
 const emit = defineEmits(['program-selected'])
 
@@ -492,8 +624,6 @@ const maximizeProgram = async (programId) => {
     })
   }
 }
-
-
 </script>
 
 <style scoped>

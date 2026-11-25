@@ -32,8 +32,14 @@ describe('AI POST-SSE parser', () => {
 
   it('flushes the last event when the server closes without a blank-line delimiter', async () => {
     const callback = vi.fn()
-    await consumeSSEStream(streamFrom(['event: error\ndata: {"error":"provider unavailable"}']), callback)
-    expect(callback).toHaveBeenCalledWith({ type: 'error', data: { error: 'provider unavailable' } })
+    await consumeSSEStream(
+      streamFrom(['event: error\ndata: {"error":"provider unavailable"}']),
+      callback,
+    )
+    expect(callback).toHaveBeenCalledWith({
+      type: 'error',
+      data: { error: 'provider unavailable' },
+    })
   })
 
   it('supports multiline data fields and ignores comment heartbeats', () => {

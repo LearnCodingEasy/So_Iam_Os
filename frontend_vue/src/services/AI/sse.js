@@ -14,7 +14,11 @@ export function parseSSEEvent(block) {
   if (!data.length) return null
   const raw = data.join('\n')
   let parsed
-  try { parsed = JSON.parse(raw) } catch { parsed = { raw } }
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    parsed = { raw }
+  }
   if (type === 'message' && parsed && typeof parsed.delta === 'string') type = 'delta'
   return { type, data: parsed }
 }
@@ -42,7 +46,11 @@ export async function consumeSSEStream(stream, onEvent) {
     buffer += decoder.decode()
     if (buffer.trim()) dispatch(buffer)
   } catch (error) {
-    try { await reader.cancel(error) } catch { /* reader already closed */ }
+    try {
+      await reader.cancel(error)
+    } catch {
+      /* reader already closed */
+    }
     throw error
   } finally {
     reader.releaseLock?.()

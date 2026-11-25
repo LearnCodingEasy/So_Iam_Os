@@ -27,7 +27,13 @@ const search = ref('')
 
 const dialog = reactive({ open: false, id: null, form: {}, saving: false, errors: {} })
 const stepDialog = reactive({ open: false, challenge: null, form: {}, saving: false, errors: {} })
-const attemptDialog = reactive({ open: false, challenge: null, form: {}, saving: false, errors: {} })
+const attemptDialog = reactive({
+  open: false,
+  challenge: null,
+  form: {},
+  saving: false,
+  errors: {},
+})
 
 const rows = computed(() =>
   store.challenges.filter(
@@ -42,11 +48,14 @@ function message(cause) {
   const data = cause?.response?.data
   if (typeof data === 'string') return data
   if (data && typeof data === 'object') {
-    return Object.entries(data).map(([k, v]) => `${k}: ${[].concat(v).join(' ')}`).join(' | ')
+    return Object.entries(data)
+      .map(([k, v]) => `${k}: ${[].concat(v).join(' ')}`)
+      .join(' | ')
   }
   return cause?.message || 'Request failed'
 }
-const notify = (severity, detail) => toast.add({ severity, summary: 'Challenges', detail, life: 4000 })
+const notify = (severity, detail) =>
+  toast.add({ severity, summary: 'Challenges', detail, life: 4000 })
 const fieldErrors = (cause) =>
   cause?.response?.data && typeof cause.response.data === 'object' ? cause.response.data : {}
 
@@ -131,7 +140,12 @@ async function completeStep(row) {
 }
 
 function openAttempt(challenge) {
-  Object.assign(attemptDialog, { open: true, challenge, errors: {}, form: { answer: '', score: 0 } })
+  Object.assign(attemptDialog, {
+    open: true,
+    challenge,
+    errors: {},
+    form: { answer: '', score: 0 },
+  })
 }
 
 async function submitAttempt() {
@@ -165,39 +179,83 @@ onMounted(load)
         <div class="toolbar">
           <div class="filters">
             <InputText v-model="search" placeholder="Search title" aria-label="Search challenges" />
-            <Select v-model="statusFilter" :options="STATUSES" showClear placeholder="All statuses" />
+            <Select
+              v-model="statusFilter"
+              :options="STATUSES"
+              showClear
+              placeholder="All statuses"
+            />
           </div>
           <Button label="New challenge" icon="pi pi-plus" size="small" @click="openForm()" />
         </div>
 
-        <DataTable :value="rows" :loading="store.loading" stripedRows paginator :rows="10" dataKey="id">
+        <DataTable
+          :value="rows"
+          :loading="store.loading"
+          stripedRows
+          paginator
+          :rows="10"
+          dataKey="id"
+        >
           <template #empty>No challenges yet. Use “New challenge” to add one.</template>
           <Column field="title" header="Challenge" sortable />
           <Column field="type" header="Type" />
           <Column field="difficulty" header="Difficulty" />
-          <Column header="Status"><template #body="{ data }"><Tag :value="data.status" /></template></Column>
-          <Column header="Steps"><template #body="{ data }">{{ data.steps?.length ?? 0 }}</template></Column>
+          <Column header="Status"
+            ><template #body="{ data }"><Tag :value="data.status" /></template
+          ></Column>
+          <Column header="Steps"
+            ><template #body="{ data }">{{ data.steps?.length ?? 0 }}</template></Column
+          >
           <Column header="Progress" style="min-width: 9rem">
-            <template #body="{ data }"><ProgressBar :value="progressFor(data.id)" :showValue="true" /></template>
+            <template #body="{ data }"
+              ><ProgressBar :value="progressFor(data.id)" :showValue="true"
+            /></template>
           </Column>
           <Column header="" style="width: 18rem">
             <template #body="{ data }">
-              <Button label="Complete step" size="small" text :disabled="!data.steps?.length" @click="completeStep(data)" />
+              <Button
+                label="Complete step"
+                size="small"
+                text
+                :disabled="!data.steps?.length"
+                @click="completeStep(data)"
+              />
               <Button label="Add step" size="small" text @click="openStep(data)" />
               <Button label="Attempt" size="small" text @click="openAttempt(data)" />
-              <Button icon="pi pi-pencil" size="small" text aria-label="Edit" @click="openForm(data)" />
-              <Button icon="pi pi-trash" size="small" text severity="danger" aria-label="Delete" @click="destroy(data)" />
+              <Button
+                icon="pi pi-pencil"
+                size="small"
+                text
+                aria-label="Edit"
+                @click="openForm(data)"
+              />
+              <Button
+                icon="pi pi-trash"
+                size="small"
+                text
+                severity="danger"
+                aria-label="Delete"
+                @click="destroy(data)"
+              />
             </template>
           </Column>
         </DataTable>
       </template>
     </Card>
 
-    <Dialog v-model:visible="dialog.open" modal :header="dialog.id ? 'Edit challenge' : 'New challenge'" :style="{ width: '28rem' }">
+    <Dialog
+      v-model:visible="dialog.open"
+      modal
+      :header="dialog.id ? 'Edit challenge' : 'New challenge'"
+      :style="{ width: '28rem' }"
+    >
       <form class="form" @submit.prevent="submit">
         <label for="c-title">Title</label>
         <InputText id="c-title" v-model="dialog.form.title" />
-        <small v-if="dialog.errors.title" class="err">{{ [].concat(dialog.errors.title).join(' ') }}</small>
+        <small v-if="dialog.errors.title" class="err">{{
+          [].concat(dialog.errors.title).join(' ')
+        }}</small>
         <label for="c-desc">Description</label>
         <Textarea id="c-desc" v-model="dialog.form.description" rows="3" />
         <label for="c-type">Type</label>
@@ -208,7 +266,12 @@ onMounted(load)
         <InputText id="c-diff" v-model="dialog.form.difficulty" />
         <div class="actions">
           <Button type="button" label="Cancel" text @click="dialog.open = false" />
-          <Button type="submit" label="Save" :loading="dialog.saving" :disabled="!dialog.form.title?.trim()" />
+          <Button
+            type="submit"
+            label="Save"
+            :loading="dialog.saving"
+            :disabled="!dialog.form.title?.trim()"
+          />
         </div>
       </form>
     </Dialog>
@@ -217,25 +280,39 @@ onMounted(load)
       <form class="form" @submit.prevent="submitStep">
         <label for="s-title">Title</label>
         <InputText id="s-title" v-model="stepDialog.form.title" />
-        <small v-if="stepDialog.errors.title" class="err">{{ [].concat(stepDialog.errors.title).join(' ') }}</small>
+        <small v-if="stepDialog.errors.title" class="err">{{
+          [].concat(stepDialog.errors.title).join(' ')
+        }}</small>
         <label for="s-ins">Instructions</label>
         <Textarea id="s-ins" v-model="stepDialog.form.instructions" rows="3" />
         <label for="s-order">Order</label>
         <InputNumber inputId="s-order" v-model="stepDialog.form.order" :min="0" />
         <div class="actions">
           <Button type="button" label="Cancel" text @click="stepDialog.open = false" />
-          <Button type="submit" label="Save" :loading="stepDialog.saving" :disabled="!stepDialog.form.title?.trim()" />
+          <Button
+            type="submit"
+            label="Save"
+            :loading="stepDialog.saving"
+            :disabled="!stepDialog.form.title?.trim()"
+          />
         </div>
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="attemptDialog.open" modal header="Record attempt" :style="{ width: '28rem' }">
+    <Dialog
+      v-model:visible="attemptDialog.open"
+      modal
+      header="Record attempt"
+      :style="{ width: '28rem' }"
+    >
       <form class="form" @submit.prevent="submitAttempt">
         <label for="a-answer">Answer</label>
         <Textarea id="a-answer" v-model="attemptDialog.form.answer" rows="4" />
         <label for="a-score">Score (0–100; 70+ completes the challenge)</label>
         <InputNumber inputId="a-score" v-model="attemptDialog.form.score" :min="0" :max="100" />
-        <small v-if="attemptDialog.errors.score" class="err">{{ [].concat(attemptDialog.errors.score).join(' ') }}</small>
+        <small v-if="attemptDialog.errors.score" class="err">{{
+          [].concat(attemptDialog.errors.score).join(' ')
+        }}</small>
         <div class="actions">
           <Button type="button" label="Cancel" text @click="attemptDialog.open = false" />
           <Button type="submit" label="Save" :loading="attemptDialog.saving" />
@@ -246,11 +323,35 @@ onMounted(load)
 </template>
 
 <style scoped>
-.os-page { padding: 1rem; }
-.toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
-.filters { display: flex; gap: 0.5rem; }
-.form { display: flex; flex-direction: column; gap: 0.4rem; }
-.form label { font-weight: 600; }
-.actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; }
-.err { color: var(--p-red-500, #c00); }
+.os-page {
+  padding: 1rem;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.filters {
+  display: flex;
+  gap: 0.5rem;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.form label {
+  font-weight: 600;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.err {
+  color: var(--p-red-500, #c00);
+}
 </style>

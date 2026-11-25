@@ -19,5 +19,5 @@ defineProps({
   score: String,
   salary: String,
   icon: String,
-});
+})
 </script>

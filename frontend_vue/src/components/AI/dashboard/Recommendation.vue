@@ -17,5 +17,5 @@ defineProps({
   company: String,
   score: String,
   tags: String,
-});
+})
 </script>

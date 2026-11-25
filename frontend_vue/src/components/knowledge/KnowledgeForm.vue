@@ -286,7 +286,8 @@ const getFileIcon = (file) => {
   if (['doc', 'docx'].includes(extension)) return 'fa-solid fa-file-word'
   if (['xls', 'xlsx'].includes(extension)) return 'fa-solid fa-file-excel'
   if (['ppt', 'pptx'].includes(extension)) return 'fa-solid fa-file-powerpoint'
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'fa-solid fa-file-image'
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension))
+    return 'fa-solid fa-file-image'
   if (['mp3', 'wav', 'ogg'].includes(extension)) return 'fa-solid fa-file-audio'
   if (['mp4', 'webm', 'mov'].includes(extension)) return 'fa-solid fa-file-video'
   if (

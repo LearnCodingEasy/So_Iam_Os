@@ -135,7 +135,6 @@ const emit = defineEmits(['update:visible', 'image-change', 'submit'])
       </template>
     </prime_dialog>
   </div>
-
 </template>
 <!-- <div class="card flex justify-center">
 

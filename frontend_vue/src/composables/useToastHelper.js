@@ -37,7 +37,7 @@ export function useToastHelper() {
   // ─────────────────────────────────────────
   const apiError = (err, fallbackSummary = 'حصل خطأ') => {
     const status = err?.response?.status
-    const data   = err?.response?.data
+    const data = err?.response?.data
 
     // ✅ Django 400 validation: { field: ["msg", ...], ... }
     if (status === 400 && data && typeof data === 'object' && !Array.isArray(data)) {

@@ -148,7 +148,7 @@ class AILearningActionService:
         self.user = user
 
     @staticmethod
-    def generate_ai_plan(*, message, provider="ollama", model="", user=None):
+    def generate_ai_plan(*, message, provider="ollama", model="", user=None, timeout_seconds=None):
         """Generate and validate a complete learning plan with the configured LLM."""
         prompt = build_learning_intent_prompt(message)
         from ai.services import AIFallbackChainService
@@ -169,6 +169,7 @@ class AILearningActionService:
             model=model or None,
             temperature=0.2,
             max_tokens=5000,
+            timeout_seconds=timeout_seconds,
         )
 
         content = (result.get("content") or "").strip()

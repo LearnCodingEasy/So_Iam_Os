@@ -51,10 +51,24 @@
             }}</span>
           </button>
           <div class="conversation-actions">
-            <button class="mini-danger" type="button" title="أرشفة المحادثة" aria-label="أرشفة المحادثة"
-              @click="archiveConversation(conversation.id)">×</button>
-            <button class="mini-danger" type="button" title="حذف المحادثة" aria-label="حذف المحادثة"
-              @click="deleteConversation(conversation.id)">⌫</button>
+            <button
+              class="mini-danger"
+              type="button"
+              title="أرشفة المحادثة"
+              aria-label="أرشفة المحادثة"
+              @click="archiveConversation(conversation.id)"
+            >
+              ×
+            </button>
+            <button
+              class="mini-danger"
+              type="button"
+              title="حذف المحادثة"
+              aria-label="حذف المحادثة"
+              @click="deleteConversation(conversation.id)"
+            >
+              ⌫
+            </button>
           </div>
         </div>
       </div>
@@ -62,7 +76,14 @@
         <span class="status-dot" :class="{ online: backendAvailable }"></span>
         {{ backendAvailable ? 'واجهة الخادم متاحة' : 'تعذر الاتصال بالخادم' }}
         <HelpButton @click="showHelp('backendStatus')" />
-        <button v-if="lastArchivedConversation" class="text-btn" type="button" @click="restoreLastArchived">استعادة آخر محادثة</button>
+        <button
+          v-if="lastArchivedConversation"
+          class="text-btn"
+          type="button"
+          @click="restoreLastArchived"
+        >
+          استعادة آخر محادثة
+        </button>
       </div>
     </aside>
 
@@ -78,7 +99,12 @@
             >{{ providerLabel(settings.preferred_provider) }} ·
             {{ settings.preferred_model || 'النموذج الافتراضي' }}</span
           >
-          <button class="secondary-btn" type="button" :disabled="!activeConversationId" @click="inspectContext">
+          <button
+            class="secondary-btn"
+            type="button"
+            :disabled="!activeConversationId"
+            @click="inspectContext"
+          >
             سياق المحادثة
           </button>
           <button class="secondary-btn" type="button" @click="settingsOpen = true">
@@ -135,11 +161,14 @@
                 @click="showHelp('assistantMessage')"
               />
             </div>
-            <div class="message-bubble"><MarkdownRenderer v-if="message.role === 'assistant'" :content="message.content" /><span v-else>{{ message.content }}</span></div>
+            <div class="message-bubble">
+              <MarkdownRenderer
+                v-if="message.role === 'assistant'"
+                :content="message.content"
+              /><span v-else>{{ message.content }}</span>
+            </div>
           </div>
         </article>
-
-
 
         <div v-if="errorMessage" class="error-banner" role="alert">
           <span>⚠ {{ errorMessage }}</span>
@@ -201,10 +230,20 @@
     </main>
 
     <div v-if="contextDialog" class="modal-backdrop" @click.self="contextDialog = false">
-      <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="context-title">
+      <section
+        class="settings-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="context-title"
+      >
         <header class="modal-header">
-          <div><span class="eyebrow">CONVERSATION CONTEXT</span><h2 id="context-title">فحص سياق المحادثة</h2></div>
-          <button class="icon-btn" type="button" aria-label="إغلاق" @click="contextDialog = false">×</button>
+          <div>
+            <span class="eyebrow">CONVERSATION CONTEXT</span>
+            <h2 id="context-title">فحص سياق المحادثة</h2>
+          </div>
+          <button class="icon-btn" type="button" aria-label="إغلاق" @click="contextDialog = false">
+            ×
+          </button>
         </header>
         <p v-if="contextLoading" class="muted">جارٍ تحميل السياق...</p>
         <pre v-else class="context-json">{{ JSON.stringify(conversationContext, null, 2) }}</pre>
@@ -302,23 +341,43 @@
               step="256"
             />
           </label>
-          <label class="field-label">قالب التعليمات الافتراضي
+          <label class="field-label"
+            >قالب التعليمات الافتراضي
             <select v-model="settings.default_prompt_profile">
               <option :value="null">بدون قالب افتراضي</option>
-              <option v-for="profile in promptProfiles" :key="profile.id" :value="profile.id">{{ profile.name }}</option>
+              <option v-for="profile in promptProfiles" :key="profile.id" :value="profile.id">
+                {{ profile.name }}
+              </option>
             </select>
           </label>
-          <label class="switch-row"><span><strong>تفعيل البث المباشر</strong><small>تفضيل Streaming عند إرسال رسائل المحادثة.</small></span>
+          <label class="switch-row"
+            ><span
+              ><strong>تفعيل البث المباشر</strong
+              ><small>تفضيل Streaming عند إرسال رسائل المحادثة.</small></span
+            >
             <input type="checkbox" v-model="settings.streaming_enabled" />
           </label>
-          <label class="switch-row"><span><strong>تفعيل Fallback</strong><small>السماح بالانتقال لمزود بديل عند فشل المزود الأساسي وفق سياسة الخادم.</small></span>
+          <label class="switch-row"
+            ><span
+              ><strong>تفعيل Fallback</strong
+              ><small
+                >السماح بالانتقال لمزود بديل عند فشل المزود الأساسي وفق سياسة الخادم.</small
+              ></span
+            >
             <input type="checkbox" v-model="settings.fallback_enabled" />
           </label>
-          <label class="field-label">Temperature
+          <label class="field-label"
+            >Temperature
             <input v-model.number="settings.temperature" type="number" min="0" max="2" step="0.1" />
           </label>
-          <label class="field-label">مهلة الاتصال بالثواني
-            <input v-model.number="settings.timeout_seconds" type="number" min="1" max="300" />
+          <label class="field-label"
+            >مهلة الاتصال بالثواني
+            <input v-model.number="settings.timeout_seconds" type="number" min="5" max="600" />
+            <small class="info-note"
+              >مهلة انتظار رد النموذج (5–600 ثانية). يتحقق الخادم من الحدود. القيمة الافتراضية 35
+              تعني استخدام مهلة المزود (Ollama: 120 ثانية افتراضيًا)؛ للنماذج المحلية الكبيرة استخدم
+              180 أو أكثر.</small
+            >
           </label>
           <p class="info-note">
             هذه هي إعدادات AISettings التي يدعمها الـ API الحالي. لا تعرض هذه الشاشة خيارات لا يوجد
@@ -544,7 +603,7 @@ import MarkdownRenderer from '@/components/ai/MarkdownRenderer.vue'
 import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n()
-const direction = computed(() => locale.value === 'ar' ? 'rtl' : 'ltr')
+const direction = computed(() => (locale.value === 'ar' ? 'rtl' : 'ltr'))
 
 const HelpButton = defineComponent({
   name: 'HelpButton',
@@ -998,8 +1057,14 @@ async function archiveConversation(id) {
 async function restoreLastArchived() {
   if (!lastArchivedConversation.value?.id) return
   try {
-    const restored = await aiControl.setAIConversationAction(lastArchivedConversation.value.id, 'restore')
-    conversations.value = [restored, ...conversations.value.filter((item) => item.id !== restored.id)]
+    const restored = await aiControl.setAIConversationAction(
+      lastArchivedConversation.value.id,
+      'restore',
+    )
+    conversations.value = [
+      restored,
+      ...conversations.value.filter((item) => item.id !== restored.id),
+    ]
     lastArchivedConversation.value = null
     notify('تمت استعادة المحادثة.')
   } catch (error) {
@@ -1056,9 +1121,10 @@ async function sendMessage() {
   draft.value = ''
   const localUserId = `local-user-${Date.now()}`
   const localAssistantId = `local-assistant-${Date.now()}`
-  const idempotencyKey = retryDraft.value === content && retryIdempotencyKey.value
-    ? retryIdempotencyKey.value
-    : (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+  const idempotencyKey =
+    retryDraft.value === content && retryIdempotencyKey.value
+      ? retryIdempotencyKey.value
+      : globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`
   messages.value.push({
     id: localUserId,
     role: 'user',

@@ -28,6 +28,13 @@ class AISettingsSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+    def validate_timeout_seconds(self, value):
+        from ai.services.timeouts import validate_timeout
+        try:
+            return validate_timeout(value, field="timeout_seconds")
+        except ValueError as exc:
+            raise serializers.ValidationError(str(exc))
+
     def validate_default_prompt_profile(self, value):
         request = self.context.get("request")
 

@@ -48,7 +48,12 @@ export const useCrmStore = defineStore('crm', () => {
   }
 
   // Generic mutations; the list is reloaded from the server so the UI never shows unsaved state.
-  const api = { contacts: crmApi.contacts, companies: crmApi.companies, interactions: crmApi.interactions, relationships: crmApi.relationships }
+  const api = {
+    contacts: crmApi.contacts,
+    companies: crmApi.companies,
+    interactions: crmApi.interactions,
+    relationships: crmApi.relationships,
+  }
   const reload = {
     contacts: () => fetchContacts(),
     companies: fetchCompanies,
@@ -60,7 +65,9 @@ export const useCrmStore = defineStore('crm', () => {
   }
 
   async function save(resource, payload, id = null) {
-    const saved = await run(() => (id ? api[resource].update(id, payload) : api[resource].create(payload)))
+    const saved = await run(() =>
+      id ? api[resource].update(id, payload) : api[resource].create(payload),
+    )
     await reload[resource]()
     if (resource === 'interactions') await fetchFollowUps()
     return saved
@@ -69,13 +76,33 @@ export const useCrmStore = defineStore('crm', () => {
   async function remove(resource, id) {
     await run(() => api[resource].remove(id))
     await reload[resource]()
-    if (resource === 'contacts') await Promise.all([fetchInteractions(), fetchRelationships(), fetchPipeline(), fetchFollowUps()])
+    if (resource === 'contacts')
+      await Promise.all([
+        fetchInteractions(),
+        fetchRelationships(),
+        fetchPipeline(),
+        fetchFollowUps(),
+      ])
     if (resource === 'interactions') await fetchFollowUps()
   }
 
   return {
-    companies, contacts, interactions, relationships, followUps, pipeline, loading, error,
-    fetchContacts, fetchCompanies, fetchInteractions, fetchRelationships, fetchFollowUps, fetchPipeline,
-    refresh, save, remove,
+    companies,
+    contacts,
+    interactions,
+    relationships,
+    followUps,
+    pipeline,
+    loading,
+    error,
+    fetchContacts,
+    fetchCompanies,
+    fetchInteractions,
+    fetchRelationships,
+    fetchFollowUps,
+    fetchPipeline,
+    refresh,
+    save,
+    remove,
   }
 })

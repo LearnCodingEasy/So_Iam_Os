@@ -85,3 +85,33 @@ class AIChatSerializer(serializers.Serializer):
         allow_blank=True,
         max_length=255,
     )
+
+    # Per-request wait for the provider, in seconds. "timeout" is the public
+    # name; "timeout_seconds" is accepted as an alias. Bounds are enforced
+    # server-side from settings (AI_TIMEOUT_MIN/MAX_SECONDS).
+    timeout = serializers.IntegerField(required=False, allow_null=True)
+    timeout_seconds = serializers.IntegerField(required=False, allow_null=True)
+
+    def _check_timeout(self, value):
+        from ai.services.timeouts import validate_timeout
+        if value is None:
+            return value
+        try:
+            return validate_timeout(value)
+        except ValueError as exc:
+            raise serializers.ValidationError(str(exc))
+
+    def validate_timeout(self, value):
+        return self._check_timeout(value)
+
+    def validate_timeout_seconds(self, value):
+        return self._check_timeout(value)
+
+    def validate(self, attrs):
+        # Normalise: expose a single effective request timeout.
+        effective = attrs.get("timeout")
+        if effective is None:
+            effective = attrs.get("timeout_seconds")
+        attrs["timeout"] = effective
+        attrs.pop("timeout_seconds", None)
+        return attrs

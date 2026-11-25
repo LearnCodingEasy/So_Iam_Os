@@ -61,22 +61,28 @@ export default {
   rollback: async (changesetId, confirm = true) =>
     data(api.post(endpoints.codex.rollback(changesetId), { confirm })),
   registry: {
-    features: async (params = {}) => list(await data(api.get(endpoints.codex.registry.features, { params }))),
-    tools: async (params = {}) => list(await data(api.get(endpoints.codex.registry.tools, { params }))),
-    agents: async (params = {}) => list(await data(api.get(endpoints.codex.registry.agents, { params }))),
+    features: async (params = {}) =>
+      list(await data(api.get(endpoints.codex.registry.features, { params }))),
+    tools: async (params = {}) =>
+      list(await data(api.get(endpoints.codex.registry.tools, { params }))),
+    agents: async (params = {}) =>
+      list(await data(api.get(endpoints.codex.registry.agents, { params }))),
     summary: async () => data(api.get(endpoints.codex.registry.summary)),
     health: async () => data(api.get(endpoints.codex.registry.health)),
     bootstrap: async () => data(api.post(endpoints.codex.registry.bootstrap)),
     validate: async () => data(api.post(endpoints.codex.registry.validate)),
     runs: async () => list(await data(api.get(endpoints.codex.registry.runs))),
-    executeTool: async (key, payload = {}) => data(api.post(endpoints.codex.registry.toolExecute(key), payload)),
-    executeAgent: async (key, payload = {}) => data(api.post(endpoints.codex.registry.agentExecute(key), payload)),
+    executeTool: async (key, payload = {}) =>
+      data(api.post(endpoints.codex.registry.toolExecute(key), payload)),
+    executeAgent: async (key, payload = {}) =>
+      data(api.post(endpoints.codex.registry.agentExecute(key), payload)),
   },
   exportContext: async (params = {}) => data(api.get(endpoints.codex.contextExport, { params })),
   fileContent: async (id) => data(api.get(endpoints.codex.fileContent(id))),
   filesContext: async (paths) => data(api.post(endpoints.codex.filesContext, { paths })),
   protectedItems: async () => list(await data(api.get(endpoints.codex.governance.protectedItems))),
-  freezeProtectedItem: async (payload) => data(api.post(endpoints.codex.governance.protectedItems, payload)),
+  freezeProtectedItem: async (payload) =>
+    data(api.post(endpoints.codex.governance.protectedItems, payload)),
   generateManifest: async () => data(api.post(endpoints.codex.governance.manifest)),
   workflow: async () => data(api.get(endpoints.codex.workflow)),
   bootstrapWorkflow: async () => data(api.post(endpoints.codex.workflow)),
@@ -89,6 +95,6 @@ export default {
   markdownNavigation: async (path = '') =>
     data(api.post(endpoints.codex.markdownNavigation, { path })),
   openLocalFile: async (path) => data(api.post(endpoints.codex.openLocalFile, { path })),
-  architectureAnalyze: async (path) => data(api.post(endpoints.codex.architectureAnalyze, { path })),
-
+  architectureAnalyze: async (path) =>
+    data(api.post(endpoints.codex.architectureAnalyze, { path })),
 }

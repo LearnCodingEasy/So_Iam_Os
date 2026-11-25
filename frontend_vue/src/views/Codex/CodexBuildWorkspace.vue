@@ -43,14 +43,29 @@ onMounted(refresh)
     <header class="flex flex-wrap items-center justify-between gap-3">
       <div>
         <h2 class="text-lg font-semibold">Build & Project Lifecycle</h2>
-        <p class="text-xs text-surface-500">Live repository discovery · execution is never inferred from file presence</p>
+        <p class="text-xs text-surface-500">
+          Live repository discovery · execution is never inferred from file presence
+        </p>
       </div>
-      <Button label="Refresh project graph" icon="pi pi-refresh" size="small" :loading="loading" @click="refresh" />
+      <Button
+        label="Refresh project graph"
+        icon="pi pi-refresh"
+        size="small"
+        :loading="loading"
+        @click="refresh"
+      />
     </header>
     <Message v-if="error" severity="error" :closable="false">{{ error }}</Message>
     <div class="grid min-h-0 flex-1 gap-3 xl:grid-cols-[minmax(0,1fr)_290px]">
-      <div class="codex-build-canvas overflow-hidden rounded-xl border border-surface-200 dark:border-surface-700">
-        <VueFlow :nodes="nodes" :edges="edges" fit-view-on-init @node-click="(_, node) => selectedNode = node">
+      <div
+        class="codex-build-canvas overflow-hidden rounded-xl border border-surface-200 dark:border-surface-700"
+      >
+        <VueFlow
+          :nodes="nodes"
+          :edges="edges"
+          fit-view-on-init
+          @node-click="(_, node) => (selectedNode = node)"
+        >
           <Background pattern-color="#64748b" :gap="18" />
           <Controls />
           <MiniMap pannable zoomable />
@@ -59,20 +74,43 @@ onMounted(refresh)
       <aside class="rounded-xl border border-surface-200 p-4 dark:border-surface-700">
         <h3 class="mb-3 font-semibold">Node inspector</h3>
         <template v-if="selectedNode">
-          <div class="mb-2 break-words font-medium">{{ selectedNode.data?.label || selectedNode.id }}</div>
-          <p class="mb-3 text-sm text-surface-500">{{ selectedNode.data?.description || 'Project graph node' }}</p>
-          <Tag :value="selectedNode.data?.status || 'discovered'" :severity="statusSeverity(selectedNode.data?.status)" />
-          <p class="mt-3 text-xs text-surface-500">Progress: {{ selectedNode.data?.progress ?? 0 }}%</p>
-          <p class="mt-2 text-xs">Execution verified: {{ selectedNode.data?.execution_verified ? 'Yes' : 'No' }}</p>
+          <div class="mb-2 break-words font-medium">
+            {{ selectedNode.data?.label || selectedNode.id }}
+          </div>
+          <p class="mb-3 text-sm text-surface-500">
+            {{ selectedNode.data?.description || 'Project graph node' }}
+          </p>
+          <Tag
+            :value="selectedNode.data?.status || 'discovered'"
+            :severity="statusSeverity(selectedNode.data?.status)"
+          />
+          <p class="mt-3 text-xs text-surface-500">
+            Progress: {{ selectedNode.data?.progress ?? 0 }}%
+          </p>
+          <p class="mt-2 text-xs">
+            Execution verified: {{ selectedNode.data?.execution_verified ? 'Yes' : 'No' }}
+          </p>
           <div v-if="selectedNode.data?.checks" class="mt-3 space-y-2">
             <div v-for="item in selectedNode.data.checks" :key="item" class="break-all text-xs">
-              <i :class="selectedNode.data.found?.includes(item) ? 'pi pi-check-circle text-emerald-500' : 'pi pi-minus-circle text-surface-400'" /> {{ item }}
+              <i
+                :class="
+                  selectedNode.data.found?.includes(item)
+                    ? 'pi pi-check-circle text-emerald-500'
+                    : 'pi pi-minus-circle text-surface-400'
+                "
+              />
+              {{ item }}
             </div>
           </div>
         </template>
-        <p v-else class="text-sm text-surface-500">Select a node to inspect its source checks and status.</p>
-        <div class="mt-5 border-t border-surface-200 pt-3 text-xs text-surface-500 dark:border-surface-700">
-          File discovery is informational. A node can only become passed after a real execution record and verification evidence exist.
+        <p v-else class="text-sm text-surface-500">
+          Select a node to inspect its source checks and status.
+        </p>
+        <div
+          class="mt-5 border-t border-surface-200 pt-3 text-xs text-surface-500 dark:border-surface-700"
+        >
+          File discovery is informational. A node can only become passed after a real execution
+          record and verification evidence exist.
         </div>
       </aside>
     </div>
@@ -80,7 +118,14 @@ onMounted(refresh)
 </template>
 
 <style scoped>
-.codex-build-canvas { min-height: 460px; height: 100%; }
-.codex-build-canvas :deep(.vue-flow) { background: var(--p-content-background, #fff); }
-.codex-build-canvas :deep(.vue-flow__node) { max-width: 220px; }
+.codex-build-canvas {
+  min-height: 460px;
+  height: 100%;
+}
+.codex-build-canvas :deep(.vue-flow) {
+  background: var(--p-content-background, #fff);
+}
+.codex-build-canvas :deep(.vue-flow__node) {
+  max-width: 220px;
+}
 </style>

@@ -44,12 +44,12 @@ export function definePlugin(config) {
 
   return {
     // ─── Identity ─────────────────────────────────────────
-    id:           config.id,
-    label:        config.label,
-    icon:         config.icon,
-    color:        config.color,
-    description:  config.description  ?? '',
-    category:     config.category     ?? 'custom',
+    id: config.id,
+    label: config.label,
+    icon: config.icon,
+    color: config.color,
+    description: config.description ?? '',
+    category: config.category ?? 'custom',
 
     // ─── Defaults ─────────────────────────────────────────
     defaultPayload: config.defaultPayload ?? {},
@@ -78,11 +78,11 @@ export function definePlugin(config) {
 
     // ─── Metadata for NodeMarketplace ─────────────────────
     meta: {
-      isPremium:    config.isPremium    ?? false,
+      isPremium: config.isPremium ?? false,
       isExperimental: config.isExperimental ?? false,
-      author:       config.author       ?? 'builtin',
-      version:      config.version      ?? '1.0.0',
-      tags:         config.tags         ?? [],
+      author: config.author ?? 'builtin',
+      version: config.version ?? '1.0.0',
+      tags: config.tags ?? [],
     },
   }
 }
@@ -91,9 +91,9 @@ export function definePlugin(config) {
  * PLUGIN_CATEGORIES — فئات الـ plugins للعرض في الـ Marketplace
  */
 export const PLUGIN_CATEGORIES = {
-  programs: { label: 'Programs',    icon: 'pi pi-desktop',     color: '#16a34a' },
-  input:    { label: 'Input',       icon: 'pi pi-keyboard',    color: '#0ea5e9' },
-  timing:   { label: 'Timing',      icon: 'pi pi-stopwatch',   color: '#f59e0b' },
-  ai:       { label: 'AI Actions',  icon: 'pi pi-sparkles',    color: '#8b5cf6' },
-  custom:   { label: 'Custom',      icon: 'pi pi-code',        color: '#64748b' },
+  programs: { label: 'Programs', icon: 'pi pi-desktop', color: '#16a34a' },
+  input: { label: 'Input', icon: 'pi pi-keyboard', color: '#0ea5e9' },
+  timing: { label: 'Timing', icon: 'pi pi-stopwatch', color: '#f59e0b' },
+  ai: { label: 'AI Actions', icon: 'pi pi-sparkles', color: '#8b5cf6' },
+  custom: { label: 'Custom', icon: 'pi pi-code', color: '#64748b' },
 }

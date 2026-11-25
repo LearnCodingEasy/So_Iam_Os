@@ -68,15 +68,33 @@ export const useAgentsStore = defineStore('agents', () => {
 
   // approve / cancel / execute all return the updated run
   async function runAction(action, id) {
-    const fn = { approve: agentsApi.approveRun, cancel: agentsApi.cancelRun, execute: agentsApi.executeRun }[action]
+    const fn = {
+      approve: agentsApi.approveRun,
+      cancel: agentsApi.cancelRun,
+      execute: agentsApi.executeRun,
+    }[action]
     const run = await track(() => fn(id))
     await fetchRuns()
     return run
   }
 
   return {
-    agents, configurations, runs, executions, loading, error,
-    fetchAgents, fetchConfigurations, fetchRuns, fetchExecutions, refresh,
-    saveAgent, removeAgent, addConfiguration, activateConfiguration, startRun, runAction,
+    agents,
+    configurations,
+    runs,
+    executions,
+    loading,
+    error,
+    fetchAgents,
+    fetchConfigurations,
+    fetchRuns,
+    fetchExecutions,
+    refresh,
+    saveAgent,
+    removeAgent,
+    addConfiguration,
+    activateConfiguration,
+    startRun,
+    runAction,
   }
 })

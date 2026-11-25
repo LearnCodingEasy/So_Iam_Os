@@ -1,4 +1,3 @@
-
 <template>
   <div class="wrapper_page_login">
     <div class="inner_page_login">

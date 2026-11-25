@@ -93,10 +93,21 @@ export const useCodexStore = defineStore('codex', {
     async loadCapabilities() {
       try {
         const [summary, health, features, tools, agents, runs] = await Promise.all([
-          codex.registry.summary(), codex.registry.health(), codex.registry.features(),
-          codex.registry.tools(), codex.registry.agents(), codex.registry.runs(),
+          codex.registry.summary(),
+          codex.registry.health(),
+          codex.registry.features(),
+          codex.registry.tools(),
+          codex.registry.agents(),
+          codex.registry.runs(),
         ])
-        Object.assign(this, { capabilitySummary: summary, capabilityHealth: health, capabilityFeatures: features, capabilityTools: tools, capabilityAgents: agents, capabilityRuns: runs })
+        Object.assign(this, {
+          capabilitySummary: summary,
+          capabilityHealth: health,
+          capabilityFeatures: features,
+          capabilityTools: tools,
+          capabilityAgents: agents,
+          capabilityRuns: runs,
+        })
       } catch (e) {
         this.error = e?.response?.data || e?.message || 'Codex capability registry loading failed'
         throw e

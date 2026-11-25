@@ -34,7 +34,10 @@ export const useAnalyticsStore = defineStore('analytics', () => {
   const fetchEventCounts = (params) =>
     run(async () => (eventCounts.value = await analyticsApi.getEventCounts(params)))
   const fetchSnapshots = (metricId) =>
-    run(async () => (snapshots.value = await analyticsApi.listSnapshots(metricId ? { metric: metricId } : {})))
+    run(
+      async () =>
+        (snapshots.value = await analyticsApi.listSnapshots(metricId ? { metric: metricId } : {})),
+    )
   const fetchSummary = (metricId, params) =>
     run(async () => (summary.value = await analyticsApi.getMetricSummary(metricId, params)))
 
@@ -81,8 +84,27 @@ export const useAnalyticsStore = defineStore('analytics', () => {
   }
 
   return {
-    metrics, snapshots, events, reports, eventCounts, summary, loading, error,
-    fetchMetrics, fetchEvents, fetchReports, fetchEventCounts, fetchSnapshots, fetchSummary, refresh,
-    saveMetric, removeMetric, addSnapshot, addEvent, saveReport, removeReport, generateReport,
+    metrics,
+    snapshots,
+    events,
+    reports,
+    eventCounts,
+    summary,
+    loading,
+    error,
+    fetchMetrics,
+    fetchEvents,
+    fetchReports,
+    fetchEventCounts,
+    fetchSnapshots,
+    fetchSummary,
+    refresh,
+    saveMetric,
+    removeMetric,
+    addSnapshot,
+    addEvent,
+    saveReport,
+    removeReport,
+    generateReport,
   }
 })

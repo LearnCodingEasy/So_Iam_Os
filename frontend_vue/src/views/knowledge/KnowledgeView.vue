@@ -141,7 +141,8 @@ const saveKnowledge = async (data) => {
     // Report file persistence from the backend's actual answers, never optimistically.
     const report = knowledgeStore.lastUploadReport
     if (report.failed.length) {
-      error.value = `Saved, but ${report.failed.length} file(s) were not uploaded: ` +
+      error.value =
+        `Saved, but ${report.failed.length} file(s) were not uploaded: ` +
         report.failed.map((f) => `${f.name} (${f.message})`).join('; ')
       successMessage.value = ''
     } else if (report.uploaded.length) {
@@ -507,13 +508,31 @@ onMounted(() => {
           </div>
         </div>
 
-        <div v-if="selectedKnowledge.metadata?.extracted" class="rounded-xl border border-indigo-200 bg-indigo-50/70 p-4 dark:border-indigo-900 dark:bg-indigo-950/30">
-          <h3 class="mb-2 font-semibold text-indigo-900 dark:text-indigo-200">Extracted metadata</h3>
-          <p class="text-sm text-slate-700 dark:text-slate-300">{{ selectedKnowledge.metadata.extracted.summary || 'No summary detected.' }}</p>
-          <div v-if="selectedKnowledge.metadata.extracted.keywords?.length" class="mt-3 flex flex-wrap gap-2">
-            <span v-for="keyword in selectedKnowledge.metadata.extracted.keywords" :key="keyword" class="rounded-full bg-white px-2.5 py-1 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ keyword }}</span>
+        <div
+          v-if="selectedKnowledge.metadata?.extracted"
+          class="rounded-xl border border-indigo-200 bg-indigo-50/70 p-4 dark:border-indigo-900 dark:bg-indigo-950/30"
+        >
+          <h3 class="mb-2 font-semibold text-indigo-900 dark:text-indigo-200">
+            Extracted metadata
+          </h3>
+          <p class="text-sm text-slate-700 dark:text-slate-300">
+            {{ selectedKnowledge.metadata.extracted.summary || 'No summary detected.' }}
+          </p>
+          <div
+            v-if="selectedKnowledge.metadata.extracted.keywords?.length"
+            class="mt-3 flex flex-wrap gap-2"
+          >
+            <span
+              v-for="keyword in selectedKnowledge.metadata.extracted.keywords"
+              :key="keyword"
+              class="rounded-full bg-white px-2.5 py-1 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >{{ keyword }}</span
+            >
           </div>
-          <p class="mt-2 text-xs text-slate-500">Language: {{ selectedKnowledge.metadata.extracted.language_hint }} · Words: {{ selectedKnowledge.metadata.extracted.word_count }}</p>
+          <p class="mt-2 text-xs text-slate-500">
+            Language: {{ selectedKnowledge.metadata.extracted.language_hint }} · Words:
+            {{ selectedKnowledge.metadata.extracted.word_count }}
+          </p>
         </div>
 
         <!-- Main Content (محتوى الـ Markdown) -->

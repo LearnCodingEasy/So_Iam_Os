@@ -12,7 +12,9 @@ function unwrapList(payload) {
 // through the multipart `upload-file` endpoint after the item is persisted.
 function splitFiles(data = {}) {
   const { files, ...payload } = data || {}
-  const pending = Array.isArray(files) ? files.filter((f) => typeof File !== 'undefined' && f instanceof File) : []
+  const pending = Array.isArray(files)
+    ? files.filter((f) => typeof File !== 'undefined' && f instanceof File)
+    : []
   return { payload, pending }
 }
 
@@ -37,7 +39,8 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         report.uploaded.push(saved)
       } catch (cause) {
         const data = cause?.response?.data
-        const message = data?.file?.[0] || data?.file || data?.detail || cause?.message || 'Upload failed'
+        const message =
+          data?.file?.[0] || data?.file || data?.detail || cause?.message || 'Upload failed'
         report.failed.push({ name: file.name, message: String(message) })
       }
     }
@@ -141,7 +144,10 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
   async function uploadFile(knowledgeId, file, description = '') {
     const uploaded = await knowledgeService.uploadFile(knowledgeId, file, description)
     const current = filesByKnowledgeId.value[knowledgeId] || []
-    filesByKnowledgeId.value = { ...filesByKnowledgeId.value, [knowledgeId]: [uploaded, ...current] }
+    filesByKnowledgeId.value = {
+      ...filesByKnowledgeId.value,
+      [knowledgeId]: [uploaded, ...current],
+    }
     return uploaded
   }
 
@@ -183,9 +189,29 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
   }
 
   return {
-    items, count, next, previous, filesByKnowledgeId, loading, saving, error,
-    fetchItems, fetchItem, createItem, updateItem, archiveItem, restoreItem,
-    deleteItem, extractItemMetadata, fetchFiles, uploadFile, deleteFile, lastUploadReport,
-    connectTopic, disconnectTopic, archiveAll, clearError,
+    items,
+    count,
+    next,
+    previous,
+    filesByKnowledgeId,
+    loading,
+    saving,
+    error,
+    fetchItems,
+    fetchItem,
+    createItem,
+    updateItem,
+    archiveItem,
+    restoreItem,
+    deleteItem,
+    extractItemMetadata,
+    fetchFiles,
+    uploadFile,
+    deleteFile,
+    lastUploadReport,
+    connectTopic,
+    disconnectTopic,
+    archiveAll,
+    clearError,
   }
 })

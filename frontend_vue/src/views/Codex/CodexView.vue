@@ -55,10 +55,19 @@ const context = ref(null)
 const files = ref([])
 const features = ref([])
 const apis = ref([])
-const discoveredRoutes = computed(() => router.getRoutes()
-  .filter((route) => route.meta?.requiresAuth && route.path && !route.path.includes(':catchAll') && !route.path.includes(':pathMatch'))
-  .map((route) => ({ name: route.name, path: route.path }))
-  .sort((a, b) => a.path.localeCompare(b.path)))
+const discoveredRoutes = computed(() =>
+  router
+    .getRoutes()
+    .filter(
+      (route) =>
+        route.meta?.requiresAuth &&
+        route.path &&
+        !route.path.includes(':catchAll') &&
+        !route.path.includes(':pathMatch'),
+    )
+    .map((route) => ({ name: route.name, path: route.path }))
+    .sort((a, b) => a.path.localeCompare(b.path)),
+)
 const workflow = ref({ steps: [], completed: 0, total: 0 })
 const protectedItems = ref([])
 const localAIJobs = ref([])
@@ -113,7 +122,11 @@ async function loadCoreData() {
   loading.value = true
   try {
     const [ov, ctx, fl, discoveredFeatures, discoveredApis] = await Promise.all([
-      codex.overview(), codex.context(), codex.files(), codex.features(), codex.apis(),
+      codex.overview(),
+      codex.context(),
+      codex.files(),
+      codex.features(),
+      codex.apis(),
     ])
     overview.value = ov
     context.value = ctx
@@ -254,8 +267,22 @@ onMounted(async () => {
           :routes="discoveredRoutes"
           :loading="loading"
           @openFile="openFile"
-          @askAI="(message) => { activePanel = 'chat'; sendChat(message, selectedFiles.map((file) => file.path)) }"
-          @scan="runAction(async () => { const result = await codex.scan(); await loadCoreData(); return result }, 'Project scan completed.')"
+          @askAI="
+            (message) => {
+              activePanel = 'chat'
+              sendChat(
+                message,
+                selectedFiles.map((file) => file.path),
+              )
+            }
+          "
+          @scan="
+            runAction(async () => {
+              const result = await codex.scan()
+              await loadCoreData()
+              return result
+            }, 'Project scan completed.')
+          "
         />
 
         <!-- Dynamic Panels -->

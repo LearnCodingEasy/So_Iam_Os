@@ -34,5 +34,4 @@ export const cancelRun = (id) => api.post(`${BASE}/runs/${id}/cancel/`).then(dat
 export const executeRun = (id) => api.post(`${BASE}/runs/${id}/execute/`).then(data)
 
 // Executions (read-only step records)
-export const listExecutions = (params = {}) =>
-  api.get(`${BASE}/executions/`, { params }).then(list)
+export const listExecutions = (params = {}) => api.get(`${BASE}/executions/`, { params }).then(list)

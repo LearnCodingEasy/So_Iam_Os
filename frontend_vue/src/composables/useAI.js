@@ -14,20 +14,28 @@ export function useAI() {
     error.value = null
     activeController = new AbortController()
     try {
-      const result = await AIService.chatStream(messages, model, (chunk) => { response.value += chunk }, {
-        conversationId: conversationId.value,
-        systemPrompt: options.systemPrompt || '',
-        temperature: options.temperature,
-        provider: options.provider || '',
-        maxTokens: options.maxTokens,
-        idempotencyKey: options.idempotencyKey || '',
-        signal: activeController.signal,
-      })
+      const result = await AIService.chatStream(
+        messages,
+        model,
+        (chunk) => {
+          response.value += chunk
+        },
+        {
+          conversationId: conversationId.value,
+          systemPrompt: options.systemPrompt || '',
+          temperature: options.temperature,
+          provider: options.provider || '',
+          maxTokens: options.maxTokens,
+          idempotencyKey: options.idempotencyKey || '',
+          signal: activeController.signal,
+        },
+      )
       conversationId.value = result.conversation_id ?? conversationId.value
       if (result.message?.content && !response.value) response.value = result.message.content
       return result
     } catch (e) {
-      error.value = e?.response?.data?.error || e?.response?.data?.detail || e.message || 'AI request failed.'
+      error.value =
+        e?.response?.data?.error || e?.response?.data?.detail || e.message || 'AI request failed.'
       return null
     } finally {
       isLoading.value = false

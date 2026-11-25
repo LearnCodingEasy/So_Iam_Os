@@ -9,6 +9,7 @@ from ..models import AIConversation, AIMessage, AISettings, AIPromptProfile
 from ..providers import get_ai_provider
 from ..learning_actions import looks_like_learning_request, AILearningActionService
 from ..prompts import build_system_prompt
+from .timeouts import user_setting_timeout
 
 
 import logging
@@ -16,6 +17,19 @@ import logging
 from ..exceptions import AIConfigurationError, AIProviderError, AIResponseError
 
 logger = logging.getLogger(__name__)
+
+
+def _raw_tokens(result, *keys):
+    """Token counts reported by the provider (Ollama/OpenAI-style); None if absent."""
+    raw = result.get("raw") if isinstance(result, dict) else None
+    if not isinstance(raw, dict):
+        return None
+    usage = raw.get("usage") if isinstance(raw.get("usage"), dict) else {}
+    for key in keys:
+        value = raw.get(key, usage.get(key))
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+            return value
+    return None
 
 
 class AIFallbackChainService:
@@ -38,9 +52,13 @@ class AIFallbackChainService:
         idempotency_key="",
         fallback_enabled=True,
         model_is_explicit=True,
+        timeout_seconds=None,
+        agent_timeout_seconds=None,
     ):
         import random
         import time
+
+        from .timeouts import resolve_timeout
 
         from ..models import AIProviderCredential
         from ..providers import get_ai_provider
@@ -110,12 +128,26 @@ class AIFallbackChainService:
             0.05,
             float(getattr(settings, "AI_RETRY_BACKOFF_SECONDS", 0.5) or 0.5),
         )
+        # Timeout hierarchy: request -> agent -> provider -> global -> default.
+        # ``timeout_seconds`` is caller input and is validated strictly here
+        # (ValueError -> HTTP 400 in the views); lower layers are clamped.
+        primary_timeout, timeout_source = resolve_timeout(
+            request=timeout_seconds, agent=agent_timeout_seconds, provider=preferred
+        )
+        # Total execution budget: the primary provider may use its full
+        # timeout, and a fallback window is reserved only when fallback is on.
+        deadline = max(deadline, primary_timeout + (30 if fallback_enabled else 0))
         started = time.monotonic()
         attempts = 0
         retry_count = 0
         fallback_count = 0
         last_error = None
         execution = None
+        logger.info(
+            "AI request start user=%s task=%s provider=%s model=%s timeout=%ss source=%s total_budget=%ss",
+            getattr(user, "pk", None), task_type, preferred or "-", model or "-",
+            primary_timeout, timeout_source, deadline,
+        )
 
         if user is not None and getattr(user, "is_authenticated", False):
             try:
@@ -125,7 +157,11 @@ class AIFallbackChainService:
                     provider=preferred_provider or "",
                     model=model or "",
                     task_type=task_type,
-                    metadata={"requested_provider": preferred_provider or ""},
+                    metadata={
+                        "requested_provider": preferred_provider or "",
+                        "timeout_seconds": primary_timeout,
+                        "timeout_source": timeout_source,
+                    },
                     idempotency_key=idempotency_key or "",
                 )
             except Exception:
@@ -144,7 +180,13 @@ class AIFallbackChainService:
                     genuine_result=False,
                     error_code=getattr(exc, "category", "unknown"),
                     error_message=str(exc),
-                    metadata={"attempts": attempts},
+                    metadata={
+                        "attempts": attempts,
+                        "timeout_seconds": primary_timeout,
+                        "timeout_source": timeout_source,
+                        "timeout_kind": getattr(exc, "timeout_kind", ""),
+                        "elapsed_seconds": round(time.monotonic() - started, 2),
+                    },
                 )
             except Exception:
                 logger.exception("AI execution failure could not be persisted")
@@ -180,10 +222,10 @@ class AIFallbackChainService:
                         else None
                     )
                     remaining_seconds = max(1, int(deadline - (time.monotonic() - started)))
-                    provider_timeout = min(
-                        max(1, int(getattr(settings, "AI_PROVIDER_TIMEOUT_SECONDS", 30))),
-                        remaining_seconds,
+                    attempt_timeout, _src = resolve_timeout(
+                        request=timeout_seconds, agent=agent_timeout_seconds, provider=provider_name
                     )
+                    provider_timeout = max(1, min(attempt_timeout, remaining_seconds))
                     result = provider_obj.generate(
                         messages=messages,
                         model=selected_model,
@@ -212,9 +254,14 @@ class AIFallbackChainService:
                                 retry_count=retry_count,
                                 fallback_count=fallback_count,
                                 genuine_result=True,
+                                input_tokens=_raw_tokens(result, "prompt_eval_count", "prompt_tokens", "input_tokens"),
+                                output_tokens=_raw_tokens(result, "eval_count", "completion_tokens", "output_tokens"),
                                 metadata={
                                     "attempts": attempts,
                                     "actual_provider": result.get("provider") or provider_name,
+                                    "timeout_seconds": provider_timeout,
+                                    "timeout_source": timeout_source,
+                                    "elapsed_seconds": round(time.monotonic() - started, 2),
                                 },
                             )
                         except Exception:
@@ -309,11 +356,13 @@ class AIFallbackChainService:
         *,
         fallback_enabled=True,
         timeout_seconds=None,
+        agent_timeout_seconds=None,
         model_is_explicit=True,
     ):
         """Stream from the preferred provider, falling back only before output starts."""
         from ..models import AIProviderCredential
         from ..providers import get_ai_provider
+        from .timeouts import resolve_timeout
 
         preferred = str(preferred_provider or "").strip().lower()
         ordered = [preferred] if preferred else []
@@ -376,7 +425,9 @@ class AIFallbackChainService:
                         model=selected_model,
                         temperature=temperature,
                         max_tokens=max_tokens,
-                        timeout_seconds=timeout_seconds,
+                        timeout_seconds=resolve_timeout(
+                            request=timeout_seconds, agent=agent_timeout_seconds, provider=provider_name
+                        )[0],
                     ):
                         if not isinstance(item, dict):
                             continue
@@ -625,7 +676,7 @@ class AIService:
             path_title=plan.get("path_title") or None, path_description=plan.get("path_description", ""), topics=plan.get("topics") or [],
         )
 
-    def chat(self, message, conversation_id=None, provider=None, model="", idempotency_key="", system_prompt="", temperature=None, max_tokens=None):
+    def chat(self, message, conversation_id=None, provider=None, model="", idempotency_key="", system_prompt="", temperature=None, max_tokens=None, timeout_seconds=None):
         if idempotency_key:
             from ..models import AIExecution
             existing = AIExecution.objects.filter(
@@ -694,6 +745,8 @@ class AIService:
                 idempotency_key=idempotency_key or "",
                 fallback_enabled=config.fallback_enabled,
                 model_is_explicit=bool(model),
+                # Request value wins; otherwise the user's saved AISettings value.
+                timeout_seconds=timeout_seconds if timeout_seconds is not None else user_setting_timeout(config),
             )
         except Exception:
             # Failed requests must not leave a persisted user turn or empty

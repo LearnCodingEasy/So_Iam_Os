@@ -21,19 +21,18 @@
 // ============================================================
 
 import { ref, reactive } from 'vue'
-import { debounce }       from 'lodash'
-import automationService  from '@/services/Automation/AutomationService'
+import { debounce } from 'lodash'
+import automationService from '@/services/Automation/AutomationService'
 
 export function useNodeDragDrop({ workflowStore, programStore, tracker, project, showToast }) {
-
   // ─────────────────────────────────────────
   // State
   // ─────────────────────────────────────────
-  const draggedItem = ref(null)   // الـ item اللي بيتسحب من الـ sidebar
+  const draggedItem = ref(null) // الـ item اللي بيتسحب من الـ sidebar
 
   const syncState = reactive({
     updateQueue: [],
-    isSyncing:   false,
+    isSyncing: false,
   })
 
   // ─────────────────────────────────────────
@@ -84,24 +83,24 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
 
       // 🗺️ حدد نوع الـ action حسب نوع الـ item
       const ACTION_TYPE_MAP = {
-        'program':         'open_program',
+        program: 'open_program',
         'program-element': 'press',
-        'delay':           'wait',
+        delay: 'wait',
       }
       const actionType = ACTION_TYPE_MAP[item.type] ?? 'custom'
 
       // 🏷️ جيب اسم الـ node من الـ store (من غير API call زيادة)
       const programData = programStore.programById(item.id)
-      const nodeLabel   = programData?.name ?? item.name ?? actionType
+      const nodeLabel = programData?.name ?? item.name ?? actionType
 
       // 🎨 الـ UI config الافتراضي للـ node
       const defaultConfig = {
         ui: {
-          theme:  { background: '#0f172a', border: '#334155', shadow: '#334155' },
+          theme: { background: '#0f172a', border: '#334155', shadow: '#334155' },
           layout: { width: 260, height: 240, rounded: true },
         },
         inputs: [
-          { key: 'text',  label: 'Text',       type: 'string', value: '' },
+          { key: 'text', label: 'Text', type: 'string', value: '' },
           { key: 'delay', label: 'Delay (ms)', type: 'number', value: 0 },
         ],
         ai: { enabled: false, context: {}, memory: [], suggestions: [] },
@@ -111,16 +110,17 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
       // Step 1: إنشاء الـ Node في الـ Backend
       // ─────────────────────────────────────
       const nodeResult = await tracker.execute({
-        serviceFn: () => automationService.createWorkflowNode({
-          workflow:   workflowStore.currentWorkflowId,
-          node_type:  item.type,
-          label:      nodeLabel,
-          program:    item.type === 'program'          ? item.id : null,
-          element:    item.type === 'program-element'  ? item.id : null,
-          position_x: position.x,
-          position_y: position.y,
-          config:     defaultConfig,
-        }),
+        serviceFn: () =>
+          automationService.createWorkflowNode({
+            workflow: workflowStore.currentWorkflowId,
+            node_type: item.type,
+            label: nodeLabel,
+            program: item.type === 'program' ? item.id : null,
+            element: item.type === 'program-element' ? item.id : null,
+            position_x: position.x,
+            position_y: position.y,
+            config: defaultConfig,
+          }),
       })
       const nodeData = nodeResult.data
 
@@ -128,11 +128,12 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
       // Step 2: إنشاء الـ Action وربطه بالـ Node
       // ─────────────────────────────────────
       const actionResult = await tracker.execute({
-        serviceFn: () => automationService.createAction({
-          node:        nodeData.id,
-          action_type: actionType,
-          payload:     buildDefaultPayload(actionType),
-        }),
+        serviceFn: () =>
+          automationService.createAction({
+            node: nodeData.id,
+            action_type: actionType,
+            payload: buildDefaultPayload(actionType),
+          }),
       })
       const actionData = actionResult.data
 
@@ -141,29 +142,28 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
       //         نفس structure بتاعة loadWorkflowEvents
       // ─────────────────────────────────────
       workflowStore.nodes.push({
-        id:       nodeData.id,
-        type:     'custom',
+        id: nodeData.id,
+        type: 'custom',
         position: { x: nodeData.position_x, y: nodeData.position_y },
         data: {
           label: nodeData.label,
           node: {
-            backend_id:   nodeData.id,
-            id:           nodeData.id,
+            backend_id: nodeData.id,
+            id: nodeData.id,
             program_name: nodeData.program_name ?? '',
             element_name: nodeData.element_name ?? '',
-            node_type:    nodeData.node_type,
-            label:        nodeData.label,
-            config:       nodeData.config,
-            program:      nodeData.program,
-            element:      nodeData.element,
-            status:       'idle',
+            node_type: nodeData.node_type,
+            label: nodeData.label,
+            config: nodeData.config,
+            program: nodeData.program,
+            element: nodeData.element,
+            status: 'idle',
           },
           actions: actionData ? [actionData] : [],
         },
       })
 
       showToast('success', 'تم إنشاء الـ Node', nodeData.label, 4000)
-
     } catch (err) {
       showToast('error', 'فشل إنشاء الـ Node', err?.message, 6000)
     } finally {
@@ -187,7 +187,7 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
 
     // أضف للـ queue وشغّل الـ debounced sync
     syncState.updateQueue.push({
-      id:         backendId,
+      id: backendId,
       position_x: node.position.x,
       position_y: node.position.y,
     })
@@ -220,7 +220,7 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
   const deduplicateQueue = () => {
     if (syncState.updateQueue.length === 0) return null
     const uniqueMap = new Map()
-    syncState.updateQueue.forEach(job => uniqueMap.set(job.id, job))
+    syncState.updateQueue.forEach((job) => uniqueMap.set(job.id, job))
     syncState.updateQueue = []
     const jobs = [...uniqueMap.values()]
     return jobs.shift()
@@ -233,15 +233,16 @@ export function useNodeDragDrop({ workflowStore, programStore, tracker, project,
   // ─────────────────────────────────────────
 
   // بيبني الـ default payload حسب نوع الـ action
-  const buildDefaultPayload = (actionType) => ({
-    open_program:  {},
-    close_program: {},
-    press:         { key: '' },
-    hotkey:        { keys: [] },
-    wait:          { seconds: 1 },
-    click_element: { element_id: null },
-    type_text:     { text: '' },
-  }[actionType] ?? {})
+  const buildDefaultPayload = (actionType) =>
+    ({
+      open_program: {},
+      close_program: {},
+      press: { key: '' },
+      hotkey: { keys: [] },
+      wait: { seconds: 1 },
+      click_element: { element_id: null },
+      type_text: { text: '' },
+    })[actionType] ?? {}
 
   // ─────────────────────────────────────────
   // Return

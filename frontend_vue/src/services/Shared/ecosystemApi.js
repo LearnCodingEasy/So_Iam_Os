@@ -90,7 +90,8 @@ export const appApi = {
   ai: resource('ai'),
   codex: resource('codex'),
   automation: resource('automation'),
-  codexEndpoint: (path, payload = {}) => api.post(`/codex/${String(path).replace(/^\/+/, '')}`, payload),
+  codexEndpoint: (path, payload = {}) =>
+    api.post(`/codex/${String(path).replace(/^\/+/, '')}`, payload),
   aiEndpoint: (path, payload = {}) => api.post(`/ai/${String(path).replace(/^\/+/, '')}`, payload),
 }
 

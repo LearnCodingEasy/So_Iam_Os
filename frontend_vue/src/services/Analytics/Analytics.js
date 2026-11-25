@@ -22,7 +22,8 @@ export const deleteSnapshot = (id) => api.delete(`${BASE}/snapshots/${id}/`)
 export const listEvents = (params = {}) => api.get(`${BASE}/events/`, { params }).then(list)
 export const createEvent = (payload) => api.post(`${BASE}/events/`, payload).then(data)
 export const deleteEvent = (id) => api.delete(`${BASE}/events/${id}/`)
-export const getEventCounts = (params = {}) => api.get(`${BASE}/events/counts/`, { params }).then(data)
+export const getEventCounts = (params = {}) =>
+  api.get(`${BASE}/events/counts/`, { params }).then(data)
 
 // Reports
 export const listReports = (params = {}) => api.get(`${BASE}/reports/`, { params }).then(list)

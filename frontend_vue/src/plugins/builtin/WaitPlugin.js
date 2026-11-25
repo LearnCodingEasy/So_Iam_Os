@@ -24,16 +24,16 @@
 import { definePlugin } from '../PluginSDK'
 
 export default definePlugin({
-  id:          'wait',
-  label:       'Wait',
-  icon:        'pi pi-stopwatch',
-  color:       '#f59e0b',
+  id: 'wait',
+  label: 'Wait',
+  icon: 'pi pi-stopwatch',
+  color: '#f59e0b',
   description: 'استنى عدد ثواني معين قبل الخطوة الجاية',
-  category:    'timing',
+  category: 'timing',
 
   // ─── Default Payload ──────────────────────────────────────
   defaultPayload: {
-    seconds: 2,   // ثانيتين افتراضياً
+    seconds: 2, // ثانيتين افتراضياً
   },
 
   // ─── buildPayload ─────────────────────────────────────────
@@ -44,13 +44,13 @@ export default definePlugin({
   // ─── validate ─────────────────────────────────────────────
   validate: (formData = {}) => {
     const sec = Number(formData.seconds)
-    if (isNaN(sec) || sec < 0)  return 'عدد الثواني لازم يكون رقم موجب'
-    if (sec > 300)               return 'الحد الأقصى 300 ثانية (5 دقائق)'
+    if (isNaN(sec) || sec < 0) return 'عدد الثواني لازم يكون رقم موجب'
+    if (sec > 300) return 'الحد الأقصى 300 ثانية (5 دقائق)'
     return null
   },
 
   // ─── Metadata ─────────────────────────────────────────────
-  author:  'builtin',
+  author: 'builtin',
   version: '1.0.0',
-  tags:    ['wait', 'delay', 'sleep', 'timing', 'pause'],
+  tags: ['wait', 'delay', 'sleep', 'timing', 'pause'],
 })

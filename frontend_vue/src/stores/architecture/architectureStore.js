@@ -56,10 +56,13 @@ export const useArchitectureStore = defineStore('architecture', () => {
       graph.value = g
     })
 
-  const reloadSelected = () => (selectedId.value == null ? null : selectArchitecture(selectedId.value))
+  const reloadSelected = () =>
+    selectedId.value == null ? null : selectArchitecture(selectedId.value)
 
   async function saveArchitecture(payload, id = null) {
-    const saved = id ? await api.updateArchitecture(id, payload) : await api.createArchitecture(payload)
+    const saved = id
+      ? await api.updateArchitecture(id, payload)
+      : await api.createArchitecture(payload)
     await fetchArchitectures()
     return saved
   }
@@ -90,8 +93,20 @@ export const useArchitectureStore = defineStore('architecture', () => {
   }
 
   return {
-    architectures, selectedId, components, dependencies, decisions, graph,
-    loading, detailLoading, error,
-    fetchArchitectures, selectArchitecture, saveArchitecture, removeArchitecture, saveChild, removeChild,
+    architectures,
+    selectedId,
+    components,
+    dependencies,
+    decisions,
+    graph,
+    loading,
+    detailLoading,
+    error,
+    fetchArchitectures,
+    selectArchitecture,
+    saveArchitecture,
+    removeArchitecture,
+    saveChild,
+    removeChild,
   }
 })

@@ -18,13 +18,16 @@ defineProps({
 const status = ref('checking')
 let timer = null
 
-const label = computed(() => ({
-  connected: 'متصل',
-  processing: 'جاري المعالجة',
-  disconnected: 'الخادم غير متاح',
-  error: 'خطأ',
-  checking: 'جاري الفحص',
-}[status.value] || status.value))
+const label = computed(
+  () =>
+    ({
+      connected: 'متصل',
+      processing: 'جاري المعالجة',
+      disconnected: 'الخادم غير متاح',
+      error: 'خطأ',
+      checking: 'جاري الفحص',
+    })[status.value] || status.value,
+)
 
 async function check() {
   try {
@@ -43,11 +46,32 @@ onBeforeUnmount(() => timer && window.clearInterval(timer))
 </script>
 
 <style scoped>
-.ai-status-indicator { display: inline-flex; align-items: center; gap: .5rem; font-size: .85rem; }
-.dot { width: .6rem; height: .6rem; border-radius: 50%; background: currentColor; }
-.ai-status-indicator[data-status="connected"] { color: #16a34a; }
-.ai-status-indicator[data-status="processing"] { color: #ca8a04; }
-.ai-status-indicator[data-status="error"], .ai-status-indicator[data-status="disconnected"] { color: #dc2626; }
-.ai-status-indicator[data-status="checking"] { color: #64748b; }
-small { opacity: .75; }
+.ai-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+.dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+.ai-status-indicator[data-status='connected'] {
+  color: #16a34a;
+}
+.ai-status-indicator[data-status='processing'] {
+  color: #ca8a04;
+}
+.ai-status-indicator[data-status='error'],
+.ai-status-indicator[data-status='disconnected'] {
+  color: #dc2626;
+}
+.ai-status-indicator[data-status='checking'] {
+  color: #64748b;
+}
+small {
+  opacity: 0.75;
+}
 </style>

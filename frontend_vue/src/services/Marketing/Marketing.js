@@ -21,7 +21,8 @@ export const content = resource('content')
 export const leadSources = resource('lead-sources')
 
 export const getCampaignOverview = () => api.get(`${BASE}/campaigns/overview/`).then(data)
-export const getCampaignPerformance = (id) => api.get(`${BASE}/campaigns/${id}/performance/`).then(data)
+export const getCampaignPerformance = (id) =>
+  api.get(`${BASE}/campaigns/${id}/performance/`).then(data)
 export const publishContent = (id) => api.post(`${BASE}/content/${id}/publish/`).then(data)
 
 export const marketingApi = {

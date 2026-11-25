@@ -68,7 +68,7 @@
 
         <prime_button
           icon="pi pi-plus"
-          label="إضافة عنصر جديد"
+          label="مهمة جديدة"
           @click="openNewItemModal"
           class="class_name"
         />
@@ -92,7 +92,8 @@
             <div
               class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono"
             >
-              {{ loading ? '...' : stat.value }}
+              <prime_skeleton v-if="loading" width="3.5rem" height="2rem" />
+              <AnimatedCounter v-else :value="stat.value" />
             </div>
           </div>
           <div
@@ -126,28 +127,20 @@
               نظرة عامة على تنفيذ المهام
             </h2>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              مقارنة بين الإجماليات والمهام المكتملة بناءً على بيانات النظام الحية
+              إجمالي المهام والمكتملة والمعلّقة كما ترجعها بيانات النظام
             </p>
-          </div>
-          <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/70 p-1 rounded-xl">
-            <button
-              v-for="range in ['أسبوعي', 'شهري', 'سنوي']"
-              :key="range"
-              class="px-3 py-1 text-xs rounded-lg font-medium transition-all"
-              :class="
-                selectedRange === range
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              "
-              @click="selectedRange = range"
-            >
-              {{ range }}
-            </button>
           </div>
         </div>
 
         <div class="h-72 w-full">
-          <Line v-if="lineChartData" :data="lineChartData" :options="lineChartOptions" />
+          <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
+          <StateBlock
+            v-else
+            state="empty"
+            illustration="tasks"
+            title="لا توجد بيانات مهام بعد"
+            message="ستظهر الأرقام هنا عند إنشاء مهام."
+          />
         </div>
       </div>
 
@@ -302,7 +295,7 @@
     <prime_dialog
       v-model:visible="isModalOpen"
       modal
-      header="إضافة عملية أو مهمة جديدة"
+      header="إضافة مهمة جديدة"
       :style="{ width: '90vw', maxWidth: '520px' }"
       class="stitch-dialog !rounded-2xl"
     >
@@ -314,19 +307,19 @@
           <prime_input_text
             v-model="newItemForm.name"
             class="w-full !rounded-xl !p-2.5 !text-sm"
-            placeholder="مثال: مزامنة بيانات العملاء"
+            placeholder="مثال: مراجعة تقرير الأسبوع"
             required
           />
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5"
-            >الخدمة المستهدفة</label
+            >الأولوية</label
           >
           <prime_select
-            v-model="newItemForm.service"
-            :options="serviceOptions"
-            optionLabel="name"
-            placeholder="اختر الخدمة"
+            v-model="newItemForm.priority"
+            :options="priorityOptions"
+            option-label="label"
+            option-value="value"
             class="w-full !rounded-xl !text-sm"
           />
         </div>
@@ -339,8 +332,9 @@
             class="!rounded-xl"
           />
           <prime_button
-            label="حفظ وبدء التشغيل"
+            label="حفظ المهمة"
             type="submit"
+            :loading="creating"
             severity="primary"
             class="!rounded-xl !bg-indigo-600"
           />
@@ -356,6 +350,9 @@ import { RouterLink } from 'vue-router'
 import { useOnline, useDark } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import { dashboardService } from '@/services/Core/dashboard'
+import { createTask } from '@/services/Tasks/tasks'
+import AnimatedCounter from '@/components/ui/AnimatedCounter.vue'
+import StateBlock from '@/components/ui/StateBlock.vue'
 
 // Chart.js imports
 import {
@@ -369,8 +366,9 @@ import {
   LinearScale,
   ArcElement,
   Filler,
+  BarElement,
 } from 'chart.js'
-import { Line } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 
 ChartJS.register(
   Title,
@@ -382,6 +380,7 @@ ChartJS.register(
   LinearScale,
   ArcElement,
   Filler,
+  BarElement,
 )
 
 // Connectivity state using VueUse
@@ -417,23 +416,22 @@ onMounted(() => {
 })
 
 // Local State
-const selectedRange = ref('شهري')
 const isModalOpen = ref(false)
 
+const creating = ref(false)
 const newItemForm = ref({
   name: '',
-  service: null,
+  priority: 'medium',
 })
-
-const serviceOptions = [
-  { name: 'قاعدة بيانات PostgreSQL', code: 'postgres' },
-  { name: 'Redis Cache Layer', code: 'redis' },
-  { name: 'خدمة التحليلات Analytics API', code: 'analytics' },
-  { name: 'مزامنة السحابة Cloud Sync', code: 'cloud' },
+const priorityOptions = [
+  { label: 'منخفضة', value: 'low' },
+  { label: 'متوسطة', value: 'medium' },
+  { label: 'عالية', value: 'high' },
+  { label: 'حرجة', value: 'critical' },
 ]
 
 // Computed User & Metrics from real API
-const userName = computed(() => dashboard.value?.user?.name || 'م. حسام رشاد عبود')
+const userName = computed(() => dashboard.value?.user?.name || 'مستخدم SO_IAM_OS')
 const learningStats = computed(() => dashboard.value?.stats?.learning || {})
 const recentKnowledge = computed(() => dashboard.value?.recent?.knowledge || [])
 const tasks = computed(() => dashboard.value?.recent?.tasks || dashboard.value?.tasks || [])
@@ -477,52 +475,30 @@ const statsList = computed(() => {
 })
 
 // Chart.js Data & Configuration
-const lineChartData = computed(() => {
-  const isDarkTheme = isDark.value
-  const taskStats = dashboard.value?.stats?.tasks || {}
-  const total = taskStats.total || 10
-  const completed = taskStats.completed || 5
-  const pending = taskStats.pending || 5
-  console.log('pending: ', pending)
-
+// Real numbers only: totals returned by the dashboard API (no invented per-day series).
+const chartData = computed(() => {
+  const t = dashboard.value?.stats?.tasks
+  if (!t) return null
   return {
-    labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+    labels: ['الإجمالي', 'مكتملة', 'معلّقة'],
     datasets: [
       {
-        label: 'المهام الإجمالية',
-        data: [total * 0.4, total * 0.6, total * 0.5, total * 0.8, total * 0.7, total * 0.9, total],
-        borderColor: '#4f46e5',
-        backgroundColor: isDarkTheme ? 'rgba(79, 70, 229, 0.15)' : 'rgba(79, 70, 229, 0.08)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2.5,
-      },
-      {
-        label: 'المهام المكتملة',
-        data: [
-          completed * 0.3,
-          completed * 0.5,
-          completed * 0.4,
-          completed * 0.7,
-          completed * 0.6,
-          completed * 0.8,
-          completed,
-        ],
-        borderColor: '#10b981',
-        backgroundColor: 'transparent',
-        borderDash: [5, 5],
-        borderWidth: 1.5,
-        tension: 0.3,
+        label: 'المهام',
+        data: [t.total ?? 0, t.completed ?? 0, t.pending ?? 0],
+        backgroundColor: ['#6366f1', '#10b981', '#f59e0b'],
+        borderRadius: 10,
+        maxBarThickness: 64,
       },
     ],
   }
 })
 
-const lineChartOptions = computed(() => ({
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
+      display: false,
       position: 'top',
       rtl: true,
       labels: {
@@ -560,25 +536,44 @@ const refreshDashboard = async () => {
   await loadDashboard()
   toast.success('تم تحديث بيانات اللوحة بنجاح من الخادم!')
 }
-console.log('refreshDashboard: ', refreshDashboard)
 
+// Real export: downloads the KPI numbers currently loaded from the API as a CSV file (client-side).
 const exportReport = () => {
-  toast.info('جاري إعداد التقرير التراكمي...', {
-    description: 'سيتم تحميل الملف خلال لحظات.',
-  })
+  if (!dashboard.value) {
+    toast.error('لا توجد بيانات محمّلة للتصدير.')
+    return
+  }
+  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
+  const rows = [['المؤشر', 'القيمة', 'نشط/معلق', 'مكتمل']]
+  statsList.value.forEach((x) => rows.push([x.title, x.value, x.activeText, x.completedText]))
+  const csv = '\ufeff' + rows.map((r) => r.map(esc).join(',')).join('\n')
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `so_iam_os_dashboard_${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+  toast.success('تم تصدير التقرير.')
 }
 
 const openNewItemModal = () => {
   isModalOpen.value = true
 }
 
-const submitNewItem = () => {
-  if (!newItemForm.value.name) return
-  isModalOpen.value = false
-  toast.success('تمت إضافة المهمة بنجاح!', {
-    description: `المهمة "${newItemForm.value.name}" أضيفت لقاعدة البيانات.`,
-  })
-  newItemForm.value.name = ''
-  newItemForm.value.service = null
+const submitNewItem = async () => {
+  const title = newItemForm.value.name.trim()
+  if (!title || creating.value) return
+  creating.value = true
+  try {
+    await createTask({ title, priority: newItemForm.value.priority })
+    isModalOpen.value = false
+    toast.success('تمت إضافة المهمة.', { description: `"${title}"` })
+    newItemForm.value = { name: '', priority: 'medium' }
+    await loadDashboard()
+  } catch (err) {
+    toast.error('تعذر إنشاء المهمة', { description: err?.response?.data?.detail || err?.message })
+  } finally {
+    creating.value = false
+  }
 }
 </script>

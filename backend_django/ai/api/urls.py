@@ -2,12 +2,15 @@ from django.urls import path
 
 from ai.api.views import AITopicChatView, AIAgentPlanView, AIChatView, AIConversationDetailView, AIConversationListCreateView, AISettingsView, AIProviderCredentialListCreateView, AIProviderCredentialDetailView, AIBudgetDetailView, AIWorkflowListCreateView, AIWorkflowDetailView, AIWorkflowRunsView, AIProviderModelsView, AIProviderTestView, AIProviderListView, AIUsageView, AIContextInspectView, AIWorkflowValidateView, AITaskProposalView, AIAgentSelectView, AIExecutionListView, AIBudgetListCreateView, AIAuditListView, AIPromptProfileListCreateView, AIPromptProfileDetailView, AILearningPlanPreviewView, AILearningPlanApproveView, AILearningPlanAsyncView, AITaskStatusView, AIFeedbackView, AIHealthView, AICapabilitiesView, AIChatStreamView
 
+from ai.api.views.business_insight_views import AIBusinessInsightView
+
 app_name = "ai"
 
 urlpatterns = [
     path("agents/plan/", AIAgentPlanView.as_view(), name="agent-plan"),
     path("topic-chat/", AITopicChatView.as_view(), name="ai-topic-chat"),
     path("chat/", AIChatView.as_view(), name="chat"),
+    path("insights/business/", AIBusinessInsightView.as_view(), name="business-insight"),
     path("chat/stream/", AIChatStreamView.as_view(), name="chat-stream"),
     path("health/", AIHealthView.as_view(), name="health"),
     path("capabilities/", AICapabilitiesView.as_view(), name="capabilities"),

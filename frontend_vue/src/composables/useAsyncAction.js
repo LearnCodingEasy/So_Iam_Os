@@ -31,29 +31,34 @@ import { useApiTracker } from '@/composables/useApiTracker'
 
 export function useAsyncAction() {
   const loading = ref(false)
-  const toast   = useToast()
+  const toast = useToast()
   const tracker = useApiTracker()
 
   // ─────────────────────────────────────────
   // run() — الـ UX Engine
   // ─────────────────────────────────────────
   const run = async (apiFn, options = {}) => {
-    if (loading.value) return  // ✅ Guard: منع double-submit
+    if (loading.value) return // ✅ Guard: منع double-submit
 
     const {
-      validate       = null,
+      validate = null,
       successSummary = null,
-      successDetail  = null,
-      errorSummary   = 'حصل خطأ',
-      onSuccess      = null,
-      onError        = null,
+      successDetail = null,
+      errorSummary = 'حصل خطأ',
+      onSuccess = null,
+      onError = null,
     } = options
 
     // ✅ Validation — قبل أي API call
     if (validate) {
       const validErr = validate()
       if (validErr) {
-        toast.add({ severity: 'warn', summary: '⚠️ تحقق من البيانات', detail: validErr, life: 4000 })
+        toast.add({
+          severity: 'warn',
+          summary: '⚠️ تحقق من البيانات',
+          detail: validErr,
+          life: 4000,
+        })
         return
       }
     }
@@ -65,31 +70,41 @@ export function useAsyncAction() {
       const result = await tracker.execute({ serviceFn: apiFn })
 
       if (successSummary)
-        toast.add({ severity: 'success', summary: `✅ ${successSummary}`, detail: successDetail, life: 4000 })
+        toast.add({
+          severity: 'success',
+          summary: `✅ ${successSummary}`,
+          detail: successDetail,
+          life: 4000,
+        })
 
       if (onSuccess) await onSuccess(result)
       return result
-
     } catch (err) {
       // ✅ Smart error: يقرأ Django 400 validation errors field-by-field
       const status = err?.response?.status
-      const body   = err?.response?.data
-      let detail   = err?.message || 'خطأ غير متوقع'
+      const body = err?.response?.data
+      let detail = err?.message || 'خطأ غير متوقع'
 
       if (status === 400 && body && typeof body === 'object') {
         detail = Object.entries(body)
           .map(([f, m]) => `${f}: ${Array.isArray(m) ? m[0] : m}`)
-          .slice(0, 3).join(' | ')
-      } else if (status === 401) { detail = 'انتهت جلستك — سجّل دخول من جديد'
-      } else if (status === 403) { detail = 'مش عندك صلاحية لهذه العملية'
-      } else if (status === 404) { detail = 'العنصر المطلوب غير موجود'
-      } else if (status === 413) { detail = 'الملف كبير جداً — الحد الأقصى 5MB'
-      } else if (status === 500) { detail = 'خطأ في السيرفر — حاول مرة أخرى' }
+          .slice(0, 3)
+          .join(' | ')
+      } else if (status === 401) {
+        detail = 'انتهت جلستك — سجّل دخول من جديد'
+      } else if (status === 403) {
+        detail = 'مش عندك صلاحية لهذه العملية'
+      } else if (status === 404) {
+        detail = 'العنصر المطلوب غير موجود'
+      } else if (status === 413) {
+        detail = 'الملف كبير جداً — الحد الأقصى 5MB'
+      } else if (status === 500) {
+        detail = 'خطأ في السيرفر — حاول مرة أخرى'
+      }
 
       toast.add({ severity: 'error', summary: `❌ ${errorSummary}`, detail, life: 6000 })
       if (onError) onError(err)
       throw err
-
     } finally {
       loading.value = false
     }

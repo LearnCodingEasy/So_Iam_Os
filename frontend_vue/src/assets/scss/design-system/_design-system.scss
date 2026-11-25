@@ -1,0 +1,490 @@
+// =====================================================================
+// SO_IAM_OS Design System — tokens, primitives, shell polish.
+// Additive: uses --ds-* variables and .ds-* classes; falls back to PrimeVue tokens.
+// =====================================================================
+:root {
+  --ds-accent-1: #6366f1;
+  --ds-accent-2: #22d3ee;
+  --ds-accent-3: #a855f7;
+  --ds-ink: #1e1b4b;
+  --ds-danger: #ef4444;
+  --ds-success: #10b981;
+  --ds-warn: #f59e0b;
+  --ds-info: #0ea5e9;
+  --ds-radius: 18px;
+  --ds-radius-sm: 12px;
+  --ds-surface: var(--p-content-background, #ffffff);
+  --ds-surface-2: color-mix(in srgb, var(--ds-accent-1) 5%, var(--ds-surface));
+  --ds-border: var(--p-content-border-color, rgba(148, 163, 184, 0.28));
+  --ds-text: var(--p-text-color, #0f172a);
+  --ds-muted: var(--p-text-muted-color, #64748b);
+  --ds-glass: rgba(255, 255, 255, 0.72);
+  --ds-glass-border: rgba(255, 255, 255, 0.55);
+  --ds-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.05);
+  --ds-shadow-md: 0 10px 30px rgba(79, 70, 229, 0.12);
+  --ds-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ds-gradient: linear-gradient(
+    135deg,
+    var(--ds-accent-1),
+    var(--ds-accent-3) 55%,
+    var(--ds-accent-2)
+  );
+}
+
+html.p-dark,
+:root[data-theme='dark'] {
+  --ds-accent-1: #818cf8;
+  --ds-accent-2: #22d3ee;
+  --ds-accent-3: #c084fc;
+  --ds-ink: #e0e7ff;
+  --ds-surface: var(--p-content-background, #111827);
+  --ds-glass: rgba(17, 24, 39, 0.72);
+  --ds-glass-border: rgba(148, 163, 184, 0.18);
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.3);
+  --ds-shadow-md: 0 12px 34px rgba(0, 0, 0, 0.45);
+}
+
+// ---------- Primitives ----------
+.ds-gradient-text {
+  background: var(--ds-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ds-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ds-accent-1);
+}
+.ds-glass {
+  background: var(--ds-glass);
+  border: 1px solid var(--ds-glass-border);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.ds-lift {
+  transition:
+    transform 220ms var(--ds-ease),
+    box-shadow 220ms var(--ds-ease),
+    border-color 220ms;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ds-shadow-md);
+  }
+}
+
+// ---------- Illustrations ----------
+.ds-illus {
+  width: 100%;
+  height: auto;
+  &__shadow {
+    fill: var(--ds-accent-1);
+    opacity: 0.1;
+  }
+  &__soft {
+    fill: var(--ds-accent-1);
+    opacity: 0.08;
+  }
+  &__card {
+    fill: var(--ds-surface);
+    stroke: var(--ds-border);
+    stroke-width: 2;
+  }
+  &__chip {
+    fill: var(--ds-accent-2);
+    opacity: 0.55;
+  }
+  &__float {
+    animation: ds-float 5s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+@keyframes ds-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+// ---------- Page header ----------
+.ds-pagehead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  padding: clamp(1.1rem, 2.4vw, 1.9rem);
+  border-radius: var(--ds-radius);
+  border: 1px solid var(--ds-border);
+  background: linear-gradient(135deg, var(--ds-surface-2), var(--ds-surface));
+  box-shadow: var(--ds-shadow-sm);
+  &__bg span {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(46px);
+    opacity: 0.35;
+    pointer-events: none;
+    &:first-child {
+      width: 220px;
+      height: 220px;
+      inset-block-start: -90px;
+      inset-inline-end: -40px;
+      background: var(--ds-accent-1);
+      animation: ds-drift 14s ease-in-out infinite alternate;
+    }
+    &:last-child {
+      width: 180px;
+      height: 180px;
+      inset-block-end: -90px;
+      inset-inline-start: 18%;
+      background: var(--ds-accent-2);
+      animation: ds-drift 18s ease-in-out infinite alternate-reverse;
+    }
+  }
+  &__copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    h1 {
+      margin: 0.35rem 0 0.4rem;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    p {
+      margin: 0;
+      max-width: 62ch;
+      color: var(--ds-muted);
+      line-height: 1.8;
+    }
+  }
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  &__art {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 clamp(150px, 20vw, 230px);
+  }
+  @media (max-width: 720px) {
+    &__art {
+      display: none;
+    }
+  }
+}
+@keyframes ds-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(26px, 18px) scale(1.12);
+  }
+}
+
+// ---------- Stat tile ----------
+.ds-stat {
+  --tone: var(--ds-accent-1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-surface);
+  box-shadow: var(--ds-shadow-sm);
+  overflow: hidden;
+  transition:
+    transform 220ms var(--ds-ease),
+    box-shadow 220ms var(--ds-ease);
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 18% 18%;
+    width: 4px;
+    border-radius: 4px;
+    background: var(--tone);
+  }
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ds-shadow-md);
+  }
+  &.ds-tone-success {
+    --tone: var(--ds-success);
+  }
+  &.ds-tone-warn {
+    --tone: var(--ds-warn);
+  }
+  &.ds-tone-danger {
+    --tone: var(--ds-danger);
+  }
+  &.ds-tone-info {
+    --tone: var(--ds-info);
+  }
+  &__icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 1.15rem;
+    color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 14%, transparent);
+  }
+  &__body {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  &__label {
+    font-size: 0.8rem;
+    color: var(--ds-muted);
+  }
+  &__value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  &__hint {
+    color: var(--ds-muted);
+    font-size: 0.72rem;
+  }
+}
+
+// ---------- Empty / error / loading ----------
+.ds-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--ds-border);
+  border-radius: var(--ds-radius);
+  background: var(--ds-surface-2);
+  &__art {
+    width: min(230px, 60%);
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  p {
+    margin: 0;
+    max-width: 46ch;
+    color: var(--ds-muted);
+    line-height: 1.8;
+  }
+  &--error {
+    border-color: color-mix(in srgb, var(--ds-danger) 40%, transparent);
+    background: color-mix(in srgb, var(--ds-danger) 5%, var(--ds-surface));
+  }
+}
+
+// ---------- Interaction polish (global, non-invasive) ----------
+:where(a, button, [role='button'], input, select, textarea, .p-button):focus-visible {
+  outline: 2px solid var(--ds-accent-1);
+  outline-offset: 2px;
+}
+.p-button {
+  transition:
+    transform 160ms var(--ds-ease),
+    box-shadow 160ms var(--ds-ease),
+    background-color 160ms;
+}
+.p-button:not(:disabled):active {
+  transform: scale(0.97);
+}
+.p-skeleton::after {
+  animation-duration: 1.3s;
+}
+
+// ---------- App shell ----------
+.app-layout {
+  background:
+    radial-gradient(
+      900px 420px at 100% -10%,
+      color-mix(in srgb, var(--ds-accent-1) 9%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 380px at 0% 110%,
+      color-mix(in srgb, var(--ds-accent-2) 8%, transparent),
+      transparent 60%
+    ),
+    var(--p-content-background, var(--p-surface-ground, #f6f7fb));
+
+  .sidebar {
+    background: var(--ds-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition:
+      transform 280ms var(--ds-ease),
+      width 280ms var(--ds-ease);
+    scrollbar-width: thin;
+
+    .brand-mark {
+      background: var(--ds-gradient);
+      box-shadow: 0 8px 20px color-mix(in srgb, var(--ds-accent-1) 40%, transparent);
+      font-size: 1.1rem;
+    }
+    .nav-label {
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+    .nav-item {
+      position: relative;
+      transition:
+        background-color 160ms,
+        color 160ms,
+        transform 160ms var(--ds-ease);
+      &:hover {
+        background: color-mix(in srgb, var(--ds-accent-1) 8%, transparent);
+        transform: translateX(-2px);
+      }
+      &.active {
+        color: var(--ds-accent-1);
+        background: color-mix(in srgb, var(--ds-accent-1) 12%, transparent);
+        &::before {
+          content: '';
+          position: absolute;
+          inset-inline-start: -0.75rem;
+          inset-block: 22% 22%;
+          width: 4px;
+          border-radius: 4px;
+          background: var(--ds-gradient);
+        }
+      }
+    }
+    .nav-icon {
+      font-size: 1.05rem;
+    }
+    .collapse-btn {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      transition:
+        transform 200ms var(--ds-ease),
+        background-color 160ms;
+    }
+    .collapse-btn:hover {
+      background: color-mix(in srgb, var(--ds-accent-1) 10%, transparent);
+    }
+    &.collapsed .nav-item {
+      justify-content: center;
+      padding-inline: 0;
+    }
+    &.collapsed .collapse-btn {
+      align-self: center;
+    }
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: var(--ds-glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    .icon-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 12px;
+      transition:
+        transform 160ms var(--ds-ease),
+        background-color 160ms;
+      &:hover {
+        transform: translateY(-2px);
+        background: color-mix(in srgb, var(--ds-accent-1) 10%, transparent);
+      }
+    }
+  }
+
+  .mobile-backdrop {
+    display: none;
+  }
+
+  // The shell is RTL (Arabic UI): off-canvas sidebar must slide in from the right.
+  @media (max-width: 900px) {
+    .sidebar {
+      transform: translateX(110%);
+    }
+    &[dir='ltr'] .sidebar {
+      transform: translateX(-110%);
+    }
+    &.mobile-menu-open .sidebar {
+      transform: translateX(0);
+    }
+    .mobile-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 19;
+      border: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+    }
+  }
+}
+
+// ---------- Page-level entrance (route transition) ----------
+.ds-page-enter-active {
+  transition: opacity 260ms ease;
+}
+.ds-page-enter-from {
+  opacity: 0;
+}
+
+// ---------- Reduced motion ----------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ---------- Cards inside the app shell (PrimeVue Card, legacy page cards) ----------
+.app-layout .page-content {
+  .p-card {
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius-sm);
+    box-shadow: var(--ds-shadow-sm);
+    transition:
+      box-shadow 220ms var(--ds-ease),
+      border-color 220ms;
+    &:hover {
+      box-shadow: var(--ds-shadow-md);
+      border-color: color-mix(in srgb, var(--ds-accent-1) 35%, var(--ds-border));
+    }
+  }
+  .p-tab-active,
+  .p-tab[data-p-active='true'] {
+    color: var(--ds-accent-1);
+  }
+}

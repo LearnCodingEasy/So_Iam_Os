@@ -1,7 +1,7 @@
 import api from '@/services/Shared/api'
 import { domainEndpoints as e } from '@/services/Shared/endpoints'
-const data = r => r?.data ?? r
-const list = r => Array.isArray(data(r)) ? data(r) : (data(r)?.results || [])
+const data = (r) => r?.data ?? r
+const list = (r) => (Array.isArray(data(r)) ? data(r) : data(r)?.results || [])
 export const financeApi = {
   categories: () => api.get(e.financeCategories).then(list),
   category: (id) => api.get(`${e.financeCategories}${id}/`).then(data),
@@ -17,7 +17,8 @@ export const financeApi = {
   history: (params = {}) => api.get(e.financeHistory, { params }).then(data),
   spending: () => api.get(e.financeSpending).then(data),
   addTransaction: (payload) => api.post(e.financeTransactions, payload).then(data),
-  updateTransaction: (id, payload) => api.patch(`${e.financeTransactions}${id}/`, payload).then(data),
+  updateTransaction: (id, payload) =>
+    api.patch(`${e.financeTransactions}${id}/`, payload).then(data),
   removeTransaction: (id) => api.delete(`${e.financeTransactions}${id}/`),
 
   budgets: () => api.get(e.financeBudgets).then(list),
@@ -45,7 +46,8 @@ export const financeApi = {
   subscriptions: () => api.get(e.financeSubscriptions).then(list),
   subscription: (id) => api.get(`${e.financeSubscriptions}${id}/`).then(data),
   createSubscription: (payload) => api.post(e.financeSubscriptions, payload).then(data),
-  updateSubscription: (id, payload) => api.patch(`${e.financeSubscriptions}${id}/`, payload).then(data),
+  updateSubscription: (id, payload) =>
+    api.patch(`${e.financeSubscriptions}${id}/`, payload).then(data),
   removeSubscription: (id) => api.delete(`${e.financeSubscriptions}${id}/`),
 
   loans: () => api.get(e.financeLoans).then(list),
@@ -56,7 +58,8 @@ export const financeApi = {
 
   recurringCashflows: () => api.get(e.financeRecurringCashflows).then(list),
   createRecurringCashflow: (payload) => api.post(e.financeRecurringCashflows, payload).then(data),
-  updateRecurringCashflow: (id, payload) => api.patch(`${e.financeRecurringCashflows}${id}/`, payload).then(data),
+  updateRecurringCashflow: (id, payload) =>
+    api.patch(`${e.financeRecurringCashflows}${id}/`, payload).then(data),
   removeRecurringCashflow: (id) => api.delete(`${e.financeRecurringCashflows}${id}/`),
 
   profile: () => api.get(e.financeProfile).then(list),

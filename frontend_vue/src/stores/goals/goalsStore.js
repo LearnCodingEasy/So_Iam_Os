@@ -44,5 +44,17 @@ export const useGoalsStore = defineStore('goals', () => {
     await Promise.all([fetchGoals(), fetchAnalytics()])
   }
 
-  return { items, analytics, count, next, previous, loading, analyticsLoading, error, fetchGoals, fetchAnalytics, refresh }
+  return {
+    items,
+    analytics,
+    count,
+    next,
+    previous,
+    loading,
+    analyticsLoading,
+    error,
+    fetchGoals,
+    fetchAnalytics,
+    refresh,
+  }
 })

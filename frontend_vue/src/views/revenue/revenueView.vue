@@ -1,9 +1,15 @@
 <template>
   <div class="revenue-page">
-    <header class="revenue-head">
-      <h1>Revenue</h1>
-      <Button label="Add" icon="pi pi-plus" @click="openCreate" />
-    </header>
+    <PageHeader
+      eyebrow="Business"
+      title="Revenue"
+      description="Revenue streams and income records"
+      illustration="finance"
+    >
+      <template #actions>
+        <Button label="Add" icon="pi pi-plus" @click="openCreate" />
+      </template>
+    </PageHeader>
 
     <Message v-if="store.error" severity="error" :closable="false">
       {{ errorText(store.error) }}
@@ -36,36 +42,75 @@
 
     <div v-if="tab === 'records'" class="revenue-fromsale">
       <InputText v-model="saleId" placeholder="Sale ID" inputmode="numeric" />
-      <Button label="Recognise sale as revenue" icon="pi pi-download" :disabled="!/^\d+$/.test(saleId)" @click="fromSale" />
+      <Button
+        label="Recognise sale as revenue"
+        icon="pi pi-download"
+        :disabled="!/^\d+$/.test(saleId)"
+        @click="fromSale"
+      />
     </div>
 
     <DataTable :value="rows" :loading="store.loading" stripedRows paginator :rows="10" dataKey="id">
-      <template #empty>No {{ currentTab.label.toLowerCase() }} yet. Use “Add” to create one.</template>
+      <template #empty
+        >No {{ currentTab.label.toLowerCase() }} yet. Use “Add” to create one.</template
+      >
       <Column v-for="c in currentTab.columns" :key="c.field" :field="c.field" :header="c.header">
         <template #body="{ data: row }">{{ display(row, c) }}</template>
       </Column>
       <Column header="" style="width: 8rem">
         <template #body="{ data: row }">
           <Button icon="pi pi-pencil" text rounded aria-label="Edit" @click="openEdit(row)" />
-          <Button icon="pi pi-trash" text rounded severity="danger" aria-label="Delete" @click="askDelete(row)" />
+          <Button
+            icon="pi pi-trash"
+            text
+            rounded
+            severity="danger"
+            aria-label="Delete"
+            @click="askDelete(row)"
+          />
         </template>
       </Column>
     </DataTable>
 
-    <Dialog v-model:visible="dialog" modal :header="(editingId ? 'Edit ' : 'New ') + currentTab.singular" :style="{ width: '28rem' }">
+    <Dialog
+      v-model:visible="dialog"
+      modal
+      :header="(editingId ? 'Edit ' : 'New ') + currentTab.singular"
+      :style="{ width: '28rem' }"
+    >
       <form class="revenue-form" @submit.prevent="submit">
         <div v-for="f in currentTab.fields" :key="f.name" class="field">
           <label :for="'rev-' + f.name">{{ f.label }}</label>
           <select v-if="f.type === 'select'" :id="'rev-' + f.name" v-model="form[f.name]">
             <option v-if="!f.required" value="">—</option>
-            <option v-for="o in optionsFor(f)" :key="o.value" :value="o.value">{{ o.label }}</option>
+            <option v-for="o in optionsFor(f)" :key="o.value" :value="o.value">
+              {{ o.label }}
+            </option>
           </select>
-          <Textarea v-else-if="f.type === 'textarea'" :id="'rev-' + f.name" v-model="form[f.name]" rows="3" />
-          <input v-else-if="f.type === 'checkbox'" :id="'rev-' + f.name" v-model="form[f.name]" type="checkbox" />
-          <InputText v-else :id="'rev-' + f.name" v-model="form[f.name]" :type="f.type || 'text'" :inputmode="f.type === 'money' ? 'decimal' : undefined" />
+          <Textarea
+            v-else-if="f.type === 'textarea'"
+            :id="'rev-' + f.name"
+            v-model="form[f.name]"
+            rows="3"
+          />
+          <input
+            v-else-if="f.type === 'checkbox'"
+            :id="'rev-' + f.name"
+            v-model="form[f.name]"
+            type="checkbox"
+          />
+          <InputText
+            v-else
+            :id="'rev-' + f.name"
+            v-model="form[f.name]"
+            :type="f.type || 'text'"
+            :inputmode="f.type === 'money' ? 'decimal' : undefined"
+          />
           <small v-if="fieldErrors[f.name]" class="err">{{ fieldErrors[f.name] }}</small>
         </div>
-        <small v-if="fieldErrors.detail || fieldErrors.non_field_errors" class="err">{{ fieldErrors.detail || fieldErrors.non_field_errors }}</small>
+        <small v-if="fieldErrors.detail || fieldErrors.non_field_errors" class="err">{{
+          fieldErrors.detail || fieldErrors.non_field_errors
+        }}</small>
         <footer>
           <Button type="button" label="Cancel" text @click="dialog = false" />
           <Button type="submit" label="Save" :loading="saving" />
@@ -84,6 +129,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/components/ui/PageHeader.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
@@ -107,7 +153,9 @@ const enumOptions = (values) => values.map((v) => ({ value: v, label: v }))
 
 const tabs = [
   {
-    key: 'records', label: 'Records', singular: 'Record',
+    key: 'records',
+    label: 'Records',
+    singular: 'Record',
     columns: [
       { field: 'received_on', header: 'Received' },
       { field: 'amount', header: 'Amount' },
@@ -125,7 +173,9 @@ const tabs = [
     ],
   },
   {
-    key: 'streams', label: 'Streams', singular: 'Stream',
+    key: 'streams',
+    label: 'Streams',
+    singular: 'Stream',
     columns: [
       { field: 'name', header: 'Name' },
       { field: 'source', header: 'Source', ref: 'sources' },
@@ -134,12 +184,21 @@ const tabs = [
     fields: [
       { name: 'name', label: 'Name', required: true },
       { name: 'source', label: 'Source', type: 'select', ref: 'sources', required: true },
-      { name: 'status', label: 'Status', type: 'select', options: enumOptions(STREAM_STATUS), required: true, default: 'active' },
+      {
+        name: 'status',
+        label: 'Status',
+        type: 'select',
+        options: enumOptions(STREAM_STATUS),
+        required: true,
+        default: 'active',
+      },
       { name: 'description', label: 'Description', type: 'textarea' },
     ],
   },
   {
-    key: 'sources', label: 'Sources', singular: 'Source',
+    key: 'sources',
+    label: 'Sources',
+    singular: 'Source',
     columns: [
       { field: 'name', header: 'Name' },
       { field: 'source_type', header: 'Type' },
@@ -147,13 +206,22 @@ const tabs = [
     ],
     fields: [
       { name: 'name', label: 'Name', required: true },
-      { name: 'source_type', label: 'Type', type: 'select', options: enumOptions(SOURCE_TYPES), required: true, default: 'service' },
+      {
+        name: 'source_type',
+        label: 'Type',
+        type: 'select',
+        options: enumOptions(SOURCE_TYPES),
+        required: true,
+        default: 'service',
+      },
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'is_active', label: 'Active', type: 'checkbox', default: true },
     ],
   },
   {
-    key: 'recurring', label: 'Recurring', singular: 'Recurring item',
+    key: 'recurring',
+    label: 'Recurring',
+    singular: 'Recurring item',
     columns: [
       { field: 'name', header: 'Name' },
       { field: 'amount', header: 'Amount' },
@@ -167,8 +235,22 @@ const tabs = [
       { name: 'name', label: 'Name' },
       { name: 'amount', label: 'Amount', type: 'money', required: true },
       { name: 'currency', label: 'Currency (3 letters)', default: 'USD' },
-      { name: 'interval', label: 'Interval', type: 'select', options: enumOptions(INTERVALS), required: true, default: 'monthly' },
-      { name: 'status', label: 'Status', type: 'select', options: enumOptions(RECURRING_STATUS), required: true, default: 'active' },
+      {
+        name: 'interval',
+        label: 'Interval',
+        type: 'select',
+        options: enumOptions(INTERVALS),
+        required: true,
+        default: 'monthly',
+      },
+      {
+        name: 'status',
+        label: 'Status',
+        type: 'select',
+        options: enumOptions(RECURRING_STATUS),
+        required: true,
+        default: 'active',
+      },
       { name: 'start_date', label: 'Start date', type: 'date', required: true },
       { name: 'end_date', label: 'End date', type: 'date' },
     ],
@@ -188,7 +270,8 @@ function display(row, col) {
 }
 const optionsFor = (f) => f.options || store[f.ref].map((x) => ({ value: x.id, label: x.name }))
 
-const tileValues = (obj) => Object.entries(obj || {}).map(([currency, amount]) => ({ currency, amount }))
+const tileValues = (obj) =>
+  Object.entries(obj || {}).map(([currency, amount]) => ({ currency, amount }))
 const tiles = computed(() => [
   { label: 'Total received', values: tileValues(store.summary?.totals) },
   { label: 'MRR', values: tileValues(store.mrr?.mrr) },
@@ -198,7 +281,10 @@ const tiles = computed(() => [
 function errorText(e) {
   const d = e?.response?.data
   if (d?.detail) return d.detail
-  if (d && typeof d === 'object') return Object.entries(d).map(([k, v]) => `${k}: ${[].concat(v).join(' ')}`).join(' · ')
+  if (d && typeof d === 'object')
+    return Object.entries(d)
+      .map(([k, v]) => `${k}: ${[].concat(v).join(' ')}`)
+      .join(' · ')
   return e?.message || 'Request failed.'
 }
 
@@ -260,7 +346,10 @@ async function submit() {
 }
 
 const confirm = reactive({ visible: false, id: null })
-const askDelete = (row) => { confirm.id = row.id; confirm.visible = true }
+const askDelete = (row) => {
+  confirm.id = row.id
+  confirm.visible = true
+}
 async function doDelete() {
   try {
     await store.remove(tab.value, confirm.id)
@@ -279,7 +368,12 @@ async function fromSale() {
     saleId.value = ''
     toast.add({ severity: 'success', summary: 'Sale recognised as revenue', life: 2500 })
   } catch (e) {
-    toast.add({ severity: 'error', summary: 'Could not record sale', detail: errorText(e), life: 5000 })
+    toast.add({
+      severity: 'error',
+      summary: 'Could not record sale',
+      detail: errorText(e),
+      life: 5000,
+    })
   }
 }
 
@@ -288,13 +382,44 @@ onMounted(load)
 </script>
 
 <style scoped>
-.revenue-page { padding: 1rem; display: grid; gap: 1rem; }
-.revenue-head { display: flex; justify-content: space-between; align-items: center; }
-.revenue-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
-.revenue-tabs, .revenue-fromsale { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.revenue-form { display: grid; gap: 0.75rem; }
-.revenue-form .field { display: grid; gap: 0.25rem; }
-.revenue-form footer { display: flex; justify-content: flex-end; gap: 0.5rem; }
-.err { color: var(--p-red-500, #dc2626); }
-.muted { opacity: 0.6; }
+.revenue-page {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+.revenue-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.revenue-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+.revenue-tabs,
+.revenue-fromsale {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.revenue-form {
+  display: grid;
+  gap: 0.75rem;
+}
+.revenue-form .field {
+  display: grid;
+  gap: 0.25rem;
+}
+.revenue-form footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.err {
+  color: var(--p-red-500, #dc2626);
+}
+.muted {
+  opacity: 0.6;
+}
 </style>

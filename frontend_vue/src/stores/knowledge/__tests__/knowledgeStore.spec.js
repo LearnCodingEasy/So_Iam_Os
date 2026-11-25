@@ -29,7 +29,12 @@ describe('knowledge store', () => {
   })
 
   it('normalizes paginated responses and retains pagination metadata', async () => {
-    knowledgeService.getAll.mockResolvedValue({ count: 1, next: '/next', previous: null, results: [{ id: 4 }] })
+    knowledgeService.getAll.mockResolvedValue({
+      count: 1,
+      next: '/next',
+      previous: null,
+      results: [{ id: 4 }],
+    })
     const store = useKnowledgeStore()
     await store.fetchItems({ search: 'vue' })
     expect(store.items).toEqual([{ id: 4 }])
@@ -45,7 +50,10 @@ describe('knowledge store', () => {
     knowledgeService.update.mockResolvedValue({ id: 1, title: 'Updated' })
     await store.createItem({ title: 'New' })
     await store.updateItem(1, { title: 'Updated' })
-    expect(store.items).toEqual([{ id: 2, title: 'New' }, { id: 1, title: 'Updated' }])
+    expect(store.items).toEqual([
+      { id: 2, title: 'New' },
+      { id: 1, title: 'Updated' },
+    ])
     expect(store.count).toBe(1)
   })
 
@@ -80,9 +88,14 @@ describe('knowledge store', () => {
   it('reports a failed upload instead of claiming success', async () => {
     const store = useKnowledgeStore()
     knowledgeService.create.mockResolvedValue({ id: 9, title: 'Doc' })
-    knowledgeService.uploadFile.mockRejectedValue({ response: { data: { file: ['Unsupported type'] } } })
+    knowledgeService.uploadFile.mockRejectedValue({
+      response: { data: { file: ['Unsupported type'] } },
+    })
     await store.createItem({ title: 'Doc', files: [new File(['x'], 'bad.exe')] })
     expect(store.lastUploadReport.uploaded).toHaveLength(0)
-    expect(store.lastUploadReport.failed[0]).toEqual({ name: 'bad.exe', message: 'Unsupported type' })
+    expect(store.lastUploadReport.failed[0]).toEqual({
+      name: 'bad.exe',
+      message: 'Unsupported type',
+    })
   })
 })

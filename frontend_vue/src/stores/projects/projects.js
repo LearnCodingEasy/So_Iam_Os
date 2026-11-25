@@ -40,16 +40,20 @@ export const useProjectsStore = defineStore('projects', () => {
       items.value = [item, ...items.value]
       count.value += 1
       return item
-    } finally { saving.value = false }
+    } finally {
+      saving.value = false
+    }
   }
 
   async function updateProject(id, payload) {
     saving.value = true
     try {
       const item = await projectsApi.updateProject(id, payload)
-      items.value = items.value.map((row) => String(row.id) === String(id) ? item : row)
+      items.value = items.value.map((row) => (String(row.id) === String(id) ? item : row))
       return item
-    } finally { saving.value = false }
+    } finally {
+      saving.value = false
+    }
   }
 
   async function deleteProject(id) {
@@ -58,5 +62,18 @@ export const useProjectsStore = defineStore('projects', () => {
     count.value = Math.max(0, count.value - 1)
   }
 
-  return { items, count, next, previous, loading, saving, error, fetchProjects, getProject, createProject, updateProject, deleteProject }
+  return {
+    items,
+    count,
+    next,
+    previous,
+    loading,
+    saving,
+    error,
+    fetchProjects,
+    getProject,
+    createProject,
+    updateProject,
+    deleteProject,
+  }
 })

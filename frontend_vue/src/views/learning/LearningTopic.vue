@@ -734,9 +734,7 @@ const loadTopicChat = async () => {
   try {
     const stored = localStorage.getItem(`topic_chat_${topic.value?.id}`)
     if (!stored) return
-    const data = (
-      await api.get(endpoints.ai.conversation(stored))
-    ).data
+    const data = (await api.get(endpoints.ai.conversation(stored))).data
     chatMessages.value = (data.messages || [])
       .filter((m) => ['user', 'assistant'].includes(m.role))
       .map((m) => ({ role: m.role, content: m.content }))

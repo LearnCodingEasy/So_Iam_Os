@@ -6,8 +6,13 @@ import * as api from '@/services/Marketing/Marketing'
 vi.mock('@/services/Marketing/Marketing', () => {
   const res = () => ({ list: vi.fn(), create: vi.fn(), update: vi.fn(), remove: vi.fn() })
   return {
-    campaigns: res(), content: res(), leadSources: res(), channels: res(),
-    getCampaignOverview: vi.fn(), getCampaignPerformance: vi.fn(), publishContent: vi.fn(),
+    campaigns: res(),
+    content: res(),
+    leadSources: res(),
+    channels: res(),
+    getCampaignOverview: vi.fn(),
+    getCampaignPerformance: vi.fn(),
+    publishContent: vi.fn(),
   }
 })
 

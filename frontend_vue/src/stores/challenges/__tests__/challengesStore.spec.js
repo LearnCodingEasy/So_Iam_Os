@@ -5,7 +5,13 @@ import * as api from '@/services/Challenges/challenges'
 
 vi.mock('@/services/Challenges/challenges', () => {
   const resource = () => ({ list: vi.fn(), create: vi.fn(), update: vi.fn(), remove: vi.fn() })
-  return { challenges: resource(), steps: resource(), attempts: resource(), progress: resource(), completeStep: vi.fn() }
+  return {
+    challenges: resource(),
+    steps: resource(),
+    attempts: resource(),
+    progress: resource(),
+    completeStep: vi.fn(),
+  }
 })
 
 const prime = () => {

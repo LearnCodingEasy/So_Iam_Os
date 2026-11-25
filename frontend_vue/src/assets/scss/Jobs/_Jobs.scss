@@ -1,4 +1,3 @@
-
 .jobs-page {
   max-width: 1500px;
   margin: auto;
@@ -222,7 +221,14 @@ small {
 .feature-grid small {
   margin-top: 2px;
 }
-.scraper-builder{display:grid;gap:8px;padding:10px;border:1px dashed #334155;border-radius:10px}.form {
+.scraper-builder {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px dashed #334155;
+  border-radius: 10px;
+}
+.form {
   display: grid;
   gap: 12px;
 }
@@ -291,10 +297,17 @@ small {
   }
 }
 
-
-
 /* Added job-matching and AI cover-letter helpers */
-.jobs-help-content { line-height: 1.65; }
-.jobs-help-content h3 { margin: 1rem 0 .35rem; }
-.jobs-help-content p, .helper-note { color: var(--p-text-muted-color, #64748b); }
-.letter-editor { width: 100%; }
+.jobs-help-content {
+  line-height: 1.65;
+}
+.jobs-help-content h3 {
+  margin: 1rem 0 0.35rem;
+}
+.jobs-help-content p,
+.helper-note {
+  color: var(--p-text-muted-color, #64748b);
+}
+.letter-editor {
+  width: 100%;
+}

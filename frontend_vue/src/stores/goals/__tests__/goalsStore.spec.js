@@ -15,7 +15,10 @@ describe('goalsStore', () => {
   })
 
   it('loads real goals and analytics through the API service', async () => {
-    goalApi.listGoalsPage.mockResolvedValue({ count: 1, results: [{ id: 7, title: 'Ship project' }] })
+    goalApi.listGoalsPage.mockResolvedValue({
+      count: 1,
+      results: [{ id: 7, title: 'Ship project' }],
+    })
     goalApi.getGoalAnalytics.mockResolvedValue({ total: 1, active: 1, average_progress: 25 })
     const store = useGoalsStore()
     await store.refresh()

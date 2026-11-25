@@ -26,12 +26,34 @@ export const updateWorkflow = aiControl.updateAIWorkflow
 export const deleteWorkflow = aiControl.deleteAIWorkflow
 export const listWorkflowRuns = aiControl.getAIWorkflowRuns
 // There is no workflow execution endpoint in the current Django URL configuration.
-export const runWorkflow = async () => { throw new Error('Workflow execution is not supported by the current backend API.') }
+export const runWorkflow = async () => {
+  throw new Error('Workflow execution is not supported by the current backend API.')
+}
 
 export default {
-  getSettings, saveSettings, listCredentials, saveCredential, deleteCredential,
-  testProvider, listProviders, listProviderModels, getHealth, getCapabilities,
-  listExecutions, getUsage, listBudgets, saveBudget, updateBudget, deleteBudget,
-  listAuditLogs, sendFeedback, listWorkflows, saveWorkflow, getWorkflow,
-  updateWorkflow, deleteWorkflow, runWorkflow, listWorkflowRuns,
+  getSettings,
+  saveSettings,
+  listCredentials,
+  saveCredential,
+  deleteCredential,
+  testProvider,
+  listProviders,
+  listProviderModels,
+  getHealth,
+  getCapabilities,
+  listExecutions,
+  getUsage,
+  listBudgets,
+  saveBudget,
+  updateBudget,
+  deleteBudget,
+  listAuditLogs,
+  sendFeedback,
+  listWorkflows,
+  saveWorkflow,
+  getWorkflow,
+  updateWorkflow,
+  deleteWorkflow,
+  runWorkflow,
+  listWorkflowRuns,
 }

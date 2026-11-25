@@ -75,8 +75,10 @@ export const useRevenueStore = defineStore('revenue', () => {
       state[kind].value = await collections[kind].list()
       // deleting a source/stream cascades server-side, so reload dependants
       if (kind === 'sources') streams.value = await revenueApi.streamsApi.list()
-      if (kind === 'sources' || kind === 'streams') recurring.value = await revenueApi.recurringApi.list()
-      if (kind === 'sources' || kind === 'streams') records.value = await revenueApi.recordsApi.list()
+      if (kind === 'sources' || kind === 'streams')
+        recurring.value = await revenueApi.recurringApi.list()
+      if (kind === 'sources' || kind === 'streams')
+        records.value = await revenueApi.recordsApi.list()
       await refreshTotals()
     })
   }
@@ -91,7 +93,18 @@ export const useRevenueStore = defineStore('revenue', () => {
   }
 
   return {
-    sources, streams, records, recurring, summary, mrr, loading, error,
-    fetchAll, refreshTotals, save, remove, recordFromSale,
+    sources,
+    streams,
+    records,
+    recurring,
+    summary,
+    mrr,
+    loading,
+    error,
+    fetchAll,
+    refreshTotals,
+    save,
+    remove,
+    recordFromSale,
   }
 })

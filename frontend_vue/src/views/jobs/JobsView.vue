@@ -280,7 +280,12 @@
               <p>API / RSS / Manual مع health status و background sync.</p>
             </div>
             <Button label="Add source" icon="pi pi-plus" @click="sourceDialog = true" />
-            <Button label="Sync all enabled" icon="pi pi-sync" severity="secondary" @click="syncAllEnabledSources" />
+            <Button
+              label="Sync all enabled"
+              icon="pi pi-sync"
+              severity="secondary"
+              @click="syncAllEnabledSources"
+            />
             <Button
               label="Scraper Builder"
               icon="pi pi-code"
@@ -292,13 +297,21 @@
             <article v-for="source in sources" :key="source.id" class="list-item">
               <div>
                 <b>{{ source.name }}</b
-                ><small>{{ source.source_type }} · {{ source.enabled ? 'enabled' : 'disabled' }} · {{ source.last_sync_status }}</small>
+                ><small
+                  >{{ source.source_type }} · {{ source.enabled ? 'enabled' : 'disabled' }} ·
+                  {{ source.last_sync_status }}</small
+                >
                 <p>
                   {{ source.last_sync_error || `${source.last_sync_count || 0} jobs imported` }}
                 </p>
               </div>
               <div class="item-actions">
-                <Button icon="pi pi-pencil" text v-tooltip.top="'Edit source'" @click="editSource(source)" />
+                <Button
+                  icon="pi pi-pencil"
+                  text
+                  v-tooltip.top="'Edit source'"
+                  @click="editSource(source)"
+                />
                 <Button
                   icon="pi pi-play"
                   text
@@ -486,11 +499,24 @@
           v-model="sourceForm.base_url"
           placeholder="Base URL"
         />
-        <div class="check"><Checkbox v-model="sourceForm.enabled" binary /> Enable source after reviewing its URL and terms</div>
-        <div class="check"><Checkbox v-model="sourceForm.ai_analyze_on_import" binary /> Analyze each imported job with AI (uses provider quota)</div>
+        <div class="check">
+          <Checkbox v-model="sourceForm.enabled" binary /> Enable source after reviewing its URL and
+          terms
+        </div>
+        <div class="check">
+          <Checkbox v-model="sourceForm.ai_analyze_on_import" binary /> Analyze each imported job
+          with AI (uses provider quota)
+        </div>
         <div v-if="sourceForm.source_type !== 'scraper'" class="source-config">
-          <Textarea v-model="sourceForm.config_json" rows="5" placeholder='{"adapter":"remotive","ai_analyze_on_import":false}' />
-          <small>Adapter config JSON. Supported adapters include remotive, arbeitnow, jobicy, greenhouse, and lever.</small>
+          <Textarea
+            v-model="sourceForm.config_json"
+            rows="5"
+            placeholder='{"adapter":"remotive","ai_analyze_on_import":false}'
+          />
+          <small
+            >Adapter config JSON. Supported adapters include remotive, arbeitnow, jobicy,
+            greenhouse, and lever.</small
+          >
         </div>
         <div v-if="sourceForm.source_type === 'scraper'" class="scraper-builder">
           <Message severity="warn" :closable="false"
@@ -625,7 +651,16 @@ const form = reactive({
   job_type: 'full_time',
   is_remote: false,
 })
-const sourceForm = reactive({ id: null, name: '', source_type: 'rss', feed_url: '', base_url: '', enabled: false, ai_analyze_on_import: false, config_json: '{}' })
+const sourceForm = reactive({
+  id: null,
+  name: '',
+  source_type: 'rss',
+  feed_url: '',
+  base_url: '',
+  enabled: false,
+  ai_analyze_on_import: false,
+  config_json: '{}',
+})
 const scraperForm = reactive({
   card: '',
   title: '',
@@ -951,8 +986,11 @@ async function syncAllEnabledSources() {
     if (result.failures?.length) error.value = `تعذر جدولة ${result.failures.length} مصدر.`
     else error.value = ''
     await loadSources()
-  } catch (e) { showError(e, 'تعذر تشغيل مزامنة جميع المصادر. تحقق من Celery/Redis وحالة المصادر.') }
-  finally { busy.value = false }
+  } catch (e) {
+    showError(e, 'تعذر تشغيل مزامنة جميع المصادر. تحقق من Celery/Redis وحالة المصادر.')
+  } finally {
+    busy.value = false
+  }
 }
 
 async function syncSourceNow(source) {
@@ -983,7 +1021,9 @@ async function testSourceNow(source) {
     error.value = result.ok
       ? ''
       : result.detail || result.message || 'فشل اختبار المصدر؛ راجع إعداداته وصلاحية الوصول.'
-    notice.value = result.ok ? `اجتاز المصدر ${source.name} اختبار الاتصال؛ ${result.items_found ?? 0} عناصر مكتشفة.` : ''
+    notice.value = result.ok
+      ? `اجتاز المصدر ${source.name} اختبار الاتصال؛ ${result.items_found ?? 0} عناصر مكتشفة.`
+      : ''
     if (!result.ok) return
   } catch (e) {
     showError(e, 'المصدر غير جاهز.')
@@ -991,23 +1031,40 @@ async function testSourceNow(source) {
 }
 function editSource(source) {
   Object.assign(sourceForm, {
-    id: source.id, name: source.name || '', source_type: source.source_type || 'rss',
-    feed_url: source.feed_url || '', base_url: source.base_url || '',
-    enabled: Boolean(source.enabled), ai_analyze_on_import: Boolean(source.config?.ai_analyze_on_import),
+    id: source.id,
+    name: source.name || '',
+    source_type: source.source_type || 'rss',
+    feed_url: source.feed_url || '',
+    base_url: source.base_url || '',
+    enabled: Boolean(source.enabled),
+    ai_analyze_on_import: Boolean(source.config?.ai_analyze_on_import),
     config_json: JSON.stringify(source.config || {}, null, 2),
   })
   const config = source.config || {}
   Object.assign(scraperForm, {
-    card: config.card?.selector || '', title: config.title?.selector || '',
-    company: config.company?.selector || '', location: config.location?.selector || '',
-    description: config.description?.selector || '', url: config.url?.selector || '',
-    urlAttribute: config.url?.attribute || 'href', termsConfirmed: Boolean(config.terms_confirmed),
+    card: config.card?.selector || '',
+    title: config.title?.selector || '',
+    company: config.company?.selector || '',
+    location: config.location?.selector || '',
+    description: config.description?.selector || '',
+    url: config.url?.selector || '',
+    urlAttribute: config.url?.attribute || 'href',
+    termsConfirmed: Boolean(config.terms_confirmed),
   })
   sourceDialog.value = true
 }
 
 async function openScraperBuilder() {
-  Object.assign(sourceForm, { id: null, name: '', source_type: 'scraper', feed_url: '', base_url: '', enabled: false, ai_analyze_on_import: false, config_json: '{}' })
+  Object.assign(sourceForm, {
+    id: null,
+    name: '',
+    source_type: 'scraper',
+    feed_url: '',
+    base_url: '',
+    enabled: false,
+    ai_analyze_on_import: false,
+    config_json: '{}',
+  })
   Object.assign(scraperForm, {
     card: '',
     title: '',
@@ -1023,33 +1080,52 @@ async function openScraperBuilder() {
 async function saveSource() {
   try {
     const payload = {
-      name: sourceForm.name.trim(), source_type: sourceForm.source_type,
-      base_url: sourceForm.base_url.trim(), feed_url: sourceForm.source_type === 'scraper' ? '' : sourceForm.feed_url.trim(),
+      name: sourceForm.name.trim(),
+      source_type: sourceForm.source_type,
+      base_url: sourceForm.base_url.trim(),
+      feed_url: sourceForm.source_type === 'scraper' ? '' : sourceForm.feed_url.trim(),
       enabled: Boolean(sourceForm.enabled),
     }
     if (sourceForm.source_type === 'scraper') {
-      if (!scraperForm.termsConfirmed) throw new Error('Confirm that this source permits scraping before saving it.')
+      if (!scraperForm.termsConfirmed)
+        throw new Error('Confirm that this source permits scraping before saving it.')
       if (!scraperForm.card.trim() || !scraperForm.title.trim() || !scraperForm.url.trim())
         throw new Error('Card, title, and URL selectors are required for an HTML scraper source.')
       payload.config = {
-        terms_confirmed: true, robots_required: true, rate_limit_seconds: 1,
+        terms_confirmed: true,
+        robots_required: true,
+        rate_limit_seconds: 1,
         ai_analyze_on_import: Boolean(sourceForm.ai_analyze_on_import),
-        card: { selector: scraperForm.card }, title: { selector: scraperForm.title },
-        company: { selector: scraperForm.company }, location: { selector: scraperForm.location },
+        card: { selector: scraperForm.card },
+        title: { selector: scraperForm.title },
+        company: { selector: scraperForm.company },
+        location: { selector: scraperForm.location },
         description: { selector: scraperForm.description },
         url: { selector: scraperForm.url, attribute: scraperForm.urlAttribute || 'href' },
       }
     } else {
       try {
         payload.config = JSON.parse(sourceForm.config_json || '{}')
-        if (!payload.config || Array.isArray(payload.config) || typeof payload.config !== 'object') throw new Error('Source config must be a JSON object.')
+        if (!payload.config || Array.isArray(payload.config) || typeof payload.config !== 'object')
+          throw new Error('Source config must be a JSON object.')
         payload.config.ai_analyze_on_import = Boolean(sourceForm.ai_analyze_on_import)
-      } catch (e) { throw new Error(e.message || 'Source config JSON is invalid.') }
+      } catch (e) {
+        throw new Error(e.message || 'Source config JSON is invalid.')
+      }
     }
     if (sourceForm.id) await updateSource(sourceForm.id, payload)
     else await createSource(payload)
     sourceDialog.value = false
-    Object.assign(sourceForm, { id: null, name: '', source_type: 'rss', feed_url: '', base_url: '', enabled: false, ai_analyze_on_import: false, config_json: '{}' })
+    Object.assign(sourceForm, {
+      id: null,
+      name: '',
+      source_type: 'rss',
+      feed_url: '',
+      base_url: '',
+      enabled: false,
+      ai_analyze_on_import: false,
+      config_json: '{}',
+    })
     await loadSources()
     error.value = ''
     notice.value = 'تم حفظ إعدادات المصدر.'

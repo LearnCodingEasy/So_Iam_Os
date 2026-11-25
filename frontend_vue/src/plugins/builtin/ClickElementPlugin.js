@@ -23,16 +23,16 @@
 import { definePlugin } from '../PluginSDK'
 
 export default definePlugin({
-  id:          'click_element',
-  label:       'Click Element',
-  icon:        'pi pi-mouse',
-  color:       '#0ea5e9',
+  id: 'click_element',
+  label: 'Click Element',
+  icon: 'pi pi-mouse',
+  color: '#0ea5e9',
   description: 'اضغط على عنصر محدد في الشاشة (زرار، input، menu...)',
-  category:    'input',
+  category: 'input',
 
   // ─── Default Payload ──────────────────────────────────────
   defaultPayload: {
-    element_id: null,   // UUID بتاع الـ ProgramElement
+    element_id: null, // UUID بتاع الـ ProgramElement
   },
 
   // ─── buildPayload ─────────────────────────────────────────
@@ -48,7 +48,7 @@ export default definePlugin({
   },
 
   // ─── Metadata ─────────────────────────────────────────────
-  author:  'builtin',
+  author: 'builtin',
   version: '1.0.0',
-  tags:    ['click', 'mouse', 'element', 'button', 'ui'],
+  tags: ['click', 'mouse', 'element', 'button', 'ui'],
 })

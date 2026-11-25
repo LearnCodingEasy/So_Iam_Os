@@ -48,9 +48,27 @@ onBeforeUnmount(() => handler && window.removeEventListener('so-iam-api-log', ha
 </script>
 
 <style scoped>
-.ai-activity-log { display: grid; gap: .65rem; }
-.event { padding: .7rem; border: 1px solid var(--surface-border, #e2e8f0); border-radius: .65rem; }
-.event-head, .event-meta { display: flex; justify-content: space-between; gap: .75rem; }
-.event-meta { margin-top: .25rem; font-size: .75rem; opacity: .7; }
-.empty { opacity: .7; }
+.ai-activity-log {
+  display: grid;
+  gap: 0.65rem;
+}
+.event {
+  padding: 0.7rem;
+  border: 1px solid var(--surface-border, #e2e8f0);
+  border-radius: 0.65rem;
+}
+.event-head,
+.event-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.event-meta {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+.empty {
+  opacity: 0.7;
+}
 </style>

@@ -368,6 +368,19 @@ AI_MODEL_DISCOVERY_TIMEOUT_SECONDS = config(
 AI_PROVIDER_TEST_TIMEOUT_SECONDS = config(
     "AI_PROVIDER_TEST_TIMEOUT_SECONDS", default=20, cast=int)
 
+# Timeout hierarchy: request -> agent -> provider -> global -> safe default.
+# Every layer is clamped to [AI_TIMEOUT_MIN_SECONDS, AI_TIMEOUT_MAX_SECONDS];
+# unlimited execution is never possible. See ai/services/timeouts.py.
+AI_TIMEOUT_MIN_SECONDS = config("AI_TIMEOUT_MIN_SECONDS", default=5, cast=int)
+AI_TIMEOUT_MAX_SECONDS = config("AI_TIMEOUT_MAX_SECONDS", default=600, cast=int)
+# Local models need time to load into memory on the first request, so Ollama
+# gets a larger provider-level default than hosted APIs.
+OLLAMA_TIMEOUT_SECONDS = config("OLLAMA_TIMEOUT_SECONDS", default=120, cast=int)
+AI_PROVIDER_TIMEOUTS = {"ollama": OLLAMA_TIMEOUT_SECONDS}
+# Celery limits for AI tasks; 0 = derive from AI_TIMEOUT_MAX_SECONDS (+30s/+60s).
+AI_CELERY_SOFT_TIME_LIMIT = config("AI_CELERY_SOFT_TIME_LIMIT", default=0, cast=int)
+AI_CELERY_TIME_LIMIT = config("AI_CELERY_TIME_LIMIT", default=0, cast=int)
+
 OLLAMA_BASE_URL = config(
     "OLLAMA_BASE_URL",
     default="http://127.0.0.1:11434",

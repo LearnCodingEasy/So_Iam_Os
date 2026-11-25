@@ -118,12 +118,16 @@ export const knowledgeService = {
   },
 
   async connectTopic(knowledgeId, topicId) {
-    const response = await api.post(endpoints.knowledge.connectTopic(knowledgeId), { topic_id: topicId })
+    const response = await api.post(endpoints.knowledge.connectTopic(knowledgeId), {
+      topic_id: topicId,
+    })
     return response.data
   },
 
   async disconnectTopic(knowledgeId, topicId) {
-    const response = await api.post(endpoints.knowledge.disconnectTopic(knowledgeId), { topic_id: topicId })
+    const response = await api.post(endpoints.knowledge.disconnectTopic(knowledgeId), {
+      topic_id: topicId,
+    })
     return response.data
   },
 

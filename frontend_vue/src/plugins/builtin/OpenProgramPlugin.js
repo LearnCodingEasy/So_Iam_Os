@@ -21,12 +21,12 @@
 import { definePlugin } from '../PluginSDK'
 
 export default definePlugin({
-  id:          'open_program',
-  label:       'Open Program',
-  icon:        'pi pi-desktop',
-  color:       '#16a34a',
+  id: 'open_program',
+  label: 'Open Program',
+  icon: 'pi pi-desktop',
+  color: '#16a34a',
   description: 'افتح البرنامج المحدد (VSCode, Chrome, OBS...)',
-  category:    'programs',
+  category: 'programs',
 
   // ─── Default Payload ──────────────────────────────────────
   // فارغ لأن الـ Django بياخد المعلومات من الـ Node.program FK
@@ -42,7 +42,7 @@ export default definePlugin({
   validate: () => null,
 
   // ─── Metadata ─────────────────────────────────────────────
-  author:  'builtin',
+  author: 'builtin',
   version: '1.0.0',
-  tags:    ['program', 'open', 'launch', 'start'],
+  tags: ['program', 'open', 'launch', 'start'],
 })

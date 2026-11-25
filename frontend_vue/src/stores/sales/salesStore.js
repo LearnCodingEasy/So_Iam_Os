@@ -3,7 +3,12 @@ import { ref } from 'vue'
 import * as salesApi from '@/services/Sales/Sales'
 
 // Resource name -> service collection. Every mutation re-reads server state.
-const RESOURCES = { deals: salesApi.deals, offers: salesApi.offers, sales: salesApi.sales, activities: salesApi.activities }
+const RESOURCES = {
+  deals: salesApi.deals,
+  offers: salesApi.offers,
+  sales: salesApi.sales,
+  activities: salesApi.activities,
+}
 
 export const useSalesStore = defineStore('sales', () => {
   const deals = ref([])
@@ -75,5 +80,19 @@ export const useSalesStore = defineStore('sales', () => {
     return sale
   }
 
-  return { deals, offers, sales, activities, pipeline, loading, error, fetchAll, fetchPipeline, save, remove, setStage, refund }
+  return {
+    deals,
+    offers,
+    sales,
+    activities,
+    pipeline,
+    loading,
+    error,
+    fetchAll,
+    fetchPipeline,
+    save,
+    remove,
+    setStage,
+    refund,
+  }
 })

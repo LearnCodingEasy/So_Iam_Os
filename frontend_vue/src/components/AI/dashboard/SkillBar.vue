@@ -14,5 +14,5 @@
 defineProps({
   name: String,
   value: [String, Number],
-});
+})
 </script>

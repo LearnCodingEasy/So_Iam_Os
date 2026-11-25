@@ -17,6 +17,8 @@ from ai.services import AIService
 
 logger = logging.getLogger(__name__)
 
+from ai.services.timeouts import user_setting_timeout  # noqa: E402
+
 
 class AIChatView(APIView):
     permission_classes = [AIAuthenticatedPermission]
@@ -35,18 +37,24 @@ class AIChatView(APIView):
                 system_prompt=data.get("system_prompt", ""),
                 temperature=data.get("temperature"),
                 max_tokens=data.get("max_tokens"),
+                timeout_seconds=data.get("timeout"),
             )
         except AIError as exc:
             error_code = getattr(exc, "category", "ai_error")
             response_status = (
                 status.HTTP_409_CONFLICT
                 if error_code in {"request_in_progress", "previous_attempt_failed", "idempotency_result_unavailable"}
-                else status.HTTP_502_BAD_GATEWAY
+                else (
+                    status.HTTP_504_GATEWAY_TIMEOUT
+                    if error_code == "timeout"
+                    else status.HTTP_502_BAD_GATEWAY
+                )
             )
             return Response({
                 "success": False,
                 "error": str(exc),
                 "error_code": error_code,
+                "timeout_kind": getattr(exc, "timeout_kind", None),
                 "retryable": bool(getattr(exc, "retryable", False)),
                 "provider_status": getattr(exc, "status_code", None),
             }, status=response_status)
@@ -593,6 +601,14 @@ class AILearningPlanAsyncView(APIView):
         from uuid import uuid4
         from ai.tasks import generate_learning_plan
         from ai.models import AiAuditLog
+        from ai.services.timeouts import validate_timeout
+        raw_timeout = request.data.get("timeout", request.data.get("timeout_seconds"))
+        request_timeout = None
+        if raw_timeout not in (None, ""):
+            try:
+                request_timeout = validate_timeout(raw_timeout)
+            except ValueError as exc:
+                return Response({"detail": str(exc), "field": "timeout"}, status=400)
 
         task_id = str(uuid4())
         # Create the ownership record before dispatch so a fast worker cannot
@@ -610,6 +626,7 @@ class AILearningPlanAsyncView(APIView):
                     message,
                     request.data.get("provider"),
                     request.data.get("model"),
+                    request_timeout,
                 ),
                 task_id=task_id,
             )
@@ -651,11 +668,24 @@ class AITaskStatusView(APIView):
             )
 
         payload = {"task_id": task_id, "status": result.status.lower()}
+        # Friendly lifecycle: queued / running / completed / failed / timeout / cancelled
+        lifecycle = {"PENDING": "queued", "RECEIVED": "queued", "STARTED": "running",
+                     "RETRY": "running", "SUCCESS": "completed", "REVOKED": "cancelled"}
+        payload["state"] = lifecycle.get(result.status, "failed" if result.failed() else result.status.lower())
         if result.successful():
             payload["result"] = info.get("result") if isinstance(
                 info, dict) else result.result
         elif result.failed():
-            payload["error"] = "AI task failed."
+            timed_out = (
+                type(info).__name__ in {"SoftTimeLimitExceeded", "TimeLimitExceeded"}
+                or getattr(info, "category", "") == "timeout"
+            )
+            if timed_out:
+                payload["state"] = "timeout"
+                payload["error"] = "The AI task exceeded its time limit."
+                payload["error_code"] = "timeout"
+            else:
+                payload["error"] = "AI task failed."
         return Response(payload)
 
 
@@ -894,7 +924,7 @@ class AIChatStreamView(APIView):
                     temperature=data.get("temperature") if data.get("temperature") is not None else settings_obj.temperature,
                     max_tokens=data.get("max_tokens"),
                     fallback_enabled=settings_obj.fallback_enabled,
-                    timeout_seconds=settings_obj.timeout_seconds,
+                    timeout_seconds=data.get("timeout") if data.get("timeout") is not None else user_setting_timeout(settings_obj),
                     model_is_explicit=bool(data.get("model")),
                 ):
                     actual_provider = chunk.get("provider") or actual_provider

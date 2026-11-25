@@ -64,12 +64,14 @@ async function refreshAccessToken() {
         }
 
         api.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-        window.dispatchEvent(new CustomEvent('so-iam-token-refreshed', {
-          detail: {
-            access: accessToken,
-            refresh: rotatedRefreshToken || getRefreshToken(),
-          },
-        }))
+        window.dispatchEvent(
+          new CustomEvent('so-iam-token-refreshed', {
+            detail: {
+              access: accessToken,
+              refresh: rotatedRefreshToken || getRefreshToken(),
+            },
+          }),
+        )
         return accessToken
       })
       .catch((error) => {
@@ -198,7 +200,12 @@ api.interceptors.response.use(
           url: safeLogUrl(originalRequest?.baseURL, originalRequest?.url),
           status: status || 0,
           // Never forward response bodies or request payloads to UI telemetry.
-          error: error.code === 'ECONNABORTED' ? 'Request timed out' : (error.response ? 'API request failed' : 'Network request failed'),
+          error:
+            error.code === 'ECONNABORTED'
+              ? 'Request timed out'
+              : error.response
+                ? 'API request failed'
+                : 'Network request failed',
           duration,
         },
       }),
@@ -213,7 +220,8 @@ api.interceptors.response.use(
     }
 
     const requestPath = String(originalRequest?.url || '').replace(/^\/+/, '')
-    const isRefreshRequest = requestPath === 'users/refresh/' || requestPath.endsWith('/users/refresh/')
+    const isRefreshRequest =
+      requestPath === 'users/refresh/' || requestPath.endsWith('/users/refresh/')
 
     // Refresh requests are sent with the bare Axios client above. Exclude any
     // explicit refresh endpoint call from the interceptor to prevent recursive

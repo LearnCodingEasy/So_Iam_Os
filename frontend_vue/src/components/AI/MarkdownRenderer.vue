@@ -28,7 +28,11 @@ const safeHtml = computed(() => {
   wrapper.querySelectorAll('pre code').forEach((block) => {
     const language = [...block.classList].find((name) => name.startsWith('language-'))?.slice(9)
     if (language && Prism.languages[language]) {
-      block.innerHTML = Prism.highlight(block.textContent || '', Prism.languages[language], language)
+      block.innerHTML = Prism.highlight(
+        block.textContent || '',
+        Prism.languages[language],
+        language,
+      )
     }
   })
   wrapper.querySelectorAll('a').forEach((link) => {
@@ -40,8 +44,22 @@ const safeHtml = computed(() => {
 </script>
 
 <style scoped>
-.ai-markdown :deep(pre) { overflow: auto; border-radius: 12px; padding: 1rem; }
-.ai-markdown :deep(code) { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-.ai-markdown :deep(table) { width: 100%; border-collapse: collapse; }
-.ai-markdown :deep(th), .ai-markdown :deep(td) { padding: .55rem .7rem; border: 1px solid var(--p-content-border-color); text-align: start; }
+.ai-markdown :deep(pre) {
+  overflow: auto;
+  border-radius: 12px;
+  padding: 1rem;
+}
+.ai-markdown :deep(code) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.ai-markdown :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ai-markdown :deep(th),
+.ai-markdown :deep(td) {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--p-content-border-color);
+  text-align: start;
+}
 </style>

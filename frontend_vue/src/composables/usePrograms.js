@@ -16,21 +16,21 @@
 //  └──────────────────┴──────────────────────────────┘
 // ============================================================
 
-import { ref }              from 'vue'
-import { useConfirm }       from 'primevue/useconfirm'
-import { useToastHelper }   from '@/composables/useToastHelper'
-import { useAsyncAction }   from '@/composables/useAsyncAction'
-import { useProgramStore }  from '@/stores/automation/useProgramStore'
+import { ref } from 'vue'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToastHelper } from '@/composables/useToastHelper'
+import { useAsyncAction } from '@/composables/useAsyncAction'
+import { useProgramStore } from '@/stores/automation/useProgramStore'
 
 export function usePrograms() {
-  const confirm       = useConfirm()
+  const confirm = useConfirm()
   const { warn, cancelled, apiError } = useToastHelper()
   const programAction = useAsyncAction()
-  const programStore  = useProgramStore()
+  const programStore = useProgramStore()
 
   // Dialog State — مش في الـ store
   const createProgramVisible = ref(false)
-  const editProgramVisible   = ref(false)
+  const editProgramVisible = ref(false)
 
   // ─────────── Image Upload ───────────
   const onImageChange = (e) => {
@@ -40,16 +40,15 @@ export function usePrograms() {
 
   // ─────────── CREATE ───────────
   const createProgram = () =>
-    programAction.run(
-      () => programStore.createProgram(),
-      {
-        validate:       () => programStore.validateForm(),
-        successSummary: 'تم إنشاء البرنامج',
-        successDetail:  `"${programStore.form.name}" أُنشئ بنجاح`,
-        errorSummary:   'فشل إنشاء البرنامج',
-        onSuccess: () => { createProgramVisible.value = false },
+    programAction.run(() => programStore.createProgram(), {
+      validate: () => programStore.validateForm(),
+      successSummary: 'تم إنشاء البرنامج',
+      successDetail: `"${programStore.form.name}" أُنشئ بنجاح`,
+      errorSummary: 'فشل إنشاء البرنامج',
+      onSuccess: () => {
+        createProgramVisible.value = false
       },
-    )
+    })
 
   // ─────────── EDIT (open dialog) ───────────
   const openEditProgram = async (id) => {
@@ -63,39 +62,49 @@ export function usePrograms() {
 
   // ─────────── UPDATE ───────────
   const editProgram = () =>
-    programAction.run(
-      () => programStore.updateProgram(programStore.currentProgramId),
-      {
-        validate:       () => programStore.validateForm(),
-        successSummary: 'تم تحديث البرنامج',
-        errorSummary:   'فشل تحديث البرنامج',
-        onSuccess: () => { editProgramVisible.value = false },
+    programAction.run(() => programStore.updateProgram(programStore.currentProgramId), {
+      validate: () => programStore.validateForm(),
+      successSummary: 'تم تحديث البرنامج',
+      errorSummary: 'فشل تحديث البرنامج',
+      onSuccess: () => {
+        editProgramVisible.value = false
       },
-    )
+    })
 
   // ─────────── DELETE ───────────
   const confirmDeleteProgram = (program) => {
     confirm.require({
-      message:     `هل أنت متأكد من حذف "${program.name}"؟`,
-      header:      '⚠️ تأكيد الحذف',
-      icon:        'pi pi-exclamation-triangle',
+      message: `هل أنت متأكد من حذف "${program.name}"؟`,
+      header: '⚠️ تأكيد الحذف',
+      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'نعم، احذف',
       rejectLabel: 'إلغاء',
       accept: () =>
-        programAction.run(
-          () => programStore.deleteProgram(program.id),
-          { successSummary: 'تم الحذف', successDetail: 'تم حذف البرنامج بنجاح', errorSummary: 'فشل الحذف' },
-        ),
+        programAction.run(() => programStore.deleteProgram(program.id), {
+          successSummary: 'تم الحذف',
+          successDetail: 'تم حذف البرنامج بنجاح',
+          errorSummary: 'فشل الحذف',
+        }),
       reject: () => cancelled('لم يتم حذف البرنامج'),
     })
   }
 
   // ─────────── Controls ───────────
-  const openProgram     = (id) => programAction.run(() => programStore.openProgram(id),     { errorSummary: 'فشل فتح البرنامج' })
-  const closeProgram    = (id) => programAction.run(() => programStore.closeProgram(id),    { errorSummary: 'فشل إغلاق البرنامج' })
-  const focusProgram    = (id) => programAction.run(() => programStore.focusProgram(id),    { successSummary: 'تم التركيز',  errorSummary: 'فشل التركيز' })
-  const maximizeProgram = (id) => programAction.run(() => programStore.maximizeProgram(id), { successSummary: 'تم التكبير',  errorSummary: 'فشل التكبير' })
-  const statusProgram   = (id) => programStore.statusProgram(id)  // مباشر — بدون loader
+  const openProgram = (id) =>
+    programAction.run(() => programStore.openProgram(id), { errorSummary: 'فشل فتح البرنامج' })
+  const closeProgram = (id) =>
+    programAction.run(() => programStore.closeProgram(id), { errorSummary: 'فشل إغلاق البرنامج' })
+  const focusProgram = (id) =>
+    programAction.run(() => programStore.focusProgram(id), {
+      successSummary: 'تم التركيز',
+      errorSummary: 'فشل التركيز',
+    })
+  const maximizeProgram = (id) =>
+    programAction.run(() => programStore.maximizeProgram(id), {
+      successSummary: 'تم التكبير',
+      errorSummary: 'فشل التكبير',
+    })
+  const statusProgram = (id) => programStore.statusProgram(id) // مباشر — بدون loader
 
   // ─────────── Return ───────────
   return {

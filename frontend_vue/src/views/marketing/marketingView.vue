@@ -1,4 +1,5 @@
 <script setup>
+import PageHeader from '@/components/ui/PageHeader.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import Button from 'primevue/button'
@@ -26,10 +27,34 @@ const fieldErrors = ref({})
 const perfOpen = ref(false)
 
 const opts = (pairs) => pairs.map(([value, label]) => ({ value, label }))
-const campaignStatus = opts([['draft', 'Draft'], ['scheduled', 'Scheduled'], ['running', 'Running'], ['completed', 'Completed'], ['cancelled', 'Cancelled']])
-const contentStatus = opts([['draft', 'Draft'], ['scheduled', 'Scheduled']])
-const contentType = opts([['post', 'Post'], ['article', 'Article'], ['email', 'Email'], ['video', 'Video'], ['landing_page', 'Landing page'], ['other', 'Other']])
-const channelType = opts([['social', 'Social'], ['email', 'Email'], ['content', 'Content'], ['ads', 'Ads'], ['event', 'Event'], ['referral', 'Referral'], ['other', 'Other']])
+const campaignStatus = opts([
+  ['draft', 'Draft'],
+  ['scheduled', 'Scheduled'],
+  ['running', 'Running'],
+  ['completed', 'Completed'],
+  ['cancelled', 'Cancelled'],
+])
+const contentStatus = opts([
+  ['draft', 'Draft'],
+  ['scheduled', 'Scheduled'],
+])
+const contentType = opts([
+  ['post', 'Post'],
+  ['article', 'Article'],
+  ['email', 'Email'],
+  ['video', 'Video'],
+  ['landing_page', 'Landing page'],
+  ['other', 'Other'],
+])
+const channelType = opts([
+  ['social', 'Social'],
+  ['email', 'Email'],
+  ['content', 'Content'],
+  ['ads', 'Ads'],
+  ['event', 'Event'],
+  ['referral', 'Referral'],
+  ['other', 'Other'],
+])
 
 const channelOptions = computed(() => store.channels.map((c) => ({ value: c.id, label: c.name })))
 const campaignOptions = computed(() => store.campaigns.map((c) => ({ value: c.id, label: c.name })))
@@ -37,44 +62,93 @@ const campaignOptions = computed(() => store.campaigns.map((c) => ({ value: c.id
 // kind -> store collection, labels, form fields
 const schema = computed(() => ({
   campaigns: {
-    label: 'Campaign', rows: store.campaigns, search: ['name', 'objective'],
+    label: 'Campaign',
+    rows: store.campaigns,
+    search: ['name', 'objective'],
     fields: [
       { key: 'name', label: 'Name', type: 'text' },
       { key: 'objective', label: 'Objective', type: 'area' },
       { key: 'status', label: 'Status', type: 'select', options: campaignStatus },
-      { key: 'channel', label: 'Channel', type: 'select', options: channelOptions.value, clearable: true },
+      {
+        key: 'channel',
+        label: 'Channel',
+        type: 'select',
+        options: channelOptions.value,
+        clearable: true,
+      },
       { key: 'budget', label: 'Budget', type: 'text' },
       { key: 'spent', label: 'Spent', type: 'text' },
       { key: 'start_date', label: 'Start (YYYY-MM-DD)', type: 'text' },
       { key: 'end_date', label: 'End (YYYY-MM-DD)', type: 'text' },
     ],
-    defaults: { name: '', objective: '', status: 'draft', channel: null, budget: '0', spent: '0', start_date: '', end_date: '' },
+    defaults: {
+      name: '',
+      objective: '',
+      status: 'draft',
+      channel: null,
+      budget: '0',
+      spent: '0',
+      start_date: '',
+      end_date: '',
+    },
   },
   content: {
-    label: 'Content', rows: store.content, search: ['title', 'body'],
+    label: 'Content',
+    rows: store.content,
+    search: ['title', 'body'],
     fields: [
       { key: 'title', label: 'Title', type: 'text' },
       { key: 'body', label: 'Body', type: 'area' },
       { key: 'content_type', label: 'Type', type: 'select', options: contentType },
       { key: 'status', label: 'Status', type: 'select', options: contentStatus },
-      { key: 'campaign', label: 'Campaign', type: 'select', options: campaignOptions.value, clearable: true },
+      {
+        key: 'campaign',
+        label: 'Campaign',
+        type: 'select',
+        options: campaignOptions.value,
+        clearable: true,
+      },
       { key: 'publish_at', label: 'Publish at (ISO, required if scheduled)', type: 'text' },
       { key: 'url', label: 'URL', type: 'text' },
     ],
-    defaults: { title: '', body: '', content_type: 'post', status: 'draft', campaign: null, publish_at: '', url: '' },
+    defaults: {
+      title: '',
+      body: '',
+      content_type: 'post',
+      status: 'draft',
+      campaign: null,
+      publish_at: '',
+      url: '',
+    },
   },
   leadSources: {
-    label: 'Lead source', rows: store.leadSources, search: ['name', 'description'],
+    label: 'Lead source',
+    rows: store.leadSources,
+    search: ['name', 'description'],
     fields: [
       { key: 'name', label: 'Name', type: 'text' },
       { key: 'description', label: 'Description', type: 'area' },
-      { key: 'channel', label: 'Channel', type: 'select', options: channelOptions.value, clearable: true },
-      { key: 'campaign', label: 'Campaign', type: 'select', options: campaignOptions.value, clearable: true },
+      {
+        key: 'channel',
+        label: 'Channel',
+        type: 'select',
+        options: channelOptions.value,
+        clearable: true,
+      },
+      {
+        key: 'campaign',
+        label: 'Campaign',
+        type: 'select',
+        options: campaignOptions.value,
+        clearable: true,
+      },
     ],
     defaults: { name: '', description: '', channel: null, campaign: null },
   },
   channels: {
-    label: 'Channel', rows: store.channels, search: ['name', 'url'],
+    label: 'Channel',
+    rows: store.channels,
+    search: ['name', 'url'],
     fields: [
       { key: 'name', label: 'Name', type: 'text' },
       { key: 'channel_type', label: 'Type', type: 'select', options: channelType },
@@ -89,7 +163,13 @@ const filteredRows = computed(() => {
   const q = search.value.trim().toLowerCase()
   const rows = current.value.rows
   if (!q) return rows
-  return rows.filter((r) => current.value.search.some((k) => String(r[k] ?? '').toLowerCase().includes(q)))
+  return rows.filter((r) =>
+    current.value.search.some((k) =>
+      String(r[k] ?? '')
+        .toLowerCase()
+        .includes(q),
+    ),
+  )
 })
 
 const tabs = [
@@ -134,7 +214,8 @@ function openEdit(row) {
 function buildPayload() {
   const payload = { ...form }
   // Optional date/time fields must be null, not '', for the API.
-  for (const k of ['start_date', 'end_date', 'publish_at']) if (k in payload && !payload[k]) payload[k] = null
+  for (const k of ['start_date', 'end_date', 'publish_at'])
+    if (k in payload && !payload[k]) payload[k] = null
   return payload
 }
 
@@ -195,29 +276,63 @@ onMounted(load)
 
 <template>
   <div class="mk-page">
-    <header class="mk-head">
-      <h1>Marketing</h1>
-      <Button label="Refresh" icon="pi pi-refresh" severity="secondary" :loading="store.loading" @click="load" />
-    </header>
+    <PageHeader
+      eyebrow="Business"
+      title="Marketing"
+      description="Campaigns, content and leads"
+      illustration="dashboard"
+    >
+      <template #actions>
+        <Button
+          label="Refresh"
+          icon="pi pi-refresh"
+          severity="secondary"
+          :loading="store.loading"
+          @click="load"
+        />
+      </template>
+    </PageHeader>
 
     <Message v-if="store.error && !store.loading" severity="error" :closable="false">
       Marketing data could not be loaded. <Button label="Retry" link @click="load" />
     </Message>
 
     <div v-if="store.overview" class="mk-stats">
-      <Card><template #title>Campaigns</template><template #content>{{ store.overview.campaigns }}</template></Card>
-      <Card><template #title>Budget</template><template #content>{{ store.overview.budget }}</template></Card>
-      <Card><template #title>Spent</template><template #content>{{ store.overview.spent }}</template></Card>
-      <Card><template #title>Leads</template><template #content>{{ store.overview.leads }}</template></Card>
-      <Card><template #title>Cost per lead</template><template #content>{{ store.overview.cost_per_lead ?? '—' }}</template></Card>
-      <Card><template #title>Published</template><template #content>{{ store.overview.published_content }}</template></Card>
+      <Card
+        ><template #title>Campaigns</template
+        ><template #content>{{ store.overview.campaigns }}</template></Card
+      >
+      <Card
+        ><template #title>Budget</template
+        ><template #content>{{ store.overview.budget }}</template></Card
+      >
+      <Card
+        ><template #title>Spent</template
+        ><template #content>{{ store.overview.spent }}</template></Card
+      >
+      <Card
+        ><template #title>Leads</template
+        ><template #content>{{ store.overview.leads }}</template></Card
+      >
+      <Card
+        ><template #title>Cost per lead</template
+        ><template #content>{{ store.overview.cost_per_lead ?? '—' }}</template></Card
+      >
+      <Card
+        ><template #title>Published</template
+        ><template #content>{{ store.overview.published_content }}</template></Card
+      >
     </div>
 
     <nav class="mk-tabs" role="tablist">
       <Button
-        v-for="t in tabs" :key="t.key" :label="t.label" role="tab"
-        :severity="tab === t.key ? 'primary' : 'secondary'" :text="tab !== t.key"
-        @click="tab = t.key; search = ''"
+        v-for="t in tabs"
+        :key="t.key"
+        :label="t.label"
+        role="tab"
+        :severity="tab === t.key ? 'primary' : 'secondary'"
+        :text="tab !== t.key"
+        @click="((tab = t.key), (search = ''))"
       />
     </nav>
 
@@ -226,27 +341,50 @@ onMounted(load)
       <Button :label="`New ${current.label.toLowerCase()}`" icon="pi pi-plus" @click="openCreate" />
     </div>
 
-    <DataTable :value="filteredRows" :loading="store.loading" stripedRows dataKey="id" paginator :rows="10">
+    <DataTable
+      :value="filteredRows"
+      :loading="store.loading"
+      stripedRows
+      dataKey="id"
+      paginator
+      :rows="10"
+    >
       <template #empty>No {{ current.label.toLowerCase() }} records yet.</template>
 
       <template v-if="tab === 'campaigns'">
         <Column field="name" header="Name" sortable />
-        <Column field="status" header="Status"><template #body="{ data }"><Tag :value="data.status" /></template></Column>
-        <Column header="Channel"><template #body="{ data }">{{ nameOf(store.channels, data.channel) }}</template></Column>
+        <Column field="status" header="Status"
+          ><template #body="{ data }"><Tag :value="data.status" /></template
+        ></Column>
+        <Column header="Channel"
+          ><template #body="{ data }">{{ nameOf(store.channels, data.channel) }}</template></Column
+        >
         <Column field="budget" header="Budget" />
         <Column field="spent" header="Spent" />
       </template>
       <template v-else-if="tab === 'content'">
         <Column field="title" header="Title" sortable />
         <Column field="content_type" header="Type" />
-        <Column field="status" header="Status"><template #body="{ data }"><Tag :value="data.status" /></template></Column>
-        <Column header="Campaign"><template #body="{ data }">{{ nameOf(store.campaigns, data.campaign) }}</template></Column>
+        <Column field="status" header="Status"
+          ><template #body="{ data }"><Tag :value="data.status" /></template
+        ></Column>
+        <Column header="Campaign"
+          ><template #body="{ data }">{{
+            nameOf(store.campaigns, data.campaign)
+          }}</template></Column
+        >
       </template>
       <template v-else-if="tab === 'leadSources'">
         <Column field="name" header="Name" sortable />
-        <Column header="Campaign"><template #body="{ data }">{{ nameOf(store.campaigns, data.campaign) }}</template></Column>
+        <Column header="Campaign"
+          ><template #body="{ data }">{{
+            nameOf(store.campaigns, data.campaign)
+          }}</template></Column
+        >
         <Column field="leads_count" header="Leads" />
-        <Column field="is_active" header="Active"><template #body="{ data }">{{ data.is_active ? 'Yes' : 'No' }}</template></Column>
+        <Column field="is_active" header="Active"
+          ><template #body="{ data }">{{ data.is_active ? 'Yes' : 'No' }}</template></Column
+        >
       </template>
       <template v-else>
         <Column field="name" header="Name" sortable />
@@ -257,23 +395,52 @@ onMounted(load)
       <Column header="Actions">
         <template #body="{ data }">
           <div class="mk-actions">
-            <Button v-if="tab === 'campaigns'" icon="pi pi-chart-bar" text aria-label="Performance" @click="showPerformance(data)" />
-            <Button v-if="tab === 'content' && data.status !== 'published'" icon="pi pi-check" text aria-label="Mark published" @click="publish(data)" />
+            <Button
+              v-if="tab === 'campaigns'"
+              icon="pi pi-chart-bar"
+              text
+              aria-label="Performance"
+              @click="showPerformance(data)"
+            />
+            <Button
+              v-if="tab === 'content' && data.status !== 'published'"
+              icon="pi pi-check"
+              text
+              aria-label="Mark published"
+              @click="publish(data)"
+            />
             <Button icon="pi pi-pencil" text aria-label="Edit" @click="openEdit(data)" />
-            <Button icon="pi pi-trash" text severity="danger" aria-label="Delete" @click="destroy(data)" />
+            <Button
+              icon="pi pi-trash"
+              text
+              severity="danger"
+              aria-label="Delete"
+              @click="destroy(data)"
+            />
           </div>
         </template>
       </Column>
     </DataTable>
 
-    <Dialog v-model:visible="dialogOpen" modal :header="`${editingId ? 'Edit' : 'New'} ${current.label.toLowerCase()}`" :style="{ width: '32rem' }">
+    <Dialog
+      v-model:visible="dialogOpen"
+      modal
+      :header="`${editingId ? 'Edit' : 'New'} ${current.label.toLowerCase()}`"
+      :style="{ width: '32rem' }"
+    >
       <form class="mk-form" @submit.prevent="submit">
         <div v-for="f in current.fields" :key="f.key" class="mk-field">
           <label :for="`mk-${f.key}`">{{ f.label }}</label>
           <Textarea v-if="f.type === 'area'" :id="`mk-${f.key}`" v-model="form[f.key]" rows="3" />
           <Select
-            v-else-if="f.type === 'select'" :inputId="`mk-${f.key}`" v-model="form[f.key]"
-            :options="f.options" optionLabel="label" optionValue="value" :showClear="f.clearable" />
+            v-else-if="f.type === 'select'"
+            :inputId="`mk-${f.key}`"
+            v-model="form[f.key]"
+            :options="f.options"
+            optionLabel="label"
+            optionValue="value"
+            :showClear="f.clearable"
+          />
           <InputText v-else :id="`mk-${f.key}`" v-model="form[f.key]" />
           <small v-if="fieldError(f.key)" class="mk-error">{{ fieldError(f.key) }}</small>
         </div>
@@ -285,30 +452,82 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="perfOpen" modal header="Campaign performance" :style="{ width: '28rem' }">
+    <Dialog
+      v-model:visible="perfOpen"
+      modal
+      header="Campaign performance"
+      :style="{ width: '28rem' }"
+    >
       <p v-if="!store.performance">Loading…</p>
       <dl v-else class="mk-perf">
-        <dt>Status</dt><dd>{{ store.performance.status }}</dd>
-        <dt>Budget</dt><dd>{{ store.performance.budget }}</dd>
-        <dt>Spent</dt><dd>{{ store.performance.spent }}</dd>
-        <dt>Remaining</dt><dd>{{ store.performance.remaining }}<template v-if="store.performance.over_budget"> (over budget)</template></dd>
-        <dt>Leads</dt><dd>{{ store.performance.leads }}</dd>
-        <dt>Cost per lead</dt><dd>{{ store.performance.cost_per_lead ?? '—' }}</dd>
-        <dt>Content pieces</dt><dd>{{ store.performance.content.total }}</dd>
+        <dt>Status</dt>
+        <dd>{{ store.performance.status }}</dd>
+        <dt>Budget</dt>
+        <dd>{{ store.performance.budget }}</dd>
+        <dt>Spent</dt>
+        <dd>{{ store.performance.spent }}</dd>
+        <dt>Remaining</dt>
+        <dd>
+          {{ store.performance.remaining
+          }}<template v-if="store.performance.over_budget"> (over budget)</template>
+        </dd>
+        <dt>Leads</dt>
+        <dd>{{ store.performance.leads }}</dd>
+        <dt>Cost per lead</dt>
+        <dd>{{ store.performance.cost_per_lead ?? '—' }}</dd>
+        <dt>Content pieces</dt>
+        <dd>{{ store.performance.content.total }}</dd>
       </dl>
     </Dialog>
   </div>
 </template>
 
 <style scoped>
-.mk-page { padding: 1rem; display: grid; gap: 1rem; }
-.mk-head, .mk-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-.mk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.75rem; }
-.mk-tabs, .mk-actions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-.mk-form { display: grid; gap: 0.75rem; }
-.mk-field { display: grid; gap: 0.25rem; }
-.mk-form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
-.mk-error { color: var(--p-red-500, #ef4444); }
-.mk-perf { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; }
-.mk-perf dt { font-weight: 600; }
+.mk-page {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+.mk-head,
+.mk-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.mk-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+}
+.mk-tabs,
+.mk-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.mk-form {
+  display: grid;
+  gap: 0.75rem;
+}
+.mk-field {
+  display: grid;
+  gap: 0.25rem;
+}
+.mk-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.mk-error {
+  color: var(--p-red-500, #ef4444);
+}
+.mk-perf {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+}
+.mk-perf dt {
+  font-weight: 600;
+}
 </style>

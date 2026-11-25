@@ -79,7 +79,19 @@ export const useMarketingStore = defineStore('marketing', () => {
   }
 
   return {
-    campaigns, content, leadSources, channels, overview, performance, loading, error,
-    fetchAll, refreshOverview, save, remove, publish, loadPerformance,
+    campaigns,
+    content,
+    leadSources,
+    channels,
+    overview,
+    performance,
+    loading,
+    error,
+    fetchAll,
+    refreshOverview,
+    save,
+    remove,
+    publish,
+    loadPerformance,
   }
 })

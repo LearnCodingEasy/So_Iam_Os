@@ -4,7 +4,9 @@
     <h2>Edit Task: {{ task?.name }}</h2>
 
     <div v-for="a in actions" :key="a.id" class="p-card p-mb-2">
-      <div><b>{{ a.order }} - {{ a.action_type }}</b></div>
+      <div>
+        <b>{{ a.order }} - {{ a.action_type }}</b>
+      </div>
       <div>{{ a.value }}</div>
     </div>
 
@@ -25,7 +27,7 @@ const task = ref(null)
 const actions = ref([])
 const runs = ref([])
 
-const load = async ()=>{
+const load = async () => {
   const t = await api.get(`/tasks/${taskId}/`)
   task.value = t.data
   const a = await api.get(`/tasks/${taskId}/actions/`)
@@ -33,7 +35,7 @@ const load = async ()=>{
   const tr = await api.get(`/taskruns/?task=${taskId}`)
   runs.value = tr.data
 }
-const runTask = async ()=>{
+const runTask = async () => {
   const res = await api.post(`/tasks/${taskId}/run/`)
   // if started return run_id
   if (res.data.run_id) {
@@ -43,7 +45,7 @@ const runTask = async ()=>{
   }
 }
 const pollLogs = async (run_id) => {
-  const interval = setInterval(async ()=>{
+  const interval = setInterval(async () => {
     const r = await api.get(`/taskruns/${run_id}/logs/`)
     if (r.data.status !== 'running') clearInterval(interval)
     console.log('logs', r.data.logs)

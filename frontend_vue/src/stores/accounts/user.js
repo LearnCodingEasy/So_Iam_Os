@@ -334,9 +334,11 @@ export const useUserStore = defineStore('user', {
 
         localStorage.setItem(ACCESS_TOKEN_KEY, newAccess)
         localStorage.setItem(REFRESH_TOKEN_KEY, newRefresh)
-        window.dispatchEvent(new CustomEvent('so-iam-token-refreshed', {
-          detail: { access: newAccess, refresh: newRefresh },
-        }))
+        window.dispatchEvent(
+          new CustomEvent('so-iam-token-refreshed', {
+            detail: { access: newAccess, refresh: newRefresh },
+          }),
+        )
 
         // ---------------------------------------------
         // 🔐 Update Authorization

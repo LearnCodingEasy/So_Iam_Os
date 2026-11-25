@@ -14,46 +14,137 @@
 
     .eyebrow {
       color: var(--p-primary-color);
-      font-size: .75rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: .12em;
+      letter-spacing: 0.12em;
     }
 
-    h1 { margin: .35rem 0; font-size: clamp(1.5rem, 3vw, 2rem); }
-    p { margin: 0; color: var(--p-text-muted-color); }
+    h1 {
+      margin: 0.35rem 0;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+    p {
+      margin: 0;
+      color: var(--p-text-muted-color);
+    }
   }
 
-  .provider-grid, .ai-workspace-grid {
+  .provider-grid,
+  .ai-workspace-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
   }
 
-  .provider-form { display: grid; gap: .65rem; }
-  .provider-form label { font-size: .875rem; font-weight: 600; }
-  .provider-form .w-full { width: 100%; }
-  .provider-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .35rem; }
-  .security-note { color: var(--p-text-muted-color); line-height: 1.6; }
-  .provider-list { display: grid; gap: .75rem; }
-  .provider-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding-bottom: .7rem; border-bottom: 1px solid var(--p-content-border-color); }
-  .provider-row:last-child { border-bottom: 0; }
-  .provider-row strong, .provider-row small { display: block; }
-  .provider-row small { margin-top: .25rem; color: var(--p-text-muted-color); }
-  .provider-tags { display: flex; align-items: center; gap: .4rem; }
-  .messages { min-height: 260px; max-height: 420px; overflow: auto; display: grid; align-content: start; gap: .75rem; }
-  .message { max-width: 88%; padding: .8rem 1rem; border-radius: 12px; background: var(--p-surface-100); overflow-wrap: anywhere; white-space: pre-wrap; }
-  .message.user { justify-self: end; background: var(--p-primary-color); color: var(--p-primary-contrast-color); }
-  .message small { display: block; opacity: .7; margin-bottom: .3rem; }
-  .composer { display: grid; gap: .7rem; margin-top: .8rem; }
-  .composer .p-textarea { width: 100%; }
-  pre { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: .8rem; border-radius: 10px; background: var(--p-surface-100); direction: ltr; text-align: left; }
+  .provider-form {
+    display: grid;
+    gap: 0.65rem;
+  }
+  .provider-form label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .provider-form .w-full {
+    width: 100%;
+  }
+  .provider-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.35rem;
+  }
+  .security-note {
+    color: var(--p-text-muted-color);
+    line-height: 1.6;
+  }
+  .provider-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .provider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--p-content-border-color);
+  }
+  .provider-row:last-child {
+    border-bottom: 0;
+  }
+  .provider-row strong,
+  .provider-row small {
+    display: block;
+  }
+  .provider-row small {
+    margin-top: 0.25rem;
+    color: var(--p-text-muted-color);
+  }
+  .provider-tags {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .messages {
+    min-height: 260px;
+    max-height: 420px;
+    overflow: auto;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+  }
+  .message {
+    max-width: 88%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    background: var(--p-surface-100);
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .message.user {
+    justify-self: end;
+    background: var(--p-primary-color);
+    color: var(--p-primary-contrast-color);
+  }
+  .message small {
+    display: block;
+    opacity: 0.7;
+    margin-bottom: 0.3rem;
+  }
+  .composer {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 0.8rem;
+  }
+  .composer .p-textarea {
+    width: 100%;
+  }
+  pre {
+    max-height: 360px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 0.8rem;
+    border-radius: 10px;
+    background: var(--p-surface-100);
+    direction: ltr;
+    text-align: left;
+  }
 
   @media (max-width: 900px) {
-    .provider-grid, .ai-workspace-grid { grid-template-columns: 1fr; }
+    .provider-grid,
+    .ai-workspace-grid {
+      grid-template-columns: 1fr;
+    }
   }
   @media (max-width: 560px) {
-    .ai-control-header { flex-direction: column; }
-    .provider-row { align-items: flex-start; flex-direction: column; }
+    .ai-control-header {
+      flex-direction: column;
+    }
+    .provider-row {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 }

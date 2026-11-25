@@ -16,4 +16,11 @@ export const deleteProject = async (id) => {
   return true
 }
 
-export default { listProjectsPage, listProjects, getProject, createProject, updateProject, deleteProject }
+export default {
+  listProjectsPage,
+  listProjects,
+  getProject,
+  createProject,
+  updateProject,
+  deleteProject,
+}

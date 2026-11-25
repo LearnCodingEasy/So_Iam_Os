@@ -7,7 +7,8 @@
         <p>كل ما تحتاج تنفذه اليوم في مكان واحد.</p>
       </div>
       <div class="header-actions">
-        <button class="primary-btn" :disabled="generating" @click="generate">{{ generating ? 'جارٍ التوليد…' : '✦ Generate AI Tasks' }}</button
+        <button class="primary-btn" :disabled="generating" @click="generate">
+          {{ generating ? 'جارٍ التوليد…' : '✦ Generate AI Tasks' }}</button
         ><button class="primary-btn" @click="openCreate">＋ مهمة جديدة</button>
       </div>
     </header>
@@ -36,7 +37,11 @@
             class="task-row"
             :class="task.status"
           >
-            <button class="check" :disabled="task.status === 'completed' || busyTaskId === task.id" @click="finish(task)">
+            <button
+              class="check"
+              :disabled="task.status === 'completed' || busyTaskId === task.id"
+              @click="finish(task)"
+            >
               {{ task.status === 'completed' ? '✓' : '○' }}
             </button>
             <div class="task-body">
@@ -52,10 +57,18 @@
               </div>
             </div>
             <div class="task-actions">
-              <button v-if="task.status === 'completed'" :disabled="busyTaskId === task.id" @click="reopen(task)">إعادة فتح</button
-              ><button v-else :disabled="busyTaskId === task.id" @click="openPostpone(task)">تأجيل</button
+              <button
+                v-if="task.status === 'completed'"
+                :disabled="busyTaskId === task.id"
+                @click="reopen(task)"
+              >
+                إعادة فتح</button
+              ><button v-else :disabled="busyTaskId === task.id" @click="openPostpone(task)">
+                تأجيل</button
               ><button :disabled="busyTaskId === task.id" @click="editTask(task)">تعديل</button
-              ><button class="danger" :disabled="busyTaskId === task.id" @click="removeTask(task)">حذف</button>
+              ><button class="danger" :disabled="busyTaskId === task.id" @click="removeTask(task)">
+                حذف
+              </button>
             </div>
           </article>
         </div>
@@ -174,7 +187,9 @@ const generate = async () => {
     setTimeout(load, 1500)
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر توليد المهام.'
-  } finally { generating.value = false }
+  } finally {
+    generating.value = false
+  }
 }
 const load = async () => {
   loading.value = true
@@ -237,7 +252,9 @@ const finish = async (t) => {
     await load()
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر إكمال المهمة.'
-  } finally { busyTaskId.value = null }
+  } finally {
+    busyTaskId.value = null
+  }
 }
 const reopen = async (task) => {
   if (busyTaskId.value !== null) return
@@ -268,7 +285,9 @@ const postpone = async () => {
     await load()
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر تأجيل المهمة.'
-  } finally { busyTaskId.value = null }
+  } finally {
+    busyTaskId.value = null
+  }
 }
 const removeTask = async (t) => {
   if (busyTaskId.value !== null) return
@@ -279,8 +298,9 @@ const removeTask = async (t) => {
     await load()
   } catch (e) {
     error.value = e.response?.data?.detail || 'تعذر حذف المهمة.'
-  } finally { busyTaskId.value = null }
+  } finally {
+    busyTaskId.value = null
+  }
 }
 onMounted(load)
 </script>
-
