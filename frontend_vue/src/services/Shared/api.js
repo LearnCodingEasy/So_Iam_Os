@@ -1,8 +1,7 @@
 import axios from 'axios'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'
+import { API_BASE_URL } from './apiConfig'
 
 // Telemetry receives path-only URLs: query parameters may contain tokens or
 // user-supplied search/prompt data and must not be copied into debug events.
@@ -101,7 +100,7 @@ export async function getValidAccessToken() {
     return null
   }
 
-  let expiresAt = 0
+  let expiresAt
   try {
     const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
     const decoded = JSON.parse(atob(payload.padEnd(Math.ceil(payload.length / 4) * 4, '=')))

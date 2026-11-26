@@ -307,7 +307,7 @@
 // ============================================================
 
 import { ref, reactive } from 'vue'
-import axios from 'axios'
+import api from '@/services/Shared/api'
 
 const STAGES_TEMPLATE = [
   { id: 'init', label: 'تجهيز الطلب', icon: '🔧', layer: 'Vue' },
@@ -399,7 +399,7 @@ export function useApiTracker() {
     setStage('auth', 'active')
     const token = getToken()
     if (token) {
-      headers['Authorization'] = headers['Authorization'] || `Token ${token}`
+      headers['Authorization'] = headers['Authorization'] || `Bearer ${token}`
       setStage('auth', 'pass', `Token موجود ✓`)
     } else {
       setStage('auth', 'skip', 'لا يوجد Token')
@@ -413,8 +413,7 @@ export function useApiTracker() {
         // ✅ تنفيذ الدالة مباشرة (هذا يحل مشكلة الـ 404)
         response = await serviceFn()
       } else {
-        // التنفيذ التقليدي عبر axios
-        response = await axios({
+        response = await api({
           url,
           method,
           data,
@@ -483,7 +482,7 @@ function tick(ms = 100) {
 }
 
 function getToken() {
-  return localStorage.getItem('token') || localStorage.getItem('access_token')
+  return localStorage.getItem('user.access')
 }
 
 function roughSize(data) {

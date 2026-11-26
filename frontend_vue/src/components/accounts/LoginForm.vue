@@ -58,6 +58,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { usersAccountsAPI } from '@/services/Accounts/usersAccounts'
+import { API_ROOT_URL } from '@/services/Shared/apiConfig'
 import { useUserStore } from '@/stores/accounts/user'
 
 const router = useRouter()
@@ -116,7 +117,7 @@ const submitFormLogin = async () => {
 // ===============================
 
 const loginWithGoogle = () => {
-  window.open('http://127.0.0.1:8000/accounts/google/login/', '_blank', 'width=500,height=700')
+  window.open(`${API_ROOT_URL}/accounts/google/login/`, '_blank', 'width=500,height=700')
 }
 
 // ===============================
@@ -124,7 +125,7 @@ const loginWithGoogle = () => {
 // ===============================
 
 const loginWithFacebook = () => {
-  window.location.href = 'http://127.0.0.1:8000/accounts/facebook/login/'
+  window.location.href = `${API_ROOT_URL}/accounts/facebook/login/`
 }
 </script>
 

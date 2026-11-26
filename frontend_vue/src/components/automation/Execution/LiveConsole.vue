@@ -21,10 +21,11 @@ src/components/Automation/Execution/LiveConsole.vue
 ===================================================
 */
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { WS_BASE_URL } from '@/services/Shared/apiConfig'
 
 const props = defineProps({
   taskRunId: { type: String, required: true },
-  wsBaseUrl: { type: String, default: 'ws://localhost:8000' },
+  wsBaseUrl: { type: String, default: () => WS_BASE_URL },
   maxLines: { type: Number, default: 500 },
   autoScroll: { type: Boolean, default: true },
   visible: { type: Boolean, default: true },

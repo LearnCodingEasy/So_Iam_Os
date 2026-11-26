@@ -24,8 +24,8 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 library.add(fas, far, fab)
 
 import axios from 'axios'
-axios.defaults.baseURL =
-  import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+import { API_ROOT_URL } from './services/Shared/apiConfig'
+axios.defaults.baseURL = API_ROOT_URL
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

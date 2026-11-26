@@ -18,16 +18,16 @@
 //    />
 // ============================================================
 import { ref, computed, watch, onBeforeUnmount } from 'vue'
+import { WS_BASE_URL } from '@/services/Shared/apiConfig'
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
   taskRunId: { type: String, default: null },
   nodes: { type: Array, default: () => [] }, // الـ nodes من الـ Canvas
-  wsBaseUrl: { type: String, default: 'ws://localhost:8000' },
+  wsBaseUrl: { type: String, default: () => WS_BASE_URL },
 })
 
 const emit = defineEmits(['close', 'update:visible'])
-console.log('emit: ', emit)
 
 // ─── State ────────────────────────────────────────────────
 const nodeStats = ref(new Map()) // node_id → { label, status, duration_ms }

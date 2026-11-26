@@ -8,7 +8,7 @@
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/accounts/user'
-import axios from 'axios'
+import api from '@/services/Shared/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,7 +32,7 @@ onMounted(async () => {
     userStore.setUserInfo(userData)
 
     // إضافة الـ access token في headers الافتراضية
-    axios.defaults.headers.common['Authorization'] = `Bearer ${access}`
+    api.defaults.headers.common.Authorization = `Bearer ${access}`
 
     // توجيه المستخدم للصفحة الرئيسية
     router.push('/')

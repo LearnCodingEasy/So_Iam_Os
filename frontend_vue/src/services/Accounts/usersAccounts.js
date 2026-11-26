@@ -1,8 +1,6 @@
 import api from '../Shared/api'
 import { endpoints } from '../Shared/endpoints'
 
-const API_URL = 'http://127.0.0.1:8000/api'
-
 export const usersAccountsAPI = {
   // ===============================
   // 👤 User Authentication
